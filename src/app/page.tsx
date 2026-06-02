@@ -84,10 +84,10 @@ export default function Home() {
               </div>
               <h3 className={styles.serviceTitle}>Capital de Giro BDMG</h3>
               <p className={styles.serviceDesc}>
-                Crédito subsidiado para impulsionar sua micro ou pequena empresa. Prazos estendidos, carência justa e as menores taxas de fomento.
+                Crédito empresarial com taxa de fomento subsidiada para faturamento em Minas Gerais. Carência de 12 meses e até 72 meses de prazo.
               </p>
-              <Link href="#simular" className={styles.serviceLink}>
-                Fazer Simulação &rarr;
+              <Link href="/credito-bdmg" className={styles.serviceLink}>
+                Saber Mais &rarr;
               </Link>
             </div>
 
@@ -103,7 +103,7 @@ export default function Home() {
               <p className={styles.serviceDesc}>
                 Compare e financie imóveis residenciais, comerciais ou lotes urbanos. Taxas competitivas com os principais bancos em um só lugar.
               </p>
-              <Link href="/financiamento-imobiliario" className={styles.serviceLink}>
+              <Link href="/credito-imovel" className={styles.serviceLink}>
                 Saber Mais &rarr;
               </Link>
             </div>
@@ -145,7 +145,7 @@ export default function Home() {
               </Link>
             </div>
 
-            {/* Card 4.5: Garantia de Veículos */}
+            {/* Card 5: Garantia de Veículos */}
             <div className={styles.serviceCard}>
               <div className={styles.serviceIcon}>
                 <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
@@ -162,7 +162,40 @@ export default function Home() {
               </Link>
             </div>
 
-            {/* Card 5: Consórcios */}
+            {/* Card 6: PRONAMPE */}
+            <div className={styles.serviceCard}>
+              <div className={styles.serviceIcon}>
+                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+              </div>
+              <h3 className={styles.serviceTitle}>Fomento PRONAMPE</h3>
+              <p className={styles.serviceDesc}>
+                Crédito federal facilitado com taxas controladas e garantia de fundo governamental FGO para micro e pequenas empresas (MPE).
+              </p>
+              <Link href="/pronampe" className={styles.serviceLink}>
+                Saber Mais &rarr;
+              </Link>
+            </div>
+
+            {/* Card 7: ProCred 360 */}
+            <div className={styles.serviceCard}>
+              <div className={styles.serviceIcon}>
+                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="12" y1="1" x2="12" y2="23"></line>
+                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                </svg>
+              </div>
+              <h3 className={styles.serviceTitle}>ProCred 360</h3>
+              <p className={styles.serviceDesc}>
+                Linha de fomento exclusiva com juros bonificados para microempreendedores individuais (MEI) e empresas com faturamento até R$ 360 mil.
+              </p>
+              <Link href="/procred-360" className={styles.serviceLink}>
+                Saber Mais &rarr;
+              </Link>
+            </div>
+
+            {/* Card 8: Consórcios */}
             <div className={styles.serviceCard}>
               <div className={styles.serviceIcon}>
                 <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">

@@ -51,18 +51,18 @@ export default function Navbar() {
               <span className={styles.navLink}>Serviços</span>
               <ul className={styles.dropdownMenu}>
                 <li>
-                  <Link href="/#bdmg" className={styles.dropdownLink} onClick={() => setIsOpen(false)}>
-                    Crédito BDMG
+                  <Link href="/credito-bdmg" className={styles.dropdownLink} onClick={() => setIsOpen(false)}>
+                    Capital de Giro BDMG
                   </Link>
                 </li>
                 <li>
-                  <Link href="/financiamento-imobiliario" className={styles.dropdownLink} onClick={() => setIsOpen(false)}>
+                  <Link href="/credito-imovel" className={styles.dropdownLink} onClick={() => setIsOpen(false)}>
                     Financiamento Imobiliário
                   </Link>
                 </li>
                 <li>
                   <Link href="/home-equity" className={styles.dropdownLink} onClick={() => setIsOpen(false)}>
-                    Home Equity
+                    Home Equity (Garantia)
                   </Link>
                 </li>
                 <li>
@@ -72,7 +72,17 @@ export default function Navbar() {
                 </li>
                 <li>
                   <Link href="/credito-garantia-veiculo" className={styles.dropdownLink} onClick={() => setIsOpen(false)}>
-                    Crédito com Garantia de Veículo
+                    Crédito Garantia de Veículo
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/pronampe" className={styles.dropdownLink} onClick={() => setIsOpen(false)}>
+                    Fomento PRONAMPE
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/procred-360" className={styles.dropdownLink} onClick={() => setIsOpen(false)}>
+                    ProCred 360 MEI/ME
                   </Link>
                 </li>
                 <li>

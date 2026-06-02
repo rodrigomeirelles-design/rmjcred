@@ -66,11 +66,13 @@ export default function Footer() {
         <div className={styles.colLinks}>
           <h4 className={styles.colTitle}>Serviços</h4>
           <ul className={styles.linkList}>
-            <li><Link href="/#bdmg" className={styles.link}>Crédito BDMG</Link></li>
-            <li><Link href="/financiamento-imobiliario" className={styles.link}>Crédito Imobiliário</Link></li>
-            <li><Link href="/home-equity" className={styles.link}>Home Equity</Link></li>
-            <li><Link href="/financiamento-veiculos" className={styles.link}>Crédito de Veículos</Link></li>
-            <li><Link href="/credito-garantia-veiculo" className={styles.link}>Garantia de Veículo (Auto Equity)</Link></li>
+            <li><Link href="/credito-bdmg" className={styles.link}>Capital de Giro BDMG</Link></li>
+            <li><Link href="/credito-imovel" className={styles.link}>Crédito Imobiliário</Link></li>
+            <li><Link href="/home-equity" className={styles.link}>Home Equity (Garantia)</Link></li>
+            <li><Link href="/financiamento-veiculos" className={styles.link}>Financiamento de Veículos</Link></li>
+            <li><Link href="/credito-garantia-veiculo" className={styles.link}>Garantia de Veículo</Link></li>
+            <li><Link href="/pronampe" className={styles.link}>Fomento PRONAMPE</Link></li>
+            <li><Link href="/procred-360" className={styles.link}>ProCred 360 MEI/ME</Link></li>
             <li><Link href="/consorcios" className={styles.link}>Consórcios</Link></li>
           </ul>
         </div>

@@ -344,7 +344,7 @@ export default function Home() {
           <div className={styles.simulatorInfo}>
             <span className={styles.sectionSubtitle}>Simulador Grátis</span>
             <h2 className={styles.sectionTitle}>Diga Adeus às Taxas Abusivas</h2>
-            <p className={styles.heroDescription}>
+            <p>
               A RMJ Soluções de Crédito faz toda a intermediação, análise e consultoria. Nós estruturamos sua pasta e buscamos as melhores oportunidades de captação de recursos governamentais ou de instituições privadas.
             </p>
             <div className={styles.infoCard}>

@@ -1,0 +1,192 @@
+.headerSection {
+  position: relative;
+  background-image: linear-gradient(rgba(11, 26, 48, 0.85), rgba(11, 26, 48, 0.85)), url('/assets/d4627f8586dd6a4c7ffede2d9b58243a.png');
+  background-size: cover;
+  background-position: center;
+  padding: 8rem 0 6rem 0;
+  color: var(--neutral-white);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.titleContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.backLink {
+  font-size: 0.95rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.backLink:hover {
+  color: var(--accent-color);
+}
+
+.title {
+  font-size: 3rem;
+  color: var(--neutral-white);
+}
+
+.leadText {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 800px;
+  line-height: 1.6;
+}
+
+/* Detalhes de Produtos */
+.productDetails {
+  background-color: var(--neutral-white);
+}
+
+.detailsGrid {
+  display: grid;
+  gap: 4rem;
+  align-items: flex-start;
+}
+
+.imageWrapper {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--neutral-border);
+}
+
+.infoWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.categoryTitle {
+  font-size: 1.6rem;
+  color: var(--primary-color);
+  margin-bottom: 1.25rem;
+}
+
+.featureList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.featureItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 0.95rem;
+  color: var(--neutral-dark);
+}
+
+.featureBullet {
+  color: var(--accent-color);
+  font-weight: bold;
+}
+
+/* Tabela Comparativa de Taxas */
+.comparisonSection {
+  background-color: var(--neutral-light);
+  border-top: 1px solid var(--neutral-border);
+}
+
+.comparisonTitle {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.comparisonTable {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  border-collapse: collapse;
+  background-color: var(--neutral-white);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--neutral-border);
+}
+
+.comparisonTable th, .comparisonTable td {
+  padding: 1.25rem;
+  text-align: center;
+}
+
+.comparisonTable th {
+  background-color: var(--primary-color);
+  color: var(--neutral-white);
+  font-weight: 700;
+}
+
+.comparisonTable tr {
+  border-bottom: 1px solid var(--neutral-border);
+}
+
+.comparisonTable tr:last-child {
+  border-bottom: none;
+}
+
+.rowHighlight {
+  background-color: rgba(238, 102, 28, 0.05); /* light orange tint */
+  font-weight: 700;
+  color: var(--secondary-color);
+}
+
+.rowHighlight td {
+  color: var(--secondary-color) !important;
+}
+
+.categoryTitle {
+  font-size: 1.6rem;
+  color: var(--primary-color);
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.categoryIcon {
+  color: var(--primary-color);
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+.infoBoxIcon {
+  color: var(--primary-color);
+  margin-right: 0.5rem;
+  vertical-align: middle;
+  display: inline-block;
+}
+
+@media (min-width: 768px) {
+  .detailsGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .ctaContainer {
+    grid-template-columns: 1.1fr 0.9fr;
+  }
+}
+
+.noteText {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--neutral-muted);
+  margin-top: 1.5rem;
+}
+
+.ctaSection {
+  background-color: var(--neutral-white);
+  border-top: 1px solid var(--neutral-border);
+}
+
+.ctaContainer {
+  display: grid;
+  gap: 3rem;
+  align-items: center;
+}

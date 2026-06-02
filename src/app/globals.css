@@ -1,0 +1,158 @@
+:root {
+  /* Cores Principais (Tema Financeiro Premium - Alinhado com a Logo RMJ) */
+  --primary-color: #21446a; /* Azul Oficial da Logo */
+  --primary-light: #345e8e; /* Azul Médio */
+  --primary-dark: #162f4b; /* Azul Escuro Profundo */
+  --secondary-color: #ee661c; /* Laranja da Logo */
+  --secondary-hover: #d3540f;
+  --accent-color: #ff9f1c; /* Dourado Premium para Destaques/Botoes */
+  --accent-hover: #e58a05;
+  
+  /* Cores Neutras */
+  --neutral-dark: #0f172a; /* Slate 900 - Texto Principal */
+  --neutral-muted: #475569; /* Slate 600 - Texto Secundário */
+  --neutral-light: #f8fafc; /* Slate 50 - Fundo Geral */
+  --neutral-white: #ffffff; /* Branco puro */
+  --neutral-border: #e2e8f0; /* Slate 200 - Bordas e Linhas */
+  
+  /* Efeitos */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.02);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --shadow-lg: 0 10px 15px -3px rgba(33, 68, 106, 0.08), 0 4px 6px -2px rgba(33, 68, 106, 0.04);
+  --shadow-glass: 0 8px 32px 0 rgba(33, 68, 106, 0.15);
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: all 0.15s ease;
+}
+
+/* Reset Básico */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  font-family: var(--font-montserrat), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--neutral-dark);
+  background-color: #f8fafc;
+  background-image: radial-gradient(circle at top right, rgba(33, 68, 106, 0.03) 0%, rgba(255, 255, 255, 0) 70%), linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+  background-attachment: fixed;
+  line-height: 1.6;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Tipografia */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--primary-dark);
+  margin-bottom: 0.5rem;
+}
+
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.5rem; }
+p { margin-bottom: 1rem; color: var(--neutral-muted); }
+a { color: var(--primary-color); text-decoration: none; transition: var(--transition-fast); }
+a:hover { color: var(--primary-light); }
+
+/* Utilitários Globais */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.section {
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+}
+
+/* Botões do Sistema de Design */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  font-size: 1rem;
+  gap: 0.5rem;
+}
+
+.btn-primary {
+  background-color: var(--secondary-color);
+  color: var(--neutral-white);
+}
+
+.btn-primary:hover {
+  background-color: var(--secondary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(238, 102, 28, 0.2);
+}
+
+.btn-secondary {
+  background-color: var(--primary-color);
+  color: var(--neutral-white);
+}
+
+.btn-secondary:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(30, 73, 138, 0.2);
+}
+
+.btn-accent {
+  background-color: var(--accent-color);
+  color: var(--neutral-white);
+}
+
+.btn-accent:hover {
+  background-color: var(--accent-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 191, 99, 0.2);
+}
+
+.btn-outline {
+  background-color: transparent;
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.btn-outline:hover {
+  background-color: var(--primary-color);
+  color: var(--neutral-white);
+}
+
+/* Efeito de Vidro (Glassmorphism) */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: var(--shadow-glass);
+}
+
+/* Grid layout responsivo */
+.grid {
+  display: grid;
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  .grid-2 { grid-template-columns: repeat(2, 1fr); }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid-4 { grid-template-columns: repeat(4, 1fr); }
+}

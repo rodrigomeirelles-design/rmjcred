@@ -1,0 +1,202 @@
+.headerSection {
+  background: linear-gradient(135deg, rgba(30, 73, 138, 0.08) 0%, rgba(255, 255, 255, 1) 100%);
+  padding: 5rem 0 3rem 0;
+  border-bottom: 1px solid var(--neutral-border);
+}
+
+.titleContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.backLink {
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--neutral-muted);
+}
+
+.backLink:hover {
+  color: var(--primary-color);
+}
+
+.title {
+  font-size: 2.75rem;
+  color: var(--primary-dark);
+}
+
+.leadText {
+  font-size: 1.15rem;
+  color: var(--neutral-muted);
+  max-width: 800px;
+  line-height: 1.6;
+}
+
+/* Seção de História */
+.historySection {
+  background-color: var(--neutral-white);
+}
+
+.historyGrid {
+  display: grid;
+  gap: 4rem;
+  align-items: center;
+}
+
+.historyContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.historyContent p {
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.imageWrapper {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--neutral-border);
+}
+
+/* Seção de Fundadores */
+.foundersSection {
+  background-color: var(--neutral-light);
+  border-top: 1px solid var(--neutral-border);
+}
+
+.foundersTitle {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.foundersGrid {
+  display: grid;
+  gap: 3rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.founderCard {
+  background-color: var(--neutral-white);
+  border: 1px solid var(--neutral-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  transition: var(--transition-smooth);
+}
+
+.founderCard:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary-light);
+}
+
+.founderImageWrapper {
+  position: relative;
+  width: 100%;
+  height: 480px;
+}
+
+.founderInfo {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.founderName {
+  font-size: 1.5rem;
+  color: var(--primary-dark);
+  margin-bottom: 0.25rem;
+}
+
+.founderRole {
+  font-size: 0.9rem;
+  color: var(--secondary-color);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.founderBio {
+  font-size: 0.95rem;
+  color: var(--neutral-muted);
+  line-height: 1.6;
+}
+
+/* Seção de Valores */
+.valuesSection {
+  background-color: var(--neutral-white);
+  border-top: 1px solid var(--neutral-border);
+}
+
+.valuesGrid {
+  display: grid;
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.valueItem {
+  padding: 2.25rem;
+  background-color: var(--neutral-light);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--neutral-border);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: var(--transition-fast);
+}
+
+.valueItem:hover {
+  background-color: var(--neutral-white);
+  box-shadow: var(--shadow-sm);
+  border-color: var(--primary-light);
+}
+
+.valueIconContainer {
+  width: 54px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(33, 68, 106, 0.06);
+  border-radius: 50%;
+  margin-bottom: 0.5rem;
+}
+
+.valueIconSvg {
+  color: var(--primary-color);
+}
+
+.valueTitle {
+  font-size: 1.25rem;
+  color: var(--primary-dark);
+}
+
+.valueDesc {
+  font-size: 0.9rem;
+  color: var(--neutral-muted);
+  line-height: 1.5;
+  margin-bottom: 0;
+}
+
+@media (min-width: 768px) {
+  .historyGrid {
+    grid-template-columns: 1.1fr 0.9fr;
+  }
+  .foundersGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .valuesGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

@@ -1,0 +1,116 @@
+.headerSection {
+  background: linear-gradient(135deg, rgba(30, 73, 138, 0.08) 0%, rgba(255, 255, 255, 1) 100%);
+  padding: 5rem 0 3rem 0;
+  border-bottom: 1px solid var(--neutral-border);
+}
+
+.titleContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.backLink {
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--neutral-muted);
+}
+
+.backLink:hover {
+  color: var(--primary-color);
+}
+
+.title {
+  font-size: 2.75rem;
+  color: var(--primary-dark);
+}
+
+.leadText {
+  font-size: 1.15rem;
+  color: var(--neutral-muted);
+  max-width: 800px;
+  line-height: 1.6;
+}
+
+/* Grid de Parceiros */
+.partnersSection {
+  background-color: var(--neutral-white);
+}
+
+.gridDescription {
+  font-size: 1.1rem;
+  color: var(--neutral-muted);
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 3rem auto;
+}
+
+.partnersGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.partnerCard {
+  background-color: var(--neutral-light);
+  border: 1px solid var(--neutral-border);
+  border-radius: var(--radius-md);
+  padding: 2rem;
+  width: 100%;
+  max-width: 240px;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-smooth);
+}
+
+.partnerCard:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary-light);
+}
+
+.logoWrapper {
+  position: relative;
+  width: 85%;
+  height: 70%;
+  filter: grayscale(100%);
+  opacity: 0.7;
+  transition: var(--transition-smooth);
+}
+
+.partnerCard:hover .logoWrapper {
+  filter: grayscale(0%);
+  opacity: 1;
+}
+
+/* CTA */
+.ctaSection {
+  background-color: var(--neutral-light);
+  border-top: 1px solid var(--neutral-border);
+  text-align: center;
+  padding: 5rem 0;
+}
+
+.ctaContent {
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.ctaTitle {
+  font-size: 2rem;
+  color: var(--primary-dark);
+}

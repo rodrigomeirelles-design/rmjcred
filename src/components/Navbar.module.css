@@ -1,0 +1,219 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 70px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  background-color: #21446a; /* Azul Oficial da Logo */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  transition: var(--transition-smooth);
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+}
+
+.logoLink {
+  display: flex;
+  align-items: center;
+  z-index: 1010;
+  transition: var(--transition-smooth);
+}
+
+.logoLink:hover {
+  transform: scale(1.02);
+}
+
+/* Hamburger (Mobile) */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 24px;
+  height: 18px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 1010;
+  padding: 0;
+}
+
+.bar {
+  width: 100%;
+  height: 2px;
+  background-color: #ffffff; /* Hamburguer Branco */
+  transition: var(--transition-smooth);
+  transform-origin: left center;
+}
+
+/* Navegação Desktop */
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.navList {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  gap: 1.75rem;
+}
+
+.navLink {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85); /* Link Esbranquiçado */
+  cursor: pointer;
+  padding: 0.5rem 0;
+  position: relative;
+  transition: var(--transition-fast);
+}
+
+.navLink:hover {
+  color: var(--accent-color); /* Hover Dourado */
+}
+
+.navLink::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--accent-color); /* Linha Dourada */
+  transition: var(--transition-fast);
+}
+
+.navLink:hover::after {
+  width: 100%;
+}
+
+/* Dropdown */
+.dropdown {
+  position: relative;
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background-color: #1a3654; /* Azul mais escuro para o dropdown */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  list-style: none;
+  min-width: 240px;
+  opacity: 0;
+  visibility: hidden;
+  transition: var(--transition-smooth);
+  padding: 0.75rem 0;
+  margin-top: 0.5rem;
+}
+
+.dropdown:hover .dropdownMenu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.dropdownLink {
+  display: block;
+  padding: 0.6rem 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+  transition: var(--transition-fast);
+}
+
+.dropdownLink:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--accent-color);
+  padding-left: 1.5rem;
+}
+
+/* Responsividade Mobile */
+@media (max-width: 991px) {
+  .hamburger {
+    display: flex;
+  }
+  
+  .hamburger.active .bar:nth-child(1) {
+    transform: rotate(45deg);
+  }
+  
+  .hamburger.active .bar:nth-child(2) {
+    opacity: 0;
+  }
+  
+  .hamburger.active .bar:nth-child(3) {
+    transform: rotate(-45deg);
+  }
+  
+  .nav {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 280px;
+    height: 100vh;
+    background-color: #1a3654; /* Menu Mobile no tom da marca */
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.25);
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 90px 2rem 2rem 2rem;
+    gap: 2rem;
+    transition: var(--transition-smooth);
+  }
+  
+  .nav.open {
+    right: 0;
+  }
+  
+  .navList {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    gap: 1.25rem;
+  }
+  
+  .dropdown {
+    width: 100%;
+  }
+  
+  .dropdownMenu {
+    position: static;
+    transform: none !important;
+    opacity: 1;
+    visibility: visible;
+    box-shadow: none;
+    border: none;
+    background-color: transparent;
+    border-left: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0;
+    margin-left: 1rem;
+    margin-top: 0.25rem;
+    padding: 0;
+  }
+  
+  .dropdownLink {
+    padding: 0.4rem 1rem;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  
+  .navCTA {
+    width: 100%;
+    margin-top: 1rem;
+  }
+  
+  .navCTA a {
+    width: 100%;
+  }
+}

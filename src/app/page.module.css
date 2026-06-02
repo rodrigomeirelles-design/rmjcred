@@ -63,7 +63,7 @@
 
 .heroDescription {
   font-size: 1.15rem;
-  color: rgba(255, 255, 255, 0.85); /* Descrição Clara */
+  color: rgba(255, 255, 255, 0.95); /* Descrição Clara com Melhor Contraste */
   line-height: 1.6;
 }
 

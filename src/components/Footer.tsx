@@ -70,6 +70,7 @@ export default function Footer() {
             <li><Link href="/financiamento-imobiliario" className={styles.link}>Crédito Imobiliário</Link></li>
             <li><Link href="/home-equity" className={styles.link}>Home Equity</Link></li>
             <li><Link href="/financiamento-veiculos" className={styles.link}>Crédito de Veículos</Link></li>
+            <li><Link href="/credito-garantia-veiculo" className={styles.link}>Garantia de Veículo (Auto Equity)</Link></li>
             <li><Link href="/consorcios" className={styles.link}>Consórcios</Link></li>
           </ul>
         </div>

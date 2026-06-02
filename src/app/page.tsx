@@ -49,7 +49,7 @@ export default function Home() {
             <span className={styles.highlightDesc}>Comece a pagar somente após 1 ano</span>
           </div>
           <div className={styles.highlightItem}>
-            <span className={styles.highlightNumber}>20</span>
+            <span className={styles.highlightNumber}>72</span>
             <span className={styles.highlightLabel}>Meses de Prazo</span>
             <span className={styles.highlightDesc}>Opções flexíveis de amortização e pagamento</span>
           </div>
@@ -141,6 +141,23 @@ export default function Home() {
                 Conquiste seu carro novo ou seminovo com taxas diferenciadas e parcelas que cabem perfeitamente no orçamento da sua família.
               </p>
               <Link href="/financiamento-veiculos" className={styles.serviceLink}>
+                Saber Mais &rarr;
+              </Link>
+            </div>
+
+            {/* Card 4.5: Garantia de Veículos */}
+            <div className={styles.serviceCard}>
+              <div className={styles.serviceIcon}>
+                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+              </div>
+              <h3 className={styles.serviceTitle}>Garantia de Veículo</h3>
+              <p className={styles.serviceDesc}>
+                Use seu veículo (quitado ou financiado) como garantia e tenha acesso a crédito ágil com taxas reduzidas mantendo a posse do bem.
+              </p>
+              <Link href="/credito-garantia-veiculo" className={styles.serviceLink}>
                 Saber Mais &rarr;
               </Link>
             </div>

@@ -71,6 +71,11 @@ export default function Navbar() {
                   </Link>
                 </li>
                 <li>
+                  <Link href="/credito-garantia-veiculo" className={styles.dropdownLink} onClick={() => setIsOpen(false)}>
+                    Crédito com Garantia de Veículo
+                  </Link>
+                </li>
+                <li>
                   <Link href="/consorcios" className={styles.dropdownLink} onClick={() => setIsOpen(false)}>
                     Consórcios
                   </Link>

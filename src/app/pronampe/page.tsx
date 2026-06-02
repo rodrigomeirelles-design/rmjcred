@@ -4,7 +4,7 @@ import styles from "./page.module.css";
 import LeadForm from "@/components/LeadForm";
 
 export const metadata = {
-  title: "Crédito Pronampe em Itajubá para PMEs e MEI | RMJ",
+  title: "Crédito Pronampe em Itajubá para Micro e Pequenas Empresas | RMJ",
   description: "Acelere sua empresa com a linha de crédito federal facilitada do Pronampe. Menores taxas garantidas e assessoria consultiva completa da RMJ.",
 };
 

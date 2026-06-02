@@ -82,7 +82,7 @@ export default function Navbar() {
                 </li>
                 <li>
                   <Link href="/procred-360" className={styles.dropdownLink} onClick={() => setIsOpen(false)}>
-                    ProCred 360 MEI/ME
+                    ProCred 360
                   </Link>
                 </li>
                 <li>

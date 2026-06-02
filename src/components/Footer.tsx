@@ -72,7 +72,7 @@ export default function Footer() {
             <li><Link href="/financiamento-veiculos" className={styles.link}>Financiamento de Veículos</Link></li>
             <li><Link href="/credito-garantia-veiculo" className={styles.link}>Garantia de Veículo</Link></li>
             <li><Link href="/pronampe" className={styles.link}>Fomento PRONAMPE</Link></li>
-            <li><Link href="/procred-360" className={styles.link}>ProCred 360 MEI/ME</Link></li>
+            <li><Link href="/procred-360" className={styles.link}>ProCred 360 (Microempresas)</Link></li>
             <li><Link href="/consorcios" className={styles.link}>Consórcios</Link></li>
           </ul>
         </div>

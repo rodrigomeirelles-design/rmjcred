@@ -188,7 +188,7 @@ export default function Home() {
               </div>
               <h3 className={styles.serviceTitle}>ProCred 360</h3>
               <p className={styles.serviceDesc}>
-                Linha de fomento exclusiva com juros bonificados para microempreendedores individuais (MEI) e empresas com faturamento até R$ 360 mil.
+                Linha de fomento exclusiva com juros bonificados para microempresas com faturamento anual de até R$ 360 mil.
               </p>
               <Link href="/procred-360" className={styles.serviceLink}>
                 Saber Mais &rarr;

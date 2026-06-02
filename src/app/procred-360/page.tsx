@@ -4,8 +4,8 @@ import styles from "./page.module.css";
 import LeadForm from "@/components/LeadForm";
 
 export const metadata = {
-  title: "ProCred 360 em Itajubá: Crédito MEI e Microempresas | RMJ",
-  description: "Linha de crédito exclusiva para empresas com faturamento anual de até R$ 360 mil. Taxas especiais e fomento à inovação com a parceria RMJ.",
+  title: "ProCred 360 em Itajubá: Crédito para Microempresas | RMJ",
+  description: "Linha de crédito exclusiva para microempresas com faturamento anual de até R$ 360 mil. Taxas especiais e fomento à inovação com a parceria RMJ.",
 };
 
 export default function Procred360() {
@@ -20,7 +20,7 @@ export default function Procred360() {
             Fomento <span className={styles.italicTitle}>ProCred 360</span>
           </h1>
           <p className={styles.leadText}>
-            A linha de crédito ideal com juros bonificados focada no fomento, crescimento e consolidação de MEIs e Microempresas brasileiras.
+            A linha de crédito ideal com juros bonificados focada no fomento, crescimento e consolidação de Microempresas brasileiras.
           </p>
         </div>
       </section>
@@ -29,7 +29,7 @@ export default function Procred360() {
         <div className="container">
           <div className={styles.negotiateHeader}>
             <h2 className={styles.negotiateSlogan}>
-              Taxas exclusivas para MEI e ME. <span className={styles.italicTitle}>Para alavancar seu comércio ou prestação de serviços.</span>
+              Taxas exclusivas para Microempresas. <span className={styles.italicTitle}>Para alavancar seu comércio ou prestação de serviços.</span>
             </h2>
             <p className={styles.negotiateSubtitle}>
               O programa ProCred 360 faz parte do programa federal de fomento financeiro e oferece taxas muito mais suaves para as empresas de menor porte crescerem com folga de caixa.
@@ -129,7 +129,7 @@ export default function Procred360() {
                       </svg>
                     </div>
                     <h4>Limite de Faturamento</h4>
-                    <p>Empresas com receita bruta anual registrada de até R$ 360 mil (incluindo Microempreendedores Individuais - MEI).</p>
+                    <p>Microempresas com receita bruta anual registrada de até R$ 360 mil.</p>
                   </div>
                   <div className={styles.advantageCard}>
                     <div className={styles.advantageIcon}>
@@ -147,7 +147,7 @@ export default function Procred360() {
                       </svg>
                     </div>
                     <h4>Dúvidas com o Consultor</h4>
-                    <p>Consulte sua eligibility para o ProCred 360 conversando no WhatsApp com o Rodrigo no <strong>(35) 99724-8658</strong>.</p>
+                    <p>Consulte se sua empresa é elegível para o ProCred 360 conversando no WhatsApp com o Rodrigo no <strong>(35) 99724-8658</strong>.</p>
                   </a>
                 </div>
               </div>
@@ -196,7 +196,7 @@ export default function Procred360() {
         <div className={`${styles.ctaContainer} container`}>
           <div className={styles.titleContainer}>
             <span className={styles.backLink} style={{ color: "var(--secondary-color)" }}>Simulação Gratuita</span>
-            <h2>Fomente sua Microempresa ou MEI</h2>
+            <h2>Fomente sua Microempresa</h2>
             <p className={styles.leadText} style={{ color: "var(--neutral-muted)" }}>
               Preencha os dados e nosso time buscará nos bancos parceiros a liberação do ProCred 360 para sua operação.
             </p>

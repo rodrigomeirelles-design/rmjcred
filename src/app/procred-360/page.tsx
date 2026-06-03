@@ -105,7 +105,7 @@ export default function Procred360() {
 
       {/* 2. Conteúdo Principal Denso */}
       <section className="section" style={{ backgroundColor: 'var(--neutral-white)' }}>
-        <div className="container" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 300px', gap: '4rem' }}>
+        <div className="container page-grid">
           
           {/* Coluna do Artigo de Conteúdo */}
           <article style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>

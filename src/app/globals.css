@@ -173,3 +173,19 @@ a:hover { color: var(--primary-light); }
   }
 }
 
+/* Card comparativo responsivo para tabelas nas subpáginas */
+.comparison-card {
+  margin: 2rem 0;
+  padding: 1.25rem;
+  background-color: var(--neutral-light);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--neutral-border);
+}
+
+@media (min-width: 768px) {
+  .comparison-card {
+    padding: 2rem;
+  }
+}
+
+

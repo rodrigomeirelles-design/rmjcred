@@ -161,7 +161,7 @@
   .nav {
     position: fixed;
     top: 0;
-    right: -100%;
+    right: 0;
     width: 280px;
     height: 100vh;
     background-color: #1a3654; /* Menu Mobile no tom da marca */
@@ -170,11 +170,14 @@
     align-items: flex-start;
     padding: 90px 2rem 2rem 2rem;
     gap: 2rem;
-    transition: var(--transition-smooth);
+    transform: translateX(100%);
+    visibility: hidden;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.3s;
   }
   
   .nav.open {
-    right: 0;
+    transform: translateX(0);
+    visibility: visible;
   }
   
   .navList {

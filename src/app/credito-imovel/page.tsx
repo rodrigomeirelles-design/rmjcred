@@ -51,7 +51,7 @@ export default function CreditoImovel() {
             </div>
 
             {/* Comparativo de Sistemas de Amortização */}
-            <div style={{ margin: '2rem 0', padding: '2rem', backgroundColor: 'var(--neutral-light)', borderRadius: 'var(--radius-md)', border: '1px solid var(--neutral-border)' }}>
+            <div className="comparison-card">
               <h3 style={{ fontSize: '1.4rem', color: 'var(--primary-color)', marginBottom: '1.5rem' }}>SAC vs Price: Escolha o Modelo Ideal</h3>
               <div style={{ overflowX: 'auto' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>

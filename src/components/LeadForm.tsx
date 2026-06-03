@@ -50,17 +50,19 @@ export default function LeadForm({ defaultService = "BDMG" }: LeadFormProps) {
         `✉️ *E-mail:* ${formData.email}\n` +
         `📞 *Telefone:* ${formData.telefone}\n`;
 
-      if (formData.servico === "Veículos") {
+      const isVehicleService = formData.servico === "Veículos" || formData.servico === "Garantia de Veículo";
+
+      if (isVehicleService) {
         const valVeiculo = parseFloat(formData.valorVeiculo.replace(/[^\d]/g, "")) || 0;
         const valEntrada = parseFloat(formData.entradaVeiculo.replace(/[^\d]/g, "")) || 0;
         const valFinanciamento = Math.max(0, valVeiculo - valEntrada);
 
-        message += `🚗 *Serviço:* Financiamento de Veículos\n` +
+        message += `🚗 *Serviço:* ${formData.servico === "Veículos" ? "Financiamento de Veículos" : "Crédito com Garantia de Veículo"}\n` +
           `🚘 *Veículo:* ${formData.marcaModelo}\n` +
           `📅 *Ano:* ${formData.anoVeiculo}\n` +
           `💵 *Valor do Veículo:* R$ ${formData.valorVeiculo}\n` +
-          `🪙 *Entrada:* R$ ${formData.entradaVeiculo || "0 (Sem entrada)"}\n` +
-          `💰 *Valor Financiado:* R$ ${valFinanciamento.toLocaleString("pt-BR")}`;
+          `🪙 *Entrada/Troco:* R$ ${formData.entradaVeiculo || "0 (Sem entrada)"}\n` +
+          `💰 *Valor Financiado/Pretendido:* R$ ${valFinanciamento.toLocaleString("pt-BR")}`;
       } else {
         message += `🏢 *Empresa:* ${formData.empresa || "Pessoa Física"}\n` +
           `💼 *Serviço:* ${formData.servico}\n` +
@@ -77,7 +79,7 @@ export default function LeadForm({ defaultService = "BDMG" }: LeadFormProps) {
       let partnerUrl = "";
       if (formData.servico === "BDMG") {
         partnerUrl = "https://wwws.bdmg.mg.gov.br/bdmg-digital/landing-page/1423";
-      } else if (formData.servico === "Veículos") {
+      } else if (formData.servico === "Veículos" || formData.servico === "Garantia de Veículo") {
         partnerUrl = "https://loja.franq.com.br/pb/rodrigo-alves8328/financiamentos/96";
       } else if (formData.servico === "Consórcios") {
         partnerUrl = "https://loja.franq.com.br/pb/rodrigo-alves8328/financiamentos/97";
@@ -97,6 +99,8 @@ export default function LeadForm({ defaultService = "BDMG" }: LeadFormProps) {
       setIsSubmitting(false);
     }
   };
+
+  const isVehicleService = formData.servico === "Veículos" || formData.servico === "Garantia de Veículo";
 
   return (
     <div className={`${styles.formWrapper} glass-panel`}>
@@ -171,13 +175,14 @@ export default function LeadForm({ defaultService = "BDMG" }: LeadFormProps) {
               <option value="Crédito Imobiliário">Crédito Imobiliário</option>
               <option value="Home Equity">Home Equity (Garantia de Imóvel)</option>
               <option value="Veículos">Financiamento de Veículos</option>
+              <option value="Garantia de Veículo">Crédito com Garantia de Veículo</option>
               <option value="Consórcios">Consórcios</option>
               <option value="Outros">Outros Serviços</option>
             </select>
           </div>
 
           {/* Seção Condicional para Dados do Veículo */}
-          {formData.servico === "Veículos" ? (
+          {isVehicleService ? (
             <div className={styles.vehicleDetailsBlock}>
               <div className={styles.blockDivider}></div>
               <h4 className={styles.blockTitle}>Dados do Veículo para Simulação</h4>
@@ -188,7 +193,7 @@ export default function LeadForm({ defaultService = "BDMG" }: LeadFormProps) {
                     type="text"
                     id="marcaModelo"
                     name="marcaModelo"
-                    required={formData.servico === "Veículos"}
+                    required={isVehicleService}
                     value={formData.marcaModelo}
                     onChange={handleChange}
                     placeholder="Ex: Chevrolet Onix 1.0 LT"
@@ -201,7 +206,7 @@ export default function LeadForm({ defaultService = "BDMG" }: LeadFormProps) {
                     type="text"
                     id="anoVeiculo"
                     name="anoVeiculo"
-                    required={formData.servico === "Veículos"}
+                    required={isVehicleService}
                     value={formData.anoVeiculo}
                     onChange={handleChange}
                     placeholder="Ex: 2020"
@@ -216,7 +221,7 @@ export default function LeadForm({ defaultService = "BDMG" }: LeadFormProps) {
                     type="text"
                     id="valorVeiculo"
                     name="valorVeiculo"
-                    required={formData.servico === "Veículos"}
+                    required={isVehicleService}
                     value={formData.valorVeiculo}
                     onChange={handleChange}
                     placeholder="Ex: 65.000"
@@ -224,7 +229,7 @@ export default function LeadForm({ defaultService = "BDMG" }: LeadFormProps) {
                   />
                 </div>
                 <div className={styles.formGroup}>
-                  <label htmlFor="entradaVeiculo" className={styles.label}>Valor de Entrada (R$ - opcional)</label>
+                  <label htmlFor="entradaVeiculo" className={styles.label}>Valor de Entrada ou Troco (R$ - opcional)</label>
                   <input
                     type="text"
                     id="entradaVeiculo"
@@ -272,7 +277,7 @@ export default function LeadForm({ defaultService = "BDMG" }: LeadFormProps) {
                   type="text"
                   id="valor"
                   name="valor"
-                  required={formData.servico !== "Veículos"}
+                  required={!isVehicleService}
                   value={formData.valor}
                   onChange={handleChange}
                   placeholder="Ex: 150.000"

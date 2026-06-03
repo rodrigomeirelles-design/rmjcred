@@ -4,204 +4,171 @@ import styles from "./page.module.css";
 import LeadForm from "@/components/LeadForm";
 
 export const metadata = {
-  title: "Financiamento Imobiliário e Lotes em Itajubá | RMJ",
+  title: "Crédito Imobiliário e Lotes em Itajubá | RMJ",
   description: "Compre seu imóvel comercial, residencial ou lote com a menor taxa de juros. Simulamos e aprovamos seu crédito imobiliário rapidamente nos maiores bancos.",
 };
 
 export default function CreditoImovel() {
   return (
     <>
+      {/* 1. Cabeçalho da Página */}
       <section className={styles.headerSection}>
         <div className={`${styles.titleContainer} container`}>
           <Link href="/" className={styles.backLink}>
             &larr; Voltar para a Página Inicial
           </Link>
+          <nav className={styles.breadcrumbNav} aria-label="Breadcrumb">
+            <ol style={{ display: 'flex', listStyle: 'none', gap: '0.5rem', padding: 0, fontSize: '0.9rem', color: 'rgba(255,255,255,0.7)' }}>
+              <li><Link href="/" style={{ color: 'inherit' }}>Início</Link></li>
+              <li>/</li>
+              <li style={{ color: '#fff' }}>Crédito Imobiliário</li>
+            </ol>
+          </nav>
           <h1 className={styles.title}>
-            Crédito <span className={styles.italicTitle}>Imobiliário</span>
+            Crédito e Financiamento <span className={styles.italicTitle}>Imobiliário</span> em Itajubá
           </h1>
           <p className={styles.leadText}>
-            Simule e financie imóveis residenciais, comerciais ou lotes urbanos com agilidade. A RMJ pesquisa e negocia as melhores taxas nos maiores bancos do país em um só lugar.
+            Adquira seu imóvel residencial, comercial ou lote com a assessoria independente da RMJ. Pesquisamos e aprovamos a menor taxa de juros em todos os grandes bancos nacionais.
           </p>
         </div>
       </section>
 
-      <section className={`${styles.negotiateSection} section`}>
-        <div className="container">
-          <div className={styles.negotiateHeader}>
-            <h2 className={styles.negotiateSlogan}>
-              A chave do seu imóvel. <span className={styles.italicTitle}>Sem pagar taxas abusivas.</span>
-            </h2>
-            <p className={styles.negotiateSubtitle}>
-              Seja para adquirir a casa própria, expandir a sede da sua empresa ou comprar um lote para construção, a RMJ oferece assessoria completa da simulação até a entrega das chaves.
-            </p>
-          </div>
-
-          <div className={styles.tabsContainer}>
-            <input type="radio" id="tab-como-funciona" name="vehicle-tabs" defaultChecked className={styles.tabRadio} />
-            <input type="radio" id="tab-bancos" name="vehicle-tabs" className={styles.tabRadio} />
-            <input type="radio" id="tab-vantagens" name="vehicle-tabs" className={styles.tabRadio} />
-
-            <div className={styles.tabHeaders}>
-              <label htmlFor="tab-como-funciona" className={styles.tabLabel}>Modalidades</label>
-              <label htmlFor="tab-bancos" className={styles.tabLabel}>Bancos Parceiros</label>
-              <label htmlFor="tab-vantagens" className={styles.tabLabel}>Vantagens RMJ</label>
-            </div>
-
-            <div className={styles.tabContentWrapper}>
-              <div className={`${styles.tabContent} ${styles.contentComprador}`}>
-                <p className={styles.tabIntro}>
-                  Oferecemos diversas opções de linhas de crédito imobiliário sob medida para o seu perfil e momento de compra.
-                </p>
-                <div className={styles.advantagesGrid}>
-                  <div className={styles.advantageCard}>
-                    <div className={styles.advantageIcon}>
-                      <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                      </svg>
-                    </div>
-                    <h4>Imóvel Residencial</h4>
-                    <p>Financie até 80% do valor de avaliação de casas ou apartamentos novos e usados de forma simplificada.</p>
-                  </div>
-                  <div className={styles.advantageCard}>
-                    <div className={styles.advantageIcon}>
-                      <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-                        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-                      </svg>
-                    </div>
-                    <h4>Imóvel Comercial</h4>
-                    <p>Linhas dedicadas para adquirir salas comerciais, galpões e escritórios para a sua própria sede de negócios.</p>
-                  </div>
-                  <div className={styles.advantageCard}>
-                    <div className={styles.advantageIcon}>
-                      <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                      </svg>
-                    </div>
-                    <h4>Lotes e Construção</h4>
-                    <p>Crédito estruturado para quem quer comprar o terreno e financiar também o orçamento da obra em parcelas controladas.</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className={`${styles.tabContent} ${styles.contentVendedor}`}>
-                <p className={styles.tabIntro}>
-                  Fazemos uma varredura completa nos principais players de crédito imobiliário do mercado para encontrar sua aprovação.
-                </p>
-                <div className={styles.advantagesGrid}>
-                  <div className={styles.advantageCard}>
-                    <div className={styles.advantageIcon}>
-                      <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-                      </svg>
-                    </div>
-                    <h4>Principais Bancos</h4>
-                    <p>Simulamos em tempo real na Caixa, Itaú, Bradesco, Santander e Banco do Brasil para comparar taxas efetivas.</p>
-                  </div>
-                  <div className={styles.advantageCard}>
-                    <div className={styles.advantageIcon}>
-                      <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                        <line x1="18" y1="20" x2="18" y2="10"></line>
-                        <line x1="12" y1="20" x2="12" y2="4"></line>
-                        <line x1="6" y1="20" x2="6" y2="14"></line>
-                      </svg>
-                    </div>
-                    <h4>Modelos de Amortização</h4>
-                    <p>Compare com clareza as vantagens da Tabela SAC (parcelas decrescentes) versus Tabela PRICE (parcelas fixas).</p>
-                  </div>
-                  <div className={styles.advantageCard}>
-                    <div className={styles.advantageIcon}>
-                      <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                      </svg>
-                    </div>
-                    <h4>Uso do FGTS</h4>
-                    <p>Orientamos o resgate e o direcionamento correto do saldo de FGTS para abater a entrada ou amortizar as parcelas.</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className={`${styles.tabContent} ${styles.contentContrato}`}>
-                <p className={styles.tabIntro}>
-                  Toda a facilidade de uma assessoria independente e focada na sua economia financeira.
-                </p>
-                <div className={styles.advantagesGrid}>
-                  <div className={styles.advantageCard}>
-                    <div className={styles.advantageIcon}>
-                      <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <polyline points="12 6 12 12 16 14"></polyline>
-                      </svg>
-                    </div>
-                    <h4>Assessoria Descomplicada</h4>
-                    <p>Sem reuniões burocráticas em agências. Coletamos e organizamos sua pasta documental de forma 100% digital.</p>
-                  </div>
-                  <div className={styles.advantageCard}>
-                    <div className={styles.advantageIcon}>
-                      <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                      </svg>
-                    </div>
-                    <h4>Sem Custo Extra</h4>
-                    <p>A intermediação imobiliária e simulação prestada pela RMJ não acarreta nenhuma taxa adicional para o comprador.</p>
-                  </div>
-                  <a href="https://wa.me/5535997248658" target="_blank" rel="noopener noreferrer" className={`${styles.advantageCard} ${styles.whatsappCard}`}>
-                    <div className={styles.advantageIcon}>
-                      <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
-                      </svg>
-                    </div>
-                    <h4>Fale com o Consultor</h4>
-                    <p>Envie sua simulação ou tire dúvidas sobre a compra do imóvel no WhatsApp com o Rodrigo: <strong>(35) 99724-8658</strong>.</p>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className={`${styles.productDetails} section`}>
-        <div className={`${styles.detailsGrid} container`}>
-          <div className={styles.imageWrapper}>
-            <Image
-              src="/assets/real_estate_handover.png"
-              alt="Assinatura de financiamento imobiliário e entrega de chaves da casa nova"
-              width={600}
-              height={450}
-              style={{ objectFit: "cover", width: "100%", height: "auto" }}
-            />
-          </div>
-
-          <div className={styles.infoWrapper}>
+      {/* 2. Conteúdo Principal Denso */}
+      <section className="section" style={{ backgroundColor: 'var(--neutral-white)' }}>
+        <div className="container" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 300px', gap: '4rem' }}>
+          
+          {/* Coluna do Artigo de Conteúdo */}
+          <article style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+            
             <div>
-              <h3 className={styles.categoryTitle}>
-                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" className={styles.categoryIcon}>
-                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                </svg>
-                Regras de Aprovação
-              </h3>
-              <ul className={styles.featureList}>
-                <li className={styles.featureItem}>
-                  <span className={styles.featureBullet}>✓</span>
-                  <span><strong>Comprometimento de Renda:</strong> O valor das parcelas mensais do financiamento imobiliário não pode comprometer mais que 30% da renda comprovada.</span>
-                </li>
-                <li className={styles.featureItem}>
-                  <span className={styles.featureBullet}>✓</span>
-                  <span><strong>Análise Cadastral:</strong> Liberação sujeita a score de crédito saudável e sem restrições ativas no CPF ou CNPJ.</span>
-                </li>
+              <h2 style={{ fontSize: '2rem', color: 'var(--primary-dark)', marginBottom: '1rem' }}>Como a RMJ acelera sua aprovação de Crédito Imobiliário?</h2>
+              <p style={{ color: 'var(--neutral-muted)', fontSize: '1.05rem', lineHeight: '1.7', marginBottom: '1rem' }}>
+                Comprar um imóvel é uma das decisões mais importantes da vida de uma pessoa ou do planejamento estratégico de expansão de uma empresa. No entanto, lidar diretamente com gerentes de bancos em busca das melhores taxas de juros é cansativo, demorado e muitas vezes resulta em taxas de juros inflacionadas e imposições de seguros e vendas casadas.
+              </p>
+              <p style={{ color: 'var(--neutral-muted)', fontSize: '1.05rem', lineHeight: '1.7' }}>
+                A <strong>RMJ Soluções de Crédito</strong> funciona como uma assessoria imobiliária independente. Conectamos seu perfil de renda com mais de 150 instituições financeiras e simulamos simultaneamente nos maiores bancos nacionais — como Caixa Econômica Federal, Itaú, Bradesco, Santander e Banco do Brasil. Cuidamos de todo o processo documental digital para você do início até a assinatura da escritura.
+              </p>
+            </div>
+
+            {/* Comparativo de Sistemas de Amortização */}
+            <div style={{ margin: '2rem 0', padding: '2rem', backgroundColor: 'var(--neutral-light)', borderRadius: 'var(--radius-md)', border: '1px solid var(--neutral-border)' }}>
+              <h3 style={{ fontSize: '1.4rem', color: 'var(--primary-color)', marginBottom: '1.5rem' }}>SAC vs Price: Escolha o Modelo Ideal</h3>
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                  <thead>
+                    <tr style={{ borderBottom: '2px solid var(--neutral-border)' }}>
+                      <th style={{ padding: '0.75rem', fontWeight: 'bold' }}>Característica</th>
+                      <th style={{ padding: '0.75rem', fontWeight: 'bold', color: 'var(--secondary-color)' }}>Tabela SAC (Sistema de Amortização Constante)</th>
+                      <th style={{ padding: '0.75rem', fontWeight: 'bold' }}>Tabela PRICE (Sistema Francês)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr style={{ borderBottom: '1px solid var(--neutral-border)' }}>
+                      <td style={{ padding: '0.75rem' }}><strong>Comportamento das Parcelas</strong></td>
+                      <td style={{ padding: '0.75rem', color: 'var(--secondary-color)', fontWeight: '600' }}>Decrescentes (iniciam maiores e diminuem)</td>
+                      <td style={{ padding: '0.75rem' }}>Constantes (fixas do início ao fim)</td>
+                    </tr>
+                    <tr style={{ borderBottom: '1px solid var(--neutral-border)' }}>
+                      <td style={{ padding: '0.75rem' }}><strong>Amortização do Saldo Devedor</strong></td>
+                      <td style={{ padding: '0.75rem', color: 'var(--secondary-color)', fontWeight: '600' }}>Rápida desde o início do financiamento</td>
+                      <td style={{ padding: '0.75rem' }}>Lenta nos primeiros anos</td>
+                    </tr>
+                    <tr style={{ borderBottom: '1px solid var(--neutral-border)' }}>
+                      <td style={{ padding: '0.75rem' }}><strong>Custo Total de Juros</strong></td>
+                      <td style={{ padding: '0.75rem', color: 'var(--secondary-color)', fontWeight: '600' }}>Menor custo financeiro total de juros acumulados</td>
+                      <td style={{ padding: '0.75rem' }}>Maior custo de juros ao fim do prazo</td>
+                    </tr>
+                    <tr style={{ borderBottom: '1px solid var(--neutral-border)' }}>
+                      <td style={{ padding: '0.75rem' }}><strong>Recomendação</strong></td>
+                      <td style={{ padding: '0.75rem', color: 'var(--secondary-color)', fontWeight: '600' }}>Para quem busca economia a longo prazo</td>
+                      <td style={{ padding: '0.75rem' }}>Para quem precisa de parcelas iniciais menores</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div>
+              <h2 style={{ fontSize: '1.75rem', color: 'var(--primary-dark)', marginBottom: '1rem' }}>Modalidades de Crédito Imobiliário Atendidas</h2>
+              <p style={{ color: 'var(--neutral-muted)', fontSize: '1.05rem', lineHeight: '1.7', marginBottom: '1rem' }}>
+                Seja qual for o seu objetivo de aquisição, possuímos linhas de fomento adequadas para cada cenário:
+              </p>
+              <ul style={{ display: 'flex', flexDirection: 'column', gap: '1rem', paddingLeft: '1.25rem', color: 'var(--neutral-muted)', lineHeight: '1.6' }}>
+                <li><strong>Financiamento Residencial:</strong> Compra de casas ou apartamentos novos ou usados com a possibilidade de financiar até 80% do valor avaliado do imóvel.</li>
+                <li><strong>Imóvel Comercial:</strong> Crédito dedicado a profissionais liberais, médicos, advogados e comerciantes para aquisição de escritórios, consultórios ou galpões comerciais.</li>
+                <li><strong>Lotes e Terrenos Urbanos:</strong> Financiamento do lote desejado em loteamentos ou condomínios fechados, inclusive com planos associados para financiamento da construção.</li>
+                <li><strong>Uso do FGTS:</strong> Suporte completo para utilização de saldos de FGTS para amortizar parcelas, quitar contratos ou compor o valor exigido de entrada.</li>
               </ul>
             </div>
-          </div>
+
+            <div>
+              <h2 style={{ fontSize: '1.75rem', color: 'var(--primary-dark)', marginBottom: '1rem' }}>Passo a Passo da Aprovação do Imóvel</h2>
+              <ol style={{ display: 'flex', flexDirection: 'column', gap: '1rem', paddingLeft: '1.25rem', color: 'var(--neutral-muted)', lineHeight: '1.6' }}>
+                <li><strong>Simulação Comparada:</strong> Enviamos uma estimativa detalhada das parcelas e taxas comparadas dos maiores bancos com base na sua renda familiar.</li>
+                <li><strong>Aprovação de Crédito:</strong> Submetemos a pasta digital com seus documentos aos bancos escolhidos para aprovação de carta de crédito.</li>
+                <li><strong>Avaliação do Imóvel:</strong> Um engenheiro credenciado pelo banco faz a vistoria física e laudo do imóvel pretendido.</li>
+                <li><strong>Escritura e Liberação:</strong> Com a documentação validada jurídica e fisicamente, o contrato é emitido para assinatura e registro em cartório, efetuando o pagamento ao vendedor.</li>
+              </ol>
+            </div>
+
+            {/* FAQs */}
+            <div style={{ marginTop: '2rem' }}>
+              <h2 style={{ fontSize: '1.75rem', color: 'var(--primary-dark)', marginBottom: '1.5rem' }}>Perguntas Frequentes sobre Crédito Imobiliário</h2>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                <div style={{ borderBottom: '1px solid var(--neutral-border)', paddingBottom: '1.25rem' }}>
+                  <h4 style={{ fontSize: '1.1rem', color: 'var(--primary-color)', marginBottom: '0.5rem' }}>Qual o valor de entrada mínimo exigido no financiamento imobiliário?</h4>
+                  <p style={{ color: 'var(--neutral-muted)', fontSize: '0.95rem', lineHeight: '1.6' }}>
+                    Em geral, os bancos financiam até o limite máximo de 80% do valor avaliado do imóvel. Logo, é exigido um valor de entrada de ao menos 20% do valor do bem. Este valor de entrada pode ser composto utilizando o saldo total do seu FGTS, caso preencha os requisitos do SFH.
+                  </p>
+                </div>
+                <div style={{ borderBottom: '1px solid var(--neutral-border)', paddingBottom: '1.25rem' }}>
+                  <h4 style={{ fontSize: '1.1rem', color: 'var(--primary-color)', marginBottom: '0.5rem' }}>Como compor renda familiar para aprovação do crédito?</h4>
+                  <p style={{ color: 'var(--neutral-muted)', fontSize: '0.95rem', lineHeight: '1.6' }}>
+                    É possível somar a renda de cônjuges, parceiros em união estável, pais, filhos e, em algumas instituições parceiras, até mesmo de terceiros sem grau de parentesco para aumentar o limite máximo aprovado de crédito.
+                  </p>
+                </div>
+                <div style={{ borderBottom: '1px solid var(--neutral-border)', paddingBottom: '1.25rem' }}>
+                  <h4 style={{ fontSize: '1.1rem', color: 'var(--primary-color)', marginBottom: '0.5rem' }}>O que é o Custo Efetivo Total (CET)?</h4>
+                  <p style={{ color: 'var(--neutral-muted)', fontSize: '0.95rem', lineHeight: '1.6' }}>
+                    O CET é a taxa real consolidada que você pagará. Ele engloba não apenas a taxa de juros nominal do financiamento, mas todas as taxas de administração bancária mensal, seguros de morte ou invalidez permanente (MIP) e danos físicos ao imóvel (DFI), além de impostos (IOF). Nós sempre focamos em reduzir o CET final.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+          </article>
+
+          {/* Barra Lateral */}
+          <aside style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+            <div style={{ padding: '1.5rem', backgroundColor: 'var(--neutral-light)', borderRadius: 'var(--radius-md)', border: '1px solid var(--neutral-border)' }}>
+              <h3 style={{ fontSize: '1.2rem', color: 'var(--primary-dark)', marginBottom: '1rem' }}>Serviços Relacionados</h3>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                <li><Link href="/home-equity" style={{ fontSize: '0.95rem', color: 'var(--primary-color)' }}>Home Equity (Garantia) &rarr;</Link></li>
+                <li><Link href="/consorcios" style={{ fontSize: '0.95rem', color: 'var(--primary-color)' }}>Consórcios Imobiliários &rarr;</Link></li>
+                <li><Link href="/credito-bdmg" style={{ fontSize: '0.95rem', color: 'var(--primary-color)' }}>Capital de Giro BDMG &rarr;</Link></li>
+              </ul>
+            </div>
+
+            <div style={{ padding: '1.5rem', backgroundColor: 'var(--primary-dark)', color: '#fff', borderRadius: 'var(--radius-md)', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <h3 style={{ fontSize: '1.2rem', color: 'var(--accent-color)' }}>Simule Conosco</h3>
+              <p style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.85)', margin: 0 }}>
+                Consulte as taxas e simule em todos os bancos do mercado pelo WhatsApp com o Rodrigo.
+              </p>
+              <a href="https://wa.me/5535997248658" target="_blank" rel="noopener noreferrer" className="btn btn-accent" style={{ width: '100%', fontSize: '0.9rem' }}>
+                Chamar no WhatsApp
+              </a>
+            </div>
+          </aside>
+
         </div>
       </section>
 
+      {/* 3. Seção de Simulação */}
       <section className={`${styles.ctaSection} section`} id="simular">
         <div className={`${styles.ctaContainer} container`}>
           <div className={styles.titleContainer}>
             <span className={styles.backLink} style={{ color: "var(--secondary-color)" }}>Simulação Gratuita</span>
-            <h2>Conquiste seu Imóvel com Segurança</h2>
+            <h2>Compre seu Imóvel com a Menor Taxa de Juros</h2>
             <p className={styles.leadText} style={{ color: "var(--neutral-muted)" }}>
               Preencha os dados e receba as simulações comparadas com as menores taxas do mercado imobiliário.
             </p>

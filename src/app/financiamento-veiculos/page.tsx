@@ -4,7 +4,7 @@ import styles from "./page.module.css";
 import LeadForm from "@/components/LeadForm";
 
 export const metadata = {
-  title: "Financiamento de Veículos — RMJ Soluções de Crédito",
+  title: "Financiamento de Veículos e Carros em Itajubá | RMJ",
   description: "Simule e financie carros novos, seminovos e veículos comerciais com as melhores taxas do mercado através da RMJ Soluções de Crédito.",
 };
 
@@ -17,11 +17,18 @@ export default function FinanciamentoVeiculos() {
           <Link href="/" className={styles.backLink}>
             &larr; Voltar para a Página Inicial
           </Link>
+          <nav className={styles.breadcrumbNav} aria-label="Breadcrumb">
+            <ol style={{ display: 'flex', listStyle: 'none', gap: '0.5rem', padding: 0, fontSize: '0.9rem', color: 'rgba(255,255,255,0.7)' }}>
+              <li><Link href="/" style={{ color: 'inherit' }}>Início</Link></li>
+              <li>/</li>
+              <li style={{ color: '#fff' }}>Financiamento de Veículos</li>
+            </ol>
+          </nav>
           <h1 className={styles.title}>
-            Financiamento de <span className={styles.italicTitle}>Veículos</span>
+            Financiamento de <span className={styles.italicTitle}>Veículos</span> em Itajubá
           </h1>
           <p className={styles.leadText}>
-            Adquira o seu carro novo, seminovo ou utilitário de forma rápida e segura. A RMJ pesquisa e negocia as melhores taxas de financiamento de veículos junto às maiores financeiras do mercado.
+            Adquira o seu carro novo ou seminovo com taxas diferenciadas e parcelas sob medida. A RMJ pesquisa e negocia as melhores taxas de financiamento de veículos junto às maiores financeiras do mercado.
           </p>
         </div>
       </section>
@@ -62,8 +69,6 @@ export default function FinanciamentoVeiculos() {
                       <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                         <circle cx="9" cy="7" r="4"></circle>
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                       </svg>
                     </div>
                     <h4>Negociação direta</h4>
@@ -131,9 +136,6 @@ export default function FinanciamentoVeiculos() {
                       <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                         <polyline points="14 2 14 8 20 8"></polyline>
-                        <line x1="16" y1="13" x2="8" y2="13"></line>
-                        <line x1="16" y1="17" x2="8" y2="17"></line>
-                        <polyline points="10 9 9 9 8 9"></polyline>
                       </svg>
                     </div>
                     <h4>Quitação facilitada</h4>
@@ -151,7 +153,7 @@ export default function FinanciamentoVeiculos() {
                 </div>
               </div>
 
-              {/* Conteúdo Já tenho contrato */}
+              {/* Conteúdo Refinanciamento */}
               <div className={`${styles.tabContent} ${styles.contentContrato}`}>
                 <p className={styles.tabIntro}>
                   Busque taxas menores ou levante dinheiro em mãos refinanciando seu veículo atual com o suporte consultivo da RMJ.
@@ -161,8 +163,7 @@ export default function FinanciamentoVeiculos() {
                     <div className={styles.advantageIcon}>
                       <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
                         <polyline points="23 4 23 10 17 10"></polyline>
-                        <polyline points="1 20 1 14 7 14"></polyline>
-                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                        <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
                       </svg>
                     </div>
                     <h4>Redução de parcelas</h4>
@@ -207,7 +208,7 @@ export default function FinanciamentoVeiculos() {
       {/* 3. Conteúdo Detalhado (Benefícios Gerais) */}
       <section className={`${styles.productDetails} section`}>
         <div className={`${styles.detailsGrid} container`}>
-          {/* Coluna 1: Nova Imagem Gerada por IA */}
+          {/* Coluna 1 */}
           <div className={styles.imageWrapper}>
             <Image
               src="/assets/car_key_handover.png"
@@ -257,73 +258,7 @@ export default function FinanciamentoVeiculos() {
         </div>
       </section>
 
-      {/* 4. Consulte Nossos Conteúdos */}
-      <section className={`${styles.contentsSection} section`}>
-        <div className="container">
-          <div className={styles.sectionHeader}>
-            <span className={styles.sectionSubtitle}>Dicas e Guias</span>
-            <h2 className={styles.sectionTitle}>Consulte Nossos Conteúdos</h2>
-            <p className={styles.sectionDesc}>
-              Aprenda mais sobre o mercado de financiamento de veículos e tome a decisão financeira mais inteligente.
-            </p>
-          </div>
-
-          <div className={styles.contentsGrid}>
-            {/* Card 1 */}
-            <div className={styles.contentCard}>
-              <div className={styles.cardImageWrapper}>
-                <Image
-                  src="/assets/car_key_handover.png"
-                  alt="Financiamento entre particulares"
-                  fill
-                  style={{ objectFit: "cover" }}
-                />
-              </div>
-              <div className={styles.cardBody}>
-                <h4>Financiamento entre particulares</h4>
-                <p>Saiba como funciona a compra e venda de veículos diretamente entre pessoas físicas com o suporte de crédito e a garantia contratual da RMJ.</p>
-                <Link href="#simular" className={styles.cardLink}>Saiba mais &rarr;</Link>
-              </div>
-            </div>
-
-            {/* Card 2 */}
-            <div className={styles.contentCard}>
-              <div className={styles.cardImageWrapper}>
-                <Image
-                  src="/assets/happy_family_car.png"
-                  alt="Vantagens de financiar veículo particular"
-                  fill
-                  style={{ objectFit: "cover" }}
-                />
-              </div>
-              <div className={styles.cardBody}>
-                <h4>Vantagens de financiar um veículo particular</h4>
-                <p>Descubra as vantagens financeiras e de taxas ao optar por um carro usado direto com o proprietário, fugindo das margens de lucro elevadas das concessionárias.</p>
-                <Link href="#simular" className={styles.cardLink}>Saiba mais &rarr;</Link>
-              </div>
-            </div>
-
-            {/* Card 3 */}
-            <div className={styles.contentCard}>
-              <div className={styles.cardImageWrapper}>
-                <Image
-                  src="/assets/new_car_showroom.png"
-                  alt="Carros novos ou usados"
-                  fill
-                  style={{ objectFit: "cover" }}
-                />
-              </div>
-              <div className={styles.cardBody}>
-                <h4>Carros novos ou usados: qual a melhor escolha para o seu bolso?</h4>
-                <p>Um guia completo e detalhado para ajudar você a decidir entre a emoção do cheiro de carro novo e a inteligência financeira do melhor custo-benefício de um seminovo.</p>
-                <Link href="#simular" className={styles.cardLink}>Saiba mais &rarr;</Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 5. Seção de CTA + Formulário */}
+      {/* 4. Seção de CTA + Formulário */}
       <section className={`${styles.ctaSection} section`} id="simular">
         <div className={`${styles.ctaContainer} container`}>
           <div className={styles.titleContainer}>

@@ -112,6 +112,10 @@ export default function Footer() {
             <Link href="/politica-de-privacidade" className={styles.link}>
               Política de Privacidade (LGPD)
             </Link>
+            <span style={{ margin: "0 0.5rem", color: "rgba(255,255,255,0.3)" }}>|</span>
+            <Link href="/admin" className={styles.link}>
+              Área da Empresa
+            </Link>
           </div>
         </div>
       </div>

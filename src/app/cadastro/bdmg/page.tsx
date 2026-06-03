@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { ShieldCheck, ArrowRight, ArrowLeft, Plus, Trash2, CheckCircle2, User, Landmark, Building2, Eye, ShieldAlert } from "lucide-react";
 
 interface Socio {
   dados: {
     nome: string;
     cpf: string;
     rg: string;
+    rg_data_emissao: string;
     participacao: string;
     nascimento: string;
     estado_civil: string;
@@ -32,6 +34,7 @@ interface Socio {
     nome: string;
     cpf: string;
     rg: string;
+    rg_data_emissao: string;
     nascimento: string;
     telefone: string;
     email: string;
@@ -48,6 +51,12 @@ export default function CadastroBdmg() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+
+  // Validation States for immediate inline feedback
+  const [cnpjError, setCnpjError] = useState("");
+  const [reprCpfError, setReprCpfError] = useState("");
+  const [socioCpfErrors, setSocioCpfErrors] = useState<string[]>([""]);
+  const [conjugeCpfErrors, setConjugeCpfErrors] = useState<string[]>([""]);
 
   // Dados da Empresa
   const [empresa, setEmpresa] = useState({
@@ -79,6 +88,7 @@ export default function CadastroBdmg() {
         nome: "",
         cpf: "",
         rg: "",
+        rg_data_emissao: "",
         participacao: "",
         nascimento: "",
         estado_civil: "Solteiro(a)",
@@ -106,10 +116,8 @@ export default function CadastroBdmg() {
   // Conta Bancária
   const [bancario, setBancario] = useState({
     banco_nome: "",
-    banco_numero: "",
     banco_agencia: "",
     banco_conta: "",
-    banco_digito: "",
   });
 
   // Observações
@@ -117,6 +125,86 @@ export default function CadastroBdmg() {
     obs_finais: "",
     aceite_lgpd: false,
   });
+
+  // Currency input helper (1 -> 0,01 | 100 -> R$ 1,00)
+  const handleCurrencyInput = (value: string) => {
+    const clean = value.replace(/\D/g, "");
+    if (!clean) return "";
+    const cents = parseInt(clean, 10);
+    const num = cents / 100;
+    return new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    }).format(num);
+  };
+
+  // Inline CNPJ validator
+  const handleCnpjChange = (v: string) => {
+    const masked = maskCNPJ(v);
+    setEmpresa((prev) => ({ ...prev, emp_cnpj: masked }));
+    
+    if (masked.length === 18) {
+      if (!validarCNPJ(masked)) {
+        setCnpjError("CNPJ inválido. Verifique os dígitos.");
+      } else {
+        setCnpjError("");
+      }
+    } else {
+      setCnpjError("");
+    }
+  };
+
+  // Inline Representative CPF validator
+  const handleReprCpfChange = (v: string) => {
+    const masked = maskCPF(v);
+    setEmpresa((prev) => ({ ...prev, emp_repr_cpf: masked }));
+    
+    if (masked.length === 14) {
+      if (!validarCPF(masked)) {
+        setReprCpfError("CPF inválido.");
+      } else {
+        setReprCpfError("");
+      }
+    } else {
+      setReprCpfError("");
+    }
+  };
+
+  // Inline Partner CPF validator
+  const handleSocioCpfChange = (idx: number, v: string) => {
+    const masked = maskCPF(v);
+    handleSocioChange(idx, "cpf", masked);
+
+    const updatedErrors = [...socioCpfErrors];
+    if (masked.length === 14) {
+      if (!validarCPF(masked)) {
+        updatedErrors[idx] = "CPF inválido.";
+      } else {
+        updatedErrors[idx] = "";
+      }
+    } else {
+      updatedErrors[idx] = "";
+    }
+    setSocioCpfErrors(updatedErrors);
+  };
+
+  // Inline Spouse CPF validator
+  const handleConjugeCpfChange = (idx: number, v: string) => {
+    const masked = maskCPF(v);
+    handleConjugeChange(idx, "cpf", masked);
+
+    const updatedErrors = [...conjugeCpfErrors];
+    if (masked.length === 14) {
+      if (!validarCPF(masked)) {
+        updatedErrors[idx] = "CPF inválido.";
+      } else {
+        updatedErrors[idx] = "";
+      }
+    } else {
+      updatedErrors[idx] = "";
+    }
+    setConjugeCpfErrors(updatedErrors);
+  };
 
   // Validador simples de CPF
   const validarCPF = (cpf: string) => {
@@ -231,6 +319,7 @@ export default function CadastroBdmg() {
           nome: "",
           cpf: "",
           rg: "",
+          rg_data_emissao: "",
           nascimento: "",
           telefone: "",
           email: "",
@@ -265,6 +354,7 @@ export default function CadastroBdmg() {
           nome: "",
           cpf: "",
           rg: "",
+          rg_data_emissao: "",
           participacao: "",
           nascimento: "",
           estado_civil: "Solteiro(a)",
@@ -288,11 +378,15 @@ export default function CadastroBdmg() {
         conjuge: null,
       },
     ]);
+    setSocioCpfErrors([...socioCpfErrors, ""]);
+    setConjugeCpfErrors([...conjugeCpfErrors, ""]);
   };
 
   const removeSocio = (index: number) => {
     if (socios.length === 1) return alert("A proposta deve possuir ao menos 1 sócio.");
     setSocios(socios.filter((_, i) => i !== index));
+    setSocioCpfErrors(socioCpfErrors.filter((_, i) => i !== index));
+    setConjugeCpfErrors(conjugeCpfErrors.filter((_, i) => i !== index));
   };
 
   const validateStep = () => {
@@ -317,8 +411,8 @@ export default function CadastroBdmg() {
       let totalPart = 0;
       for (let i = 0; i < socios.length; i++) {
         const s = socios[i];
-        if (!s.dados.nome || !s.dados.cpf || !s.dados.participacao || !s.dados.renda) {
-          setError(`Preencha todos os campos obrigatórios do Sócio ${i + 1}.`);
+        if (!s.dados.nome || !s.dados.cpf || !s.dados.rg || !s.dados.rg_data_emissao || !s.dados.participacao || !s.dados.renda) {
+          setError(`Preencha todos os campos obrigatórios do Sócio ${i + 1} (incluindo RG e Data de Emissão).`);
           return false;
         }
         if (!validarCPF(s.dados.cpf)) {
@@ -328,12 +422,16 @@ export default function CadastroBdmg() {
         totalPart += parseFloat(s.dados.participacao.replace(",", ".")) || 0;
 
         if (s.conjuge) {
-          if (!s.conjuge.nome || !s.conjuge.cpf) {
-            setError(`Preencha os campos obrigatórios do cônjuge do Sócio ${i + 1}.`);
+          if (!s.conjuge.nome || !s.conjuge.cpf || !s.conjuge.rg || !s.conjuge.rg_data_emissao || !s.conjuge.email) {
+            setError(`Preencha todos os campos obrigatórios do cônjuge do Sócio ${i + 1} (incluindo RG, Emissão e E-mail).`);
             return false;
           }
           if (!validarCPF(s.conjuge.cpf)) {
             setError(`CPF do cônjuge do Sócio ${i + 1} é inválido.`);
+            return false;
+          }
+          if (s.dados.email.toLowerCase().trim() === s.conjuge.email.toLowerCase().trim()) {
+            setError(`O e-mail do cônjuge do Sócio ${i + 1} deve ser diferente do e-mail do próprio sócio.`);
             return false;
           }
         }
@@ -346,7 +444,7 @@ export default function CadastroBdmg() {
 
     if (step === 3) {
       if (!bancario.banco_nome || !bancario.banco_agencia || !bancario.banco_conta) {
-        setError("Preencha as informações bancárias para recebimento do crédito.");
+        setError("Preencha as informações bancárias completas (Banco, Agência e Conta).");
         return false;
       }
     }
@@ -357,6 +455,7 @@ export default function CadastroBdmg() {
   const handleNext = () => {
     if (validateStep()) {
       setStep((prev) => prev + 1);
+      window.scrollTo(0, 0);
     }
   };
 
@@ -398,13 +497,15 @@ export default function CadastroBdmg() {
   if (success) {
     return (
       <div className="container" style={{ minHeight: "80vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <div className="glass-panel" style={{ maxWidth: "600px", padding: "3rem", borderRadius: "var(--radius-md)", textAlign: "center", backgroundColor: "var(--neutral-white)" }}>
-          <div style={{ fontSize: "4rem", marginBottom: "1rem" }}>🎉</div>
-          <h2 style={{ color: "var(--primary-dark)", marginBottom: "1rem" }}>Ficha Cadastral Submetida!</h2>
-          <p style={{ color: "var(--neutral-muted)", lineHeight: "1.7", marginBottom: "2rem" }}>
+        <div style={{ maxWidth: "600px", padding: "3rem", borderRadius: "20px", textAlign: "center", backgroundColor: "#ffffff", boxShadow: "0 10px 40px rgba(0, 0, 0, 0.05)" }}>
+          <div style={{ color: "var(--primary-color)", display: "flex", justifyContent: "center", marginBottom: "1.5rem" }}>
+            <CheckCircle2 size={64} style={{ color: "#34c759" }} />
+          </div>
+          <h2 style={{ color: "var(--primary-dark)", marginBottom: "1rem", fontSize: "1.75rem", fontWeight: 800 }}>Ficha Cadastral Submetida!</h2>
+          <p style={{ color: "var(--neutral-muted)", lineHeight: "1.7", marginBottom: "2rem", fontSize: "0.95rem" }}>
             Seus dados fiscais e cadastrais foram registrados com sucesso em nossa central segura. Nosso time técnico da <strong>RMJ Soluções de Crédito</strong> iniciará a estruturação do seu limite junto ao BDMG imediatamente.
           </p>
-          <p style={{ color: "var(--neutral-muted)", fontSize: "0.9rem" }}>
+          <p style={{ color: "var(--neutral-muted)", fontSize: "0.85rem" }}>
             Entraremos em contato em breve via WhatsApp ou e-mail para confirmação e combinação dos documentos fiscais extras.
           </p>
         </div>
@@ -413,173 +514,177 @@ export default function CadastroBdmg() {
   }
 
   return (
-    <div style={{ backgroundColor: "var(--neutral-light)", minHeight: "90vh", padding: "3rem 0" }}>
-      <div className="container" style={{ maxWidth: "900px" }}>
+    <div style={{ backgroundColor: "#f5f5f7", minHeight: "90vh", padding: "3rem 0", fontFamily: "var(--font-montserrat), -apple-system, sans-serif" }}>
+      <div className="container" style={{ maxWidth: "800px" }}>
         
-        {/* Topo do Cadastro */}
-        <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
-          <Link href="/" className="back-link" style={{ fontSize: "0.9rem", color: "var(--primary-color)", display: "inline-block", marginBottom: "1rem" }}>
-            &larr; Voltar para a Home
+        {/* Topo do Cadastro - Apple Style Minimal */}
+        <div style={{ textAlign: "center", marginBottom: "3rem" }}>
+          <Link href="/" style={{ fontSize: "0.9rem", color: "#0071e3", display: "inline-flex", alignItems: "center", gap: "0.25rem", marginBottom: "1rem", fontWeight: "600" }}>
+            <ArrowLeft size={14} /> Voltar para a Home
           </Link>
-          <h1 style={{ fontSize: "2.2rem", color: "var(--primary-dark)", margin: 0 }}>
-            Ficha de Crédito <span style={{ color: "var(--secondary-color)", fontWeight: "normal", fontStyle: "italic" }}>PJ BDMG</span>
+          <h1 style={{ fontSize: "2.5rem", color: "#1d1d1f", fontWeight: 800, letterSpacing: "-0.05em", margin: 0 }}>
+            Ficha de Crédito <span style={{ color: "#0071e3", fontWeight: "normal", fontStyle: "italic" }}>PJ BDMG</span>
           </h1>
-          <p style={{ color: "var(--neutral-muted)", marginTop: "0.5rem", fontSize: "1.05rem" }}>
-            Preencha seus dados corporativos de forma segura. Dados criptografados e protegidos pela LGPD.
+          <p style={{ color: "#86868b", marginTop: "0.5rem", fontSize: "1.05rem", fontWeight: 500 }}>
+            Preencha seus dados corporativos de forma segura e rápida.
           </p>
         </div>
 
-        {/* Stepper Visual */}
-        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "2rem", gap: "0.5rem" }}>
-          {["1. Empresa", "2. Sócios", "3. Conta Bancária", "4. Finalizar"].map((label, idx) => {
-            const stepNum = idx + 1;
-            const isActive = step === stepNum;
-            const isDone = step > stepNum;
-            return (
-              <div
-                key={label}
-                style={{
-                  flex: 1,
-                  padding: "0.75rem",
-                  borderRadius: "var(--radius-sm)",
-                  textAlign: "center",
-                  fontSize: "0.85rem",
-                  fontWeight: "bold",
-                  backgroundColor: isActive
-                    ? "var(--primary-dark)"
-                    : isDone
-                    ? "#d6f0e2"
-                    : "var(--neutral-white)",
-                  color: isActive ? "#fff" : isDone ? "#1e7e4e" : "var(--neutral-muted)",
-                  border: `1px solid ${isActive ? "var(--primary-dark)" : "var(--neutral-border)"}`,
-                }}
-              >
-                {label}
-              </div>
-            );
-          })}
+        {/* Stepper Progress Bar Style */}
+        <div style={{ display: "flex", gap: "0.5rem", marginBottom: "2.5rem", height: "4px", backgroundColor: "#e8e8ed", borderRadius: "2px", overflow: "hidden" }}>
+          {[1, 2, 3, 4].map((stepNum) => (
+            <div
+              key={stepNum}
+              style={{
+                flex: 1,
+                height: "100%",
+                backgroundColor: step >= stepNum ? "#0071e3" : "transparent",
+                transition: "background-color 0.4s ease",
+              }}
+            />
+          ))}
+        </div>
+        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "2rem", padding: "0 0.5rem", fontSize: "0.8rem", color: "#86868b", fontWeight: "700", textTransform: "uppercase" }}>
+          <span>1. Empresa</span>
+          <span>2. Sócios</span>
+          <span>3. Dados Bancários</span>
+          <span>4. Finalizar</span>
         </div>
 
         {error && (
-          <div style={{ backgroundColor: "#fff5f5", color: "var(--accent-color)", border: "1px solid #fed7d7", padding: "1rem", borderRadius: "var(--radius-md)", marginBottom: "1.5rem", fontSize: "0.9rem" }}>
-            ⚠️ {error}
+          <div style={{ backgroundColor: "#ffeff2", color: "#ff3b30", border: "1px solid #ffccd4", padding: "1rem 1.25rem", borderRadius: "12px", marginBottom: "1.5rem", fontSize: "0.9rem", display: "flex", alignItems: "center", gap: "0.5rem", fontWeight: "600" }}>
+            <ShieldAlert size={18} /> {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="glass-panel" style={{ padding: "3rem", borderRadius: "var(--radius-md)", backgroundColor: "var(--neutral-white)", boxShadow: "0 10px 30px rgba(17,34,63,0.04)" }}>
+        <form 
+          onSubmit={handleSubmit} 
+          style={{ 
+            padding: "2.5rem", 
+            borderRadius: "20px", 
+            backgroundColor: "#ffffff", 
+            boxShadow: "0 4px 30px rgba(0, 0, 0, 0.02)",
+            border: "1px solid #e8e8ed"
+          }}
+        >
           
           {/* ETAPA 1: DADOS DA EMPRESA */}
           {step === 1 && (
             <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
-              <h2 style={{ fontSize: "1.5rem", color: "var(--primary-dark)", borderBottom: "2px solid var(--neutral-border)", paddingBottom: "0.5rem" }}>Dados Cadastrais da Empresa</h2>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", borderBottom: "1px solid #f5f5f7", paddingBottom: "1rem" }}>
+                <Building2 size={24} style={{ color: "#0071e3" }} />
+                <h2 style={{ fontSize: "1.5rem", color: "#1d1d1f", fontWeight: "700", margin: 0 }}>Cadastro da Empresa</h2>
+              </div>
               
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem" }}>
-                <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                  <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>Razão Social *</label>
-                  <input type="text" required value={empresa.emp_razao} onChange={(e) => setEmpresa({ ...empresa, emp_razao: e.target.value })} placeholder="Nome oficial do CNPJ" style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)" }} />
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                  <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Razão Social *</label>
+                  <input type="text" required className="apple-input" value={empresa.emp_razao} onChange={(e) => setEmpresa({ ...empresa, emp_razao: e.target.value })} placeholder="Ex: Nome Oficial da Empresa Ltda" />
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                  <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>Nome Fantasia</label>
-                  <input type="text" value={empresa.emp_fantasia} onChange={(e) => setEmpresa({ ...empresa, emp_fantasia: e.target.value })} placeholder="Nome comercial" style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)" }} />
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                  <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Nome Fantasia</label>
+                  <input type="text" className="apple-input" value={empresa.emp_fantasia} onChange={(e) => setEmpresa({ ...empresa, emp_fantasia: e.target.value })} placeholder="Ex: Nome Comercial" />
                 </div>
               </div>
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem" }}>
-                <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                  <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>CNPJ *</label>
-                  <input type="text" required value={empresa.emp_cnpj} onChange={(e) => setEmpresa({ ...empresa, emp_cnpj: maskCNPJ(e.target.value) })} placeholder="00.000.000/0000-00" style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)" }} />
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                  <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>CNPJ *</label>
+                  <input type="text" required className={`apple-input ${cnpjError ? "input-error" : ""}`} value={empresa.emp_cnpj} onChange={(e) => handleCnpjChange(e.target.value)} placeholder="00.000.000/0000-00" />
+                  {cnpjError && <span style={{ color: "#ff3b30", fontSize: "0.75rem", fontWeight: "600" }}>{cnpjError}</span>}
                 </div>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                    <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>Nº Funcionários *</label>
-                    <input type="number" required value={empresa.emp_funcionarios} onChange={(e) => setEmpresa({ ...empresa, emp_funcionarios: e.target.value })} placeholder="Ex: 5" style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)" }} />
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1.25fr", gap: "1rem" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                    <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Nº Funcionários *</label>
+                    <input type="number" required className="apple-input" value={empresa.emp_funcionarios} onChange={(e) => setEmpresa({ ...empresa, emp_funcionarios: e.target.value })} placeholder="Ex: 5" />
                   </div>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                    <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>Faturamento Médio (R$) *</label>
-                    <input type="text" required value={empresa.emp_faturamento} onChange={(e) => setEmpresa({ ...empresa, emp_faturamento: e.target.value })} placeholder="Ex: 50.000" style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)" }} />
+                  <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                    <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Faturamento Médio (R$) *</label>
+                    <input type="text" required className="apple-input" value={empresa.emp_faturamento} onChange={(e) => setEmpresa({ ...empresa, emp_faturamento: handleCurrencyInput(e.target.value) })} placeholder="R$ 0,00" />
                   </div>
                 </div>
               </div>
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem" }}>
-                <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                  <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>Representante Legal *</label>
-                  <input type="text" required value={empresa.emp_repr_nome} onChange={(e) => setEmpresa({ ...empresa, emp_repr_nome: e.target.value })} placeholder="Nome do titular ou procurador" style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)" }} />
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                  <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Representante Legal *</label>
+                  <input type="text" required className="apple-input" value={empresa.emp_repr_nome} onChange={(e) => setEmpresa({ ...empresa, emp_repr_nome: e.target.value })} placeholder="Nome do titular ou procurador" />
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                  <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>CPF do Representante *</label>
-                  <input type="text" required value={empresa.emp_repr_cpf} onChange={(e) => setEmpresa({ ...empresa, emp_repr_cpf: maskCPF(e.target.value) })} placeholder="000.000.000-00" style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)" }} />
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                  <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>CPF do Representante *</label>
+                  <input type="text" required className={`apple-input ${reprCpfError ? "input-error" : ""}`} value={empresa.emp_repr_cpf} onChange={(e) => handleReprCpfChange(e.target.value)} placeholder="000.000.000-00" />
+                  {reprCpfError && <span style={{ color: "#ff3b30", fontSize: "0.75rem", fontWeight: "600" }}>{reprCpfError}</span>}
                 </div>
               </div>
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem" }}>
-                <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                  <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>E-mail da Empresa *</label>
-                  <input type="email" required value={empresa.emp_email} onChange={(e) => setEmpresa({ ...empresa, emp_email: e.target.value })} placeholder="financeiro@empresa.com" style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)" }} />
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                  <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>E-mail da Empresa *</label>
+                  <input type="email" required className="apple-input" value={empresa.emp_email} onChange={(e) => setEmpresa({ ...empresa, emp_email: e.target.value })} placeholder="financeiro@empresa.com" />
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                  <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>Telefone / WhatsApp *</label>
-                  <input type="text" required value={empresa.emp_telefone} onChange={(e) => setEmpresa({ ...empresa, emp_telefone: maskPhone(e.target.value) })} placeholder="(35) 99999-9999" style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)" }} />
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                  <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Telefone / WhatsApp *</label>
+                  <input type="text" required className="apple-input" value={empresa.emp_telefone} onChange={(e) => setEmpresa({ ...empresa, emp_telefone: maskPhone(e.target.value) })} placeholder="(35) 99999-9999" />
                 </div>
               </div>
 
               {/* Endereço por CEP */}
-              <div style={{ display: "grid", gridTemplateColumns: "150px 1fr 120px", gap: "1rem" }}>
-                <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                  <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>CEP *</label>
-                  <input type="text" required value={empresa.emp_cep} onChange={(e) => {
+              <div style={{ display: "grid", gridTemplateColumns: "130px 1fr 120px", gap: "1rem" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                  <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>CEP *</label>
+                  <input type="text" required className="apple-input" value={empresa.emp_cep} onChange={(e) => {
                     const v = maskCEP(e.target.value);
                     setEmpresa({ ...empresa, emp_cep: v });
                     if (v.length === 9) buscarCEP(v, true);
-                  }} placeholder="37500-000" style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)" }} />
+                  }} placeholder="37500-000" />
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                  <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>Rua / Logradouro *</label>
-                  <input type="text" required value={empresa.emp_logradouro} onChange={(e) => setEmpresa({ ...empresa, emp_logradouro: e.target.value })} placeholder="Preenchimento automático" style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)" }} />
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                  <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Rua / Logradouro *</label>
+                  <input type="text" required className="apple-input" value={empresa.emp_logradouro} onChange={(e) => setEmpresa({ ...empresa, emp_logradouro: e.target.value })} placeholder="Logradouro" />
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                  <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>Número *</label>
-                  <input type="text" required value={empresa.emp_numero} onChange={(e) => setEmpresa({ ...empresa, emp_numero: e.target.value })} placeholder="Nº 193" style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)" }} />
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                  <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Número *</label>
+                  <input type="text" required className="apple-input" value={empresa.emp_numero} onChange={(e) => setEmpresa({ ...empresa, emp_numero: e.target.value })} placeholder="Ex: 193" />
                 </div>
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 100px", gap: "1rem" }}>
-                <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                  <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>Bairro *</label>
-                  <input type="text" required value={empresa.emp_bairro} onChange={(e) => setEmpresa({ ...empresa, emp_bairro: e.target.value })} placeholder="Bairro" style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)" }} />
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 90px", gap: "1rem" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                  <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Bairro *</label>
+                  <input type="text" required className="apple-input" value={empresa.emp_bairro} onChange={(e) => setEmpresa({ ...empresa, emp_bairro: e.target.value })} placeholder="Bairro" />
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                  <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>Cidade *</label>
-                  <input type="text" required value={empresa.emp_cidade} onChange={(e) => setEmpresa({ ...empresa, emp_cidade: e.target.value })} placeholder="Itajubá" style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)" }} />
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                  <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Cidade *</label>
+                  <input type="text" required className="apple-input" value={empresa.emp_cidade} onChange={(e) => setEmpresa({ ...empresa, emp_cidade: e.target.value })} placeholder="Cidade" />
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                  <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>UF *</label>
-                  <input type="text" required maxLength={2} value={empresa.emp_uf} onChange={(e) => setEmpresa({ ...empresa, emp_uf: e.target.value.toUpperCase() })} placeholder="MG" style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)", textAlign: "center" }} />
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                  <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>UF *</label>
+                  <input type="text" required maxLength={2} className="apple-input" style={{ textAlign: "center" }} value={empresa.emp_uf} onChange={(e) => setEmpresa({ ...empresa, emp_uf: e.target.value.toUpperCase() })} placeholder="MG" />
                 </div>
               </div>
 
               {/* Bens da Empresa */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1.5fr 1fr", gap: "1rem" }}>
-                <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                  <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>Possui Imóvel no CNPJ? *</label>
-                  <select value={empresa.emp_imovel} onChange={(e) => setEmpresa({ ...empresa, emp_imovel: e.target.value })} style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)" }}>
-                    <option value="Sim">Sim</option>
+              <div style={{ display: "grid", gridTemplateColumns: "1.25fr 1.5fr 1fr", gap: "1.25rem", alignItems: "end" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                  <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Possui Imóvel no CNPJ? *</label>
+                  <select className="apple-select" value={empresa.emp_imovel} onChange={(e) => setEmpresa({ ...empresa, emp_imovel: e.target.value })}>
                     <option value="Não">Não</option>
+                    <option value="Sim">Sim</option>
                   </select>
                 </div>
                 {empresa.emp_imovel === "Sim" && (
                   <>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                      <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>Tipo de Comprovação</label>
-                      <select value={empresa.emp_imovel_tipo} onChange={(e) => setEmpresa({ ...empresa, emp_imovel_tipo: e.target.value })} style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                      <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Tipo de Matrícula</label>
+                      <select className="apple-select" value={empresa.emp_imovel_tipo} onChange={(e) => setEmpresa({ ...empresa, emp_imovel_tipo: e.target.value })}>
                         <option value="Escritura/Matrícula">Matrícula Registrada</option>
                         <option value="Contrato de Compra/Venda">Contrato Particular</option>
                         <option value="IPTU">IPTU no CNPJ</option>
                       </select>
                     </div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                      <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>Valor Estimado (R$)</label>
-                      <input type="text" value={empresa.emp_imovel_valor} onChange={(e) => setEmpresa({ ...empresa, emp_imovel_valor: e.target.value })} placeholder="Ex: 500.000" style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)" }} />
+                    <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                      <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Valor Estimado (R$)</label>
+                      <input type="text" className="apple-input" value={empresa.emp_imovel_valor} onChange={(e) => setEmpresa({ ...empresa, emp_imovel_valor: handleCurrencyInput(e.target.value) })} placeholder="R$ 0,00" />
                     </div>
                   </>
                 )}
@@ -590,47 +695,67 @@ export default function CadastroBdmg() {
           {/* ETAPA 2: DADOS DOS SÓCIOS */}
           {step === 2 && (
             <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "2px solid var(--neutral-border)", paddingBottom: "0.5rem" }}>
-                <h2 style={{ fontSize: "1.5rem", color: "var(--primary-dark)", margin: 0 }}>Sócios da Empresa</h2>
-                <button type="button" onClick={addSocio} className="btn btn-ghost" style={{ fontSize: "0.85rem", padding: "0.4rem 0.8rem" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #f5f5f7", paddingBottom: "1rem" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                  <User size={24} style={{ color: "#0071e3" }} />
+                  <h2 style={{ fontSize: "1.5rem", color: "#1d1d1f", fontWeight: "700", margin: 0 }}>Sócios / Proprietários</h2>
+                </div>
+                <button type="button" onClick={addSocio} className="crm-btn crm-btn-secondary" style={{ padding: "0.4rem 1rem", fontSize: "0.85rem" }}>
                   + Adicionar Sócio
                 </button>
               </div>
 
               {socios.map((socio, idx) => (
-                <div key={idx} style={{ padding: "2rem", backgroundColor: "var(--neutral-light)", borderRadius: "var(--radius-md)", border: "1px solid var(--neutral-border)", display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+                <div key={idx} style={{ padding: "2rem", backgroundColor: "#f5f5f7", borderRadius: "16px", border: "1px solid #e8e8ed", display: "flex", flexDirection: "column", gap: "1.5rem" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <h3 style={{ margin: 0, color: "var(--primary-color)" }}>Sócio #{idx + 1}</h3>
+                    <h3 style={{ margin: 0, color: "#1d1d1f", fontSize: "1.1rem", fontWeight: "700" }}>Sócio #{idx + 1}</h3>
                     {socios.length > 1 && (
-                      <button type="button" onClick={() => removeSocio(idx)} style={{ color: "var(--accent-color)", background: "none", border: "none", cursor: "pointer", fontSize: "0.85rem" }}>
-                        Excluir Sócio
+                      <button type="button" onClick={() => removeSocio(idx)} style={{ color: "#ff3b30", background: "none", border: "none", cursor: "pointer", fontSize: "0.85rem", display: "flex", alignItems: "center", gap: "0.25rem", fontWeight: "600" }}>
+                        <Trash2 size={14} /> Excluir Sócio
                       </button>
                     )}
                   </div>
 
-                  <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: "1rem" }}>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                      <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>Nome Completo *</label>
-                      <input type="text" required value={socio.dados.nome} onChange={(e) => handleSocioChange(idx, "nome", e.target.value)} placeholder="Como no CPF" style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)" }} />
+                  <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr 1fr", gap: "1rem" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                      <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Nome Completo *</label>
+                      <input type="text" required className="apple-input" value={socio.dados.nome} onChange={(e) => handleSocioChange(idx, "nome", e.target.value)} placeholder="Como no CPF" />
                     </div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                      <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>CPF *</label>
-                      <input type="text" required value={socio.dados.cpf} onChange={(e) => handleSocioChange(idx, "cpf", maskCPF(e.target.value))} placeholder="000.000.000-00" style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)" }} />
+                    <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                      <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>CPF *</label>
+                      <input type="text" required className={`apple-input ${socioCpfErrors[idx] ? "input-error" : ""}`} value={socio.dados.cpf} onChange={(e) => handleSocioCpfChange(idx, e.target.value)} placeholder="000.000.000-00" />
+                      {socioCpfErrors[idx] && <span style={{ color: "#ff3b30", fontSize: "0.75rem", fontWeight: "600" }}>{socioCpfErrors[idx]}</span>}
                     </div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                      <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>% Sociedade *</label>
-                      <input type="text" required value={socio.dados.participacao} onChange={(e) => handleSocioChange(idx, "participacao", e.target.value)} placeholder="Ex: 50" style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)" }} />
+                    <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                      <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>% Sociedade *</label>
+                      <input type="text" required className="apple-input" value={socio.dados.participacao} onChange={(e) => handleSocioChange(idx, "participacao", e.target.value)} placeholder="Ex: 50" />
                     </div>
                   </div>
 
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1.5fr 1.5fr", gap: "1rem" }}>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                      <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>Data Nascimento *</label>
-                      <input type="date" required value={socio.dados.nascimento} onChange={(e) => handleSocioChange(idx, "nascimento", e.target.value)} style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)" }} />
+                  {/* RG e Data de Emissão (Obrigatórios por lei Corban/BDMG) */}
+                  <div style={{ display: "grid", gridTemplateColumns: "1.25fr 1fr 1fr", gap: "1rem" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                      <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Nº Registro Geral (RG) *</label>
+                      <input type="text" required className="apple-input" value={socio.dados.rg} onChange={(e) => handleSocioChange(idx, "rg", e.target.value)} placeholder="Registro Geral" />
                     </div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                      <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>Estado Civil *</label>
-                      <select value={socio.dados.estado_civil} onChange={(e) => handleSocioChange(idx, "estado_civil", e.target.value)} style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                      <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Data de Emissão (RG) *</label>
+                      <input type="date" required className="apple-input" value={socio.dados.rg_data_emissao} onChange={(e) => handleSocioChange(idx, "rg_data_emissao", e.target.value)} />
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                      <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Data Nascimento *</label>
+                      <input type="date" required className="apple-input" value={socio.dados.nascimento} onChange={(e) => handleSocioChange(idx, "nascimento", e.target.value)} />
+                    </div>
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1.25fr 1.5fr 1.5fr", gap: "1rem" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                      <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Nacionalidade *</label>
+                      <input type="text" required className="apple-input" value={socio.dados.nacionalidade} onChange={(e) => handleSocioChange(idx, "nacionalidade", e.target.value)} placeholder="Brasileiro(a)" />
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                      <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Estado Civil *</label>
+                      <select className="apple-select" value={socio.dados.estado_civil} onChange={(e) => handleSocioChange(idx, "estado_civil", e.target.value)}>
                         <option value="Solteiro(a)">Solteiro(a)</option>
                         <option value="Casado(a)">Casado(a)</option>
                         <option value="União estável">União estável</option>
@@ -639,9 +764,9 @@ export default function CadastroBdmg() {
                       </select>
                     </div>
                     {socio.conjuge && (
-                      <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                        <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>Regime de Casamento</label>
-                        <select value={socio.dados.regime} onChange={(e) => handleSocioChange(idx, "regime", e.target.value)} style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)" }}>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                        <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Regime de Casamento</label>
+                        <select className="apple-select" value={socio.dados.regime} onChange={(e) => handleSocioChange(idx, "regime", e.target.value)}>
                           <option value="Comunhão parcial de bens">Comunhão parcial de bens</option>
                           <option value="Comunhão universal de bens">Comunhão universal de bens</option>
                           <option value="Separação total de bens">Separação total de bens</option>
@@ -651,102 +776,129 @@ export default function CadastroBdmg() {
                   </div>
 
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                      <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>E-mail *</label>
-                      <input type="email" required value={socio.dados.email} onChange={(e) => handleSocioChange(idx, "email", e.target.value)} placeholder="email@socio.com" style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)" }} />
+                    <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                      <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>E-mail *</label>
+                      <input type="email" required className="apple-input" value={socio.dados.email} onChange={(e) => handleSocioChange(idx, "email", e.target.value)} placeholder="email@socio.com" />
                     </div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                      <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>Telefone *</label>
-                      <input type="text" required value={socio.dados.telefone} onChange={(e) => handleSocioChange(idx, "telefone", maskPhone(e.target.value))} placeholder="(35) 99999-9999" style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)" }} />
-                    </div>
-                  </div>
-
-                  {/* Campo de Renda do Sócio com Balão Motivacional */}
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "1.5rem", alignItems: "start" }}>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                      <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>Renda Mensal (Imposto de Renda) *</label>
-                      <input type="text" required value={socio.dados.renda} onChange={(e) => handleSocioChange(idx, "renda", e.target.value)} placeholder="Ex: 15.000" style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)" }} />
-                    </div>
-                    <div style={{ fontSize: "0.8rem", color: "#1e5a96", backgroundColor: "#e8f2ff", border: "1px solid #b8d4f5", borderRadius: "var(--radius-sm)", padding: "0.75rem", lineHeight: "1.4" }}>
-                      <strong>Dica da RMJ:</strong> Informar a sua renda exatamente em conformidade com o IRPF declarado acelera a aprovação e evita pendências cadastrais na auditoria bancária.
+                    <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                      <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Telefone *</label>
+                      <input type="text" required className="apple-input" value={socio.dados.telefone} onChange={(e) => handleSocioChange(idx, "telefone", maskPhone(e.target.value))} placeholder="(35) 99999-9999" />
                     </div>
                   </div>
 
-                  {/* Campo de Bens do Sócio com Balão Motivacional */}
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "1rem" }}>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                      <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>Imóvel Próprio?</label>
-                      <select value={socio.dados.imovel_tipo} onChange={(e) => handleSocioChange(idx, "imovel_tipo", e.target.value)} style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)" }}>
+                  {/* Campo de Renda do Sócio */}
+                  <div style={{ display: "grid", gridTemplateColumns: "1.25fr 2fr", gap: "1.5rem", alignItems: "start" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                      <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Renda Mensal Comprovada (IRPF) *</label>
+                      <input type="text" required className="apple-input" value={socio.dados.renda} onChange={(e) => handleSocioChange(idx, "renda", handleCurrencyInput(e.target.value))} placeholder="R$ 0,00" />
+                    </div>
+                    <div style={{ fontSize: "0.8rem", color: "#0071e3", backgroundColor: "rgba(0, 113, 227, 0.05)", border: "1px solid rgba(0, 113, 227, 0.1)", borderRadius: "10px", padding: "0.75rem 1rem", lineHeight: "1.4" }}>
+                      <strong>Dica RMJ:</strong> Declare o valor exatamente em conformidade com o seu IRPF mais recente para encurtar o tempo de análise do BDMG.
+                    </div>
+                  </div>
+
+                  {/* Campo de Bens do Sócio */}
+                  <div style={{ display: "grid", gridTemplateColumns: "1.25fr 1.25fr 1fr", gap: "1rem" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                      <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Possui Imóvel Próprio?</label>
+                      <select className="apple-select" value={socio.dados.imovel_tipo} onChange={(e) => handleSocioChange(idx, "imovel_tipo", e.target.value)}>
                         <option value="Não possui">Não possui</option>
                         <option value="Escritura/Matrícula">Matrícula no IRPF</option>
                         <option value="Contrato de Compra">Contrato de Compra</option>
-                        <option value="IPTU">IPTU em nome</option>
+                        <option value="IPTU">IPTU em seu nome</option>
                       </select>
                     </div>
                     {socio.dados.imovel_tipo !== "Não possui" && (
-                      <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                        <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>Valor do Imóvel (R$)</label>
-                        <input type="text" value={socio.dados.imovel_valor} onChange={(e) => handleSocioChange(idx, "imovel_valor", e.target.value)} placeholder="Ex: 350.000" style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)" }} />
+                      <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                        <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Valor Estimado (R$)</label>
+                        <input type="text" className="apple-input" value={socio.dados.imovel_valor} onChange={(e) => handleSocioChange(idx, "imovel_valor", handleCurrencyInput(e.target.value))} placeholder="R$ 0,00" />
                       </div>
                     )}
-                    <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                      <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>Placa de Veículos (IRPF)</label>
-                      <input type="text" value={socio.dados.veiculo_placas} onChange={(e) => handleSocioChange(idx, "veiculo_placas", e.target.value.toUpperCase())} placeholder="Ex: ABC1D23" style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)" }} />
+                    <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                      <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Placa de Veículos (IRPF)</label>
+                      <input type="text" className="apple-input" value={socio.dados.veiculo_placas} onChange={(e) => handleSocioChange(idx, "veiculo_placas", e.target.value.toUpperCase())} placeholder="ABC1D23" />
                     </div>
-                  </div>
-                  
-                  <div style={{ fontSize: "0.8rem", color: "#1e5a96", backgroundColor: "#e8f2ff", border: "1px solid #b8d4f5", borderRadius: "var(--radius-sm)", padding: "0.75rem", lineHeight: "1.4" }}>
-                    <strong>Solidez Cadastral:</strong> Listar as placas dos veículos ou declarar o tipo de comprovante de bens próprios atua como fator redutor de risco de crédito, auxiliando na liberação de limites expressivos e na redução de taxas de juros.
                   </div>
 
                   {/* Endereço do Sócio */}
-                  <div style={{ display: "grid", gridTemplateColumns: "150px 1fr 120px", gap: "1rem" }}>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                      <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>CEP Sócio *</label>
-                      <input type="text" required value={socio.dados.cep} onChange={(e) => {
+                  <div style={{ display: "grid", gridTemplateColumns: "130px 1fr 120px", gap: "1rem" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                      <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>CEP Residencial *</label>
+                      <input type="text" required className="apple-input" value={socio.dados.cep} onChange={(e) => {
                         const v = maskCEP(e.target.value);
                         handleSocioChange(idx, "cep", v);
                         if (v.length === 9) buscarCEP(v, false, idx);
-                      }} placeholder="37500-000" style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)" }} />
+                      }} placeholder="37500-000" />
                     </div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                      <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>Rua / Logradouro *</label>
-                      <input type="text" required value={socio.dados.logradouro} onChange={(e) => handleSocioChange(idx, "logradouro", e.target.value)} placeholder="Logradouro" style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)" }} />
+                    <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                      <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Logradouro *</label>
+                      <input type="text" required className="apple-input" value={socio.dados.logradouro} onChange={(e) => handleSocioChange(idx, "logradouro", e.target.value)} placeholder="Logradouro" />
                     </div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                      <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>Número *</label>
-                      <input type="text" required value={socio.dados.numero} onChange={(e) => handleSocioChange(idx, "numero", e.target.value)} placeholder="Número" style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)" }} />
+                    <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                      <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Número *</label>
+                      <input type="text" required className="apple-input" value={socio.dados.numero} onChange={(e) => handleSocioChange(idx, "numero", e.target.value)} placeholder="Ex: 50" />
                     </div>
                   </div>
 
                   {/* Bloco Dinâmico do Cônjuge se Casado */}
                   {socio.conjuge && (
-                    <div style={{ marginTop: "1rem", padding: "1.5rem", border: "1px dashed var(--secondary-color)", borderRadius: "var(--radius-sm)", backgroundColor: "#fff8f2", display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-                      <h4 style={{ margin: 0, color: "var(--secondary-color)" }}>Dados do Cônjuge (Sócio #{idx + 1})</h4>
-                      <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: "1rem" }}>
-                        <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                          <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>Nome Completo Cônjuge *</label>
-                          <input type="text" required value={socio.conjuge.nome} onChange={(e) => handleConjugeChange(idx, "nome", e.target.value)} placeholder="Nome" style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)" }} />
+                    <div style={{ marginTop: "1rem", padding: "1.5rem", border: "1px dashed #0071e3", borderRadius: "12px", backgroundColor: "#ffffff", display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+                      <h4 style={{ margin: 0, color: "#0071e3", fontSize: "0.95rem", fontWeight: "700" }}>Dados do Cônjuge (Sócio #{idx + 1})</h4>
+                      
+                      <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr 1fr", gap: "1rem" }}>
+                        <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                          <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Nome Completo Cônjuge *</label>
+                          <input type="text" required className="apple-input" value={socio.conjuge.nome} onChange={(e) => handleConjugeChange(idx, "nome", e.target.value)} placeholder="Nome completo" />
                         </div>
-                        <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                          <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>CPF Cônjuge *</label>
-                          <input type="text" required value={socio.conjuge.cpf} onChange={(e) => handleConjugeChange(idx, "cpf", maskCPF(e.target.value))} placeholder="000.000.000-00" style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)" }} />
+                        <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                          <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>CPF Cônjuge *</label>
+                          <input type="text" required className={`apple-input ${conjugeCpfErrors[idx] ? "input-error" : ""}`} value={socio.conjuge.cpf} onChange={(e) => handleConjugeCpfChange(idx, e.target.value)} placeholder="000.000.000-00" />
+                          {conjugeCpfErrors[idx] && <span style={{ color: "#ff3b30", fontSize: "0.75rem", fontWeight: "600" }}>{conjugeCpfErrors[idx]}</span>}
                         </div>
-                        <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                          <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>Data Nascimento *</label>
-                          <input type="date" required value={socio.conjuge.nascimento} onChange={(e) => handleConjugeChange(idx, "nascimento", e.target.value)} style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)" }} />
+                        <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                          <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Data Nascimento *</label>
+                          <input type="date" required className="apple-input" value={socio.conjuge.nascimento} onChange={(e) => handleConjugeChange(idx, "nascimento", e.target.value)} />
+                        </div>
+                      </div>
+
+                      {/* RG e Data Emissão do Cônjuge (Obrigatórios por lei BDMG) */}
+                      <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr", gap: "1rem" }}>
+                        <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                          <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Nº Registro Geral (RG) *</label>
+                          <input type="text" required className="apple-input" value={socio.conjuge.rg} onChange={(e) => handleConjugeChange(idx, "rg", e.target.value)} placeholder="RG do Cônjuge" />
+                        </div>
+                        <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                          <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Data de Emissão (RG) *</label>
+                          <input type="date" required className="apple-input" value={socio.conjuge.rg_data_emissao} onChange={(e) => handleConjugeChange(idx, "rg_data_emissao", e.target.value)} />
                         </div>
                       </div>
 
                       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
-                        <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                          <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>Celular Cônjuge *</label>
-                          <input type="text" required value={socio.conjuge.telefone} onChange={(e) => handleConjugeChange(idx, "telefone", maskPhone(e.target.value))} placeholder="(35) 99999-9999" style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)" }} />
+                        <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                          <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>WhatsApp Cônjuge *</label>
+                          <input type="text" required className="apple-input" value={socio.conjuge.telefone} onChange={(e) => handleConjugeChange(idx, "telefone", maskPhone(e.target.value))} placeholder="(35) 99999-9999" />
                         </div>
-                        <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                          <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>E-mail Cônjuge *</label>
-                          <input type="email" required value={socio.conjuge.email} onChange={(e) => handleConjugeChange(idx, "email", e.target.value)} placeholder="email@conjuge.com" style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)" }} />
+                        <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                          <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>E-mail Cônjuge *</label>
+                          <input type="email" required className="apple-input" value={socio.conjuge.email} onChange={(e) => handleConjugeChange(idx, "email", e.target.value)} placeholder="email@conjuge.com" />
+                          <span style={{ fontSize: "0.75rem", color: "#86868b" }}>Deve ser diferente do e-mail do sócio.</span>
                         </div>
+                      </div>
+
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem", alignItems: "end" }}>
+                        <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                          <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Incluir Renda do Cônjuge? *</label>
+                          <select className="apple-select" value={socio.conjuge.incluir_renda} onChange={(e) => handleConjugeChange(idx, "incluir_renda", e.target.value)}>
+                            <option value="Não">Não</option>
+                            <option value="Sim">Sim</option>
+                          </select>
+                        </div>
+                        {socio.conjuge.incluir_renda === "Sim" && (
+                          <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                            <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Renda Mensal Cônjuge (R$)</label>
+                            <input type="text" required className="apple-input" value={socio.conjuge.renda} onChange={(e) => handleConjugeChange(idx, "renda", handleCurrencyInput(e.target.value))} placeholder="R$ 0,00" />
+                          </div>
+                        )}
                       </div>
                     </div>
                   )}
@@ -759,35 +911,27 @@ export default function CadastroBdmg() {
           {/* ETAPA 3: DADOS BANCÁRIOS */}
           {step === 3 && (
             <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
-              <h2 style={{ fontSize: "1.5rem", color: "var(--primary-dark)", borderBottom: "2px solid var(--neutral-border)", paddingBottom: "0.5rem" }}>Conta PJ para Liberação do Crédito BDMG</h2>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", borderBottom: "1px solid #f5f5f7", paddingBottom: "1rem" }}>
+                <Landmark size={24} style={{ color: "#0071e3" }} />
+                <h2 style={{ fontSize: "1.5rem", color: "#1d1d1f", fontWeight: "700", margin: 0 }}>Dados Bancários</h2>
+              </div>
               
-              <p style={{ color: "var(--neutral-muted)", fontSize: "0.9rem" }}>
-                A conta indicada abaixo deve pertencer ao mesmo CNPJ solicitante e será a conta oficial homologada para recebimento do recurso contratado.
+              <p style={{ color: "#86868b", fontSize: "0.95rem", lineHeight: "1.5", margin: 0 }}>
+                Indique a conta bancária da empresa cadastrada para a transferência da liberação do crédito.
               </p>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr", gap: "1.5rem" }}>
-                <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                  <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>Banco *</label>
-                  <input type="text" required value={bancario.banco_nome} onChange={(e) => setBancario({ ...bancario, banco_nome: e.target.value })} placeholder="Ex: Itaú Unibanco" style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)" }} />
+              <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr 1fr", gap: "1.25rem" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                  <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Nome do Banco *</label>
+                  <input type="text" required className="apple-input" value={bancario.banco_nome} onChange={(e) => setBancario({ ...bancario, banco_nome: e.target.value })} placeholder="Ex: Itaú, Bradesco, C6..." />
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                  <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>Código do Banco</label>
-                  <input type="text" value={bancario.banco_numero} onChange={(e) => setBancario({ ...bancario, banco_numero: e.target.value })} placeholder="Ex: 341" style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)" }} />
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                  <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Agência *</label>
+                  <input type="text" required className="apple-input" value={bancario.banco_agencia} onChange={(e) => setBancario({ ...bancario, banco_agencia: e.target.value })} placeholder="Ex: 0123" />
                 </div>
-              </div>
-
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr 100px", gap: "1rem" }}>
-                <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                  <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>Agência *</label>
-                  <input type="text" required value={bancario.banco_agencia} onChange={(e) => setBancario({ ...bancario, banco_agencia: e.target.value })} placeholder="Agência" style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)" }} />
-                </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                  <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>Conta Corrente *</label>
-                  <input type="text" required value={bancario.banco_conta} onChange={(e) => setBancario({ ...bancario, banco_conta: e.target.value })} placeholder="Conta" style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)" }} />
-                </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                  <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>Dígito</label>
-                  <input type="text" value={bancario.banco_digito} onChange={(e) => setBancario({ ...bancario, banco_digito: e.target.value })} placeholder="Dígito" style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)", textAlign: "center" }} />
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                  <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Conta Corrente (com dígito) *</label>
+                  <input type="text" required className="apple-input" value={bancario.banco_conta} onChange={(e) => setBancario({ ...bancario, banco_conta: e.target.value })} placeholder="Ex: 12345-6" />
                 </div>
               </div>
             </div>
@@ -796,50 +940,53 @@ export default function CadastroBdmg() {
           {/* ETAPA 4: OBSERVACÕES E LGPD */}
           {step === 4 && (
             <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
-              <h2 style={{ fontSize: "1.5rem", color: "var(--primary-dark)", borderBottom: "2px solid var(--neutral-border)", paddingBottom: "0.5rem" }}>Confirmação e Declaração da LGPD</h2>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", borderBottom: "1px solid #f5f5f7", paddingBottom: "1rem" }}>
+                <ShieldCheck size={24} style={{ color: "#34c759" }} />
+                <h2 style={{ fontSize: "1.5rem", color: "#1d1d1f", fontWeight: "700", margin: 0 }}>Finalizar & Termos</h2>
+              </div>
               
-              <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                <label style={{ fontSize: "0.85rem", fontWeight: "bold" }}>Observações ou Dúvidas de Crédito</label>
-                <textarea value={observacoes.obs_finais} onChange={(e) => setObservacoes({ ...observacoes, obs_finais: e.target.value })} placeholder="Informe aqui qualquer detalhe adicional do faturamento ou garantias..." style={{ padding: "0.75rem", border: "1px solid var(--neutral-border)", borderRadius: "var(--radius-sm)", minHeight: "100px" }} />
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Observações ou Solicitações Especiais</label>
+                <textarea className="apple-textarea" rows={4} value={observacoes.obs_finais} onChange={(e) => setObservacoes({ ...observacoes, obs_finais: e.target.value })} placeholder="Informe aqui qualquer informação complementar relevante..." />
               </div>
 
-              {/* Box de Documentos pendentes */}
-              <div style={{ padding: "1.5rem", backgroundColor: "var(--neutral-light)", borderRadius: "var(--radius-sm)", border: "1px solid var(--neutral-border)" }}>
-                <h4 style={{ margin: "0 0 0.5rem 0", color: "var(--primary-color)" }}>Documentação Requerida (Próxima etapa):</h4>
-                <ul style={{ margin: 0, paddingLeft: "1.25rem", color: "var(--neutral-muted)", fontSize: "0.85rem", lineHeight: "1.6" }}>
-                  <li>Relação de Faturamento recente (12 meses) assinada pelo Contador.</li>
-                  <li>Declaração PGDAS e extrato do Simples Nacional via e-CAC.</li>
-                  <li>Contrato Social Consolidado da empresa.</li>
-                  <li>Declaração completa de IRPF dos sócios acompanhada dos recibos de entrega.</li>
+              {/* Documentos pendentes */}
+              <div style={{ padding: "1.5rem", backgroundColor: "#f5f5f7", borderRadius: "12px", border: "1px solid #e8e8ed" }}>
+                <h4 style={{ margin: "0 0 0.75rem 0", color: "#1d1d1f", fontWeight: "700", fontSize: "0.95rem" }}>Documentos Necessários (Fase de Upload):</h4>
+                <ul style={{ margin: 0, paddingLeft: "1.25rem", color: "#86868b", fontSize: "0.85rem", lineHeight: "1.6" }}>
+                  <li>Faturamento contábil recente (últimos 12 meses) assinado pelo Contador.</li>
+                  <li>Extrato Completo do Simples Nacional / Declarações PGDAS.</li>
+                  <li>Contrato Social Consolidado da empresa PJ.</li>
+                  <li>IRPF completo de todos os sócios com recibo de entrega.</li>
                 </ul>
               </div>
 
               <div style={{ display: "flex", gap: "0.75rem", alignItems: "start", marginTop: "1rem" }}>
-                <input type="checkbox" id="aceite_lgpd" required checked={observacoes.aceite_lgpd} onChange={(e) => setObservacoes({ ...observacoes, aceite_lgpd: e.target.checked })} style={{ width: "auto", marginTop: "0.25rem", transform: "scale(1.2)" }} />
-                <label htmlFor="aceite_lgpd" style={{ fontSize: "0.85rem", color: "var(--neutral-muted)", cursor: "pointer", fontWeight: "normal" }}>
-                  Declaro que as informações financeiras e societárias fornecidas acima são verdadeiras. Dou consentimento de forma livre para o tratamento e trânsito seguro destes dados exclusivamente para fins de análise cadastral e aprovação de crédito corporativo junto ao BDMG, de acordo com as regras da <strong>LGPD (Lei 13.709/2018)</strong>. *
+                <input type="checkbox" id="aceite_lgpd" required checked={observacoes.aceite_lgpd} onChange={(e) => setObservacoes({ ...observacoes, aceite_lgpd: e.target.checked })} style={{ width: "16px", height: "16px", marginTop: "0.2rem", cursor: "pointer" }} />
+                <label htmlFor="aceite_lgpd" style={{ fontSize: "0.85rem", color: "#86868b", cursor: "pointer", fontWeight: "500", lineHeight: "1.5" }}>
+                  Declaro que as informações societárias e financeiras declaradas são autênticas. Dou consentimento inequívoco para o tratamento e análise de crédito destes dados para fins de viabilização do limite junto ao BDMG, nos termos da <strong>Lei Geral de Proteção de Dados (LGPD - Lei 13.709/2018)</strong>. *
                 </label>
               </div>
             </div>
           )}
 
           {/* Rodapé de Navegação */}
-          <div style={{ display: "flex", justifyContent: "space-between", gap: "1rem", marginTop: "2.5rem", paddingTop: "1.5rem", borderTop: "1px solid var(--neutral-border)" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", gap: "1rem", marginTop: "3rem", paddingTop: "1.5rem", borderTop: "1px solid #f5f5f7" }}>
             {step > 1 ? (
-              <button type="button" onClick={() => setStep((prev) => prev - 1)} className="btn btn-ghost" style={{ padding: "0.75rem 1.5rem" }}>
-                &larr; Voltar
+              <button type="button" onClick={() => setStep((prev) => prev - 1)} className="crm-btn crm-btn-secondary" style={{ padding: "0.75rem 1.5rem" }}>
+                <ArrowLeft size={16} /> Voltar
               </button>
             ) : (
               <div />
             )}
 
             {step < 4 ? (
-              <button type="button" onClick={handleNext} className="btn btn-primary" style={{ padding: "0.75rem 1.5rem" }}>
-                Avançar &rarr;
+              <button type="button" onClick={handleNext} className="crm-btn crm-btn-primary" style={{ padding: "0.75rem 1.5rem" }}>
+                Avançar <ArrowRight size={16} />
               </button>
             ) : (
-              <button type="submit" disabled={loading} className="btn btn-accent" style={{ padding: "0.85rem 2rem", fontSize: "0.95rem" }}>
-                {loading ? "Processando e Enviando..." : "Submeter Proposta ao BDMG 🚀"}
+              <button type="submit" disabled={loading} className="crm-btn crm-btn-primary" style={{ padding: "0.85rem 2rem", fontSize: "0.95rem", backgroundColor: "#30d158", borderColor: "#30d158" }}>
+                {loading ? "Enviando dados..." : "Submeter ao BDMG 🚀"}
               </button>
             )}
           </div>
@@ -847,6 +994,46 @@ export default function CadastroBdmg() {
         </form>
 
       </div>
+      
+      {/* Dynamic Style Injection for Apple UI Aesthetics */}
+      <style jsx global>{`
+        .apple-input, .apple-select, .apple-textarea {
+          width: 100%;
+          background-color: #f5f5f7;
+          border: 1px solid #d2d2d7;
+          border-radius: 12px;
+          padding: 0.85rem 1rem;
+          color: #1d1d1f;
+          font-family: inherit;
+          font-size: 0.95rem;
+          transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+          outline: none;
+        }
+        .apple-input:focus, .apple-select:focus, .apple-textarea:focus {
+          background-color: #ffffff;
+          border-color: #0071e3;
+          box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.15);
+        }
+        .apple-input::placeholder, .apple-textarea::placeholder {
+          color: #86868b;
+          opacity: 0.7;
+        }
+        .input-error {
+          border-color: #ff3b30 !important;
+          background-color: #fff8f8 !important;
+        }
+        .input-error:focus {
+          box-shadow: 0 0 0 4px rgba(255, 59, 48, 0.15) !important;
+        }
+        .apple-select {
+          appearance: none;
+          background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2386868b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+          background-repeat: no-repeat;
+          background-position: right 1rem center;
+          background-size: 1.2rem;
+          padding-right: 2.5rem;
+        }
+      `}</style>
     </div>
   );
 }

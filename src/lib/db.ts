@@ -79,8 +79,8 @@ if (count.count === 0) {
         { item: "Equipamentos", validado: false }
       ]);
 
-      insertOportunidade.run(e1, 150000, 150000, 6000, "pendente", "em_analise", pendingChecklist);
-      insertOportunidade.run(e1, 200000, null, 8000, "pendente", "aguardando_aprovacao_comite", allValidated);
+      insertOportunidade.run(e1, 150000, 150000, 6000, "pendente", "em_preenchimento", pendingChecklist);
+      insertOportunidade.run(e1, 200000, null, 8000, "pendente", "em_analise", allValidated);
     }
 
     // Tecnologia Itajubense

@@ -82,17 +82,12 @@ export default function EmpresaDetalheClient({ id }: DetailProps) {
 
   const translateStatus = (col: string) => {
     const statuses: Record<string, string> = {
+      prospect: "Prospect",
+      em_preenchimento: "Em Preenchimento",
       em_analise: "Em Análise",
-      aguardando_consulta_compartilha_receita: "Ag. Consulta / Compartilha Receita",
-      aguardando_documentacao: "Aguardando Documentação",
-      aguardando_declaracao_autorizacao: "Ag. Declaração / Autorização",
-      aguardando_regularizacao: "Aguardando Regularização",
-      aguardando_aprovacao_comite: "Ag. Aprovação Comitê",
-      aprovada_sob_novas_condicoes: "Aprovada sob Novas Condições",
       aprovada: "Aprovada",
-      aguardando_assinatura: "Aguardando Assinatura",
-      aguardando_liberacao: "Aguardando Liberação",
-      nao_aprovada: "Não Aprovada"
+      aguardando_documentacao: "Aguardando Documentação",
+      liberado: "Liberado"
     };
     return statuses[col] || col;
   };

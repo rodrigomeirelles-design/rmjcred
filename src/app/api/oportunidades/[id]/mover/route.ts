@@ -22,16 +22,15 @@ export async function PATCH(request: Request, { params }: Props) {
       return NextResponse.json({ error: "Oportunidade não encontrada" }, { status: 404 });
     }
 
-    // Regra 1: Bloqueio de Fase 3 por garantias
-    const fase3Colunas = ["aguardando_aprovacao_comite", "aprovada_sob_novas_condicoes"];
-    if (fase3Colunas.includes(coluna_kanban)) {
+    // Regra 1: Bloqueio de Aprovada por garantias
+    if (coluna_kanban === "aprovada") {
       const checklist = JSON.parse(oportunidade.checklist_garantias || "[]");
       const pendentes = checklist.filter((item: any) => !item.validado).map((item: any) => item.item);
       
       if (pendentes.length > 0) {
         return NextResponse.json({
-          error: "Bloqueio de Fase 3",
-          message: "Valide o checklist de garantias antes de avançar para a Fase 3.",
+          error: "Bloqueio de Aprovação",
+          message: "Valide o checklist de garantias antes de avançar para a coluna Aprovada.",
           pendentes
         }, { status: 400 });
       }

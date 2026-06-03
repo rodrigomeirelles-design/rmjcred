@@ -43,7 +43,7 @@ export async function POST(request: Request) {
         created_at,
         updated_at
       )
-      VALUES (?, ?, NULL, ?, 'pendente', 'em_analise', ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+      VALUES (?, ?, NULL, ?, 'pendente', 'prospect', ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
     `).run(empresa_id, valor_solicitado, comissao_esperada, defaultChecklist);
 
     return NextResponse.json({ id: result.lastInsertRowid, message: "Oportunidade criada com sucesso" });

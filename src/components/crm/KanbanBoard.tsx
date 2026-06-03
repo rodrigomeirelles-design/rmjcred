@@ -5,28 +5,14 @@ import KanbanColuna from "./KanbanColuna";
 import DrawerOportunidade from "./DrawerOportunidade";
 import ModalNaoAprovada from "./ModalNaoAprovada";
 
-// 11 Columns in 5 Phases definition
+// 6 Columns shared pipeline
 const COLUNAS = [
-  // Fase 1: Azul (sky)
-  { id: "em_analise", label: "Em Análise", color: "#0ea5e9" },
-  { id: "aguardando_consulta_compartilha_receita", label: "Ag. Consulta / Compartilha Receita", color: "#0ea5e9" },
-  
-  // Fase 2: Violeta
-  { id: "aguardando_documentacao", label: "Aguardando Documentação", color: "#8b5cf6" },
-  { id: "aguardando_declaracao_autorizacao", label: "Ag. Declaração / Autorização", color: "#8b5cf6" },
-  { id: "aguardando_regularizacao", label: "Aguardando Regularização", color: "#8b5cf6" },
-  
-  // Fase 3: Âmbar
-  { id: "aguardando_aprovacao_comite", label: "Ag. Aprovação Comitê", color: "#f59e0b" },
-  { id: "aprovada_sob_novas_condicoes", label: "Aprovada sob Novas Condições", color: "#f59e0b" },
-  
-  // Fase 4: Verde (emerald)
+  { id: "prospect", label: "Prospect", color: "#64748b" },
+  { id: "em_preenchimento", label: "Em Preenchimento", color: "#0ea5e9" },
+  { id: "em_analise", label: "Em Análise", color: "#f59e0b" },
   { id: "aprovada", label: "Aprovada", color: "#10b981" },
-  { id: "aguardando_assinatura", label: "Aguardando Assinatura", color: "#10b981" },
-  { id: "aguardando_liberacao", label: "Aguardando Liberação", color: "#10b981" },
-  
-  // Fase 5: Vermelho
-  { id: "nao_aprovada", label: "Não Aprovada", color: "#ef4444" }
+  { id: "aguardando_documentacao", label: "Aguardando Documentação", color: "#8b5cf6" },
+  { id: "liberado", label: "Liberado", color: "#1e40af" }
 ];
 
 interface KanbanBoardProps {
@@ -92,14 +78,13 @@ export default function KanbanBoard({ opportunities, onRefresh }: KanbanBoardPro
     if (!opportunity) return;
     if (opportunity.coluna_kanban === targetCol) return;
 
-    // Regra 1: Bloqueio de Fase 3 por garantias
-    const fase3Colunas = ["aguardando_aprovacao_comite", "aprovada_sob_novas_condicoes"];
-    if (fase3Colunas.includes(targetCol)) {
+    // Regra 1: Bloqueio de Aprovação por garantias
+    if (targetCol === "aprovada") {
       try {
         const checklist: GarantiaItem[] = JSON.parse(opportunity.checklist_garantias || "[]");
         const pendentes = checklist.filter(item => !item.validado).map(item => item.item);
         if (pendentes.length > 0) {
-          toast.error(`Valide o checklist de garantias antes de avançar para a Fase 3. Pendentes: ${pendentes.join(", ")}`);
+          toast.error(`Valide o checklist de garantias antes de avançar para Aprovada. Pendentes: ${pendentes.join(", ")}`);
           return;
         }
       } catch {
@@ -108,14 +93,7 @@ export default function KanbanBoard({ opportunities, onRefresh }: KanbanBoardPro
       }
     }
 
-    // Regra 2: Regra dos 30 dias BDMG
-    if (targetCol === "nao_aprovada") {
-      setPendingMove({ id: oportunidadeId, targetCol });
-      setIsModalOpen(true);
-      return;
-    }
-
-    // Standard move (Phase 1, 2, 4)
+    // Standard move
     await executeMove(oportunidadeId, targetCol);
   };
 

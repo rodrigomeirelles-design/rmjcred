@@ -1,9 +1,13 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { verifySessionToken } from "@/utils/auth";
-import PipelineClient from "./PipelineClient";
+import EmpresaDetalheClient from "./EmpresaDetalheClient";
 
-export default async function AdminDashboard() {
+type Props = {
+  params: Promise<{ id: string }>;
+};
+
+export default async function AdminEmpresaDetalhePage({ params }: Props) {
   const cookieStore = await cookies();
   const sessionToken = cookieStore.get("rmj_admin_session")?.value;
   const adminEmail = verifySessionToken(sessionToken);
@@ -12,5 +16,6 @@ export default async function AdminDashboard() {
     redirect("/admin/login");
   }
 
-  return <PipelineClient adminEmail={adminEmail} />;
+  const { id } = await params;
+  return <EmpresaDetalheClient id={id} />;
 }

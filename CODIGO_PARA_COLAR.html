@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Código GAS - CRM RMJ</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            max-width: 900px;
+            width: 100%;
+            padding: 30px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .steps {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .step {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .step:last-child { margin-bottom: 0; }
+        .step-number {
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        .step-content h3 {
+            color: #333;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        .step-content p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .code-box {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            position: relative;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        .copy-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .copy-button:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .copy-button.copied {
+            background: #28a745;
+        }
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            color: #856404;
+            font-size: 14px;
+        }
+        .note {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            color: #0c5460;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✨ Código CRM RMJ - Google Apps Script</h1>
+        <p class="subtitle">Instruções para adicionar o código no projeto GAS</p>
+
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3>Abra o projeto no navegador</h3>
+                    <p><a href="https://script.google.com/home/projects/1hZQFhkrZfkqM0caogfhSzY88IehWcjr7042MsAMGCSCyu4jZQH0dCwKF/edit" target="_blank" style="color: #667eea; font-weight: bold;">Clique aqui para abrir o Google Apps Script</a></p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3>Abra o arquivo "Código.gs"</h3>
+                    <p>No painel esquerdo, clique em "Código.gs" para abrir o editor de código</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3>Selecione todo o código atual</h3>
+                    <p>Pressione <code style="background: #f0f0f0; padding: 2px 6px; border-radius: 3px;">Ctrl+A</code> para selecionar tudo</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h3>Cole o novo código</h3>
+                    <p>Clique no botão abaixo para copiar o código, depois cole no editor (Ctrl+V)</p>
+                    <div class="code-box" id="codeBox">
+// ============================================================
+// CRM RMJ - Google Apps Script Backup v3.0 (Next.js Sync)
+// ============================================================
+
+const SHEET_EMPRESAS = 'Empresas';
+const SHEET_SOCIOS   = 'Socios';
+const SHEET_BANCOS   = 'DadosBancarios';
+
+function doPost(e) {
+  try {
+    const requestData = JSON.parse(e.postData.contents);
+
+    // Verifica se é o webhook de cadastro PJ
+    if (requestData.tipo === "cadastro_pj") {
+      const payload = requestData.dados;
+      const empresa = payload.empresa;
+      const socios = payload.socios;
+      const bancario = payload.bancario;
+
+      const ss = SpreadsheetApp.getActiveSpreadsheet();
+
+      // 1. Salvar dados da Empresa
+      const sheetEmp = getOrCreateSheet(ss, SHEET_EMPRESAS, [
+        'CNPJ', 'Razão Social', 'Fantasia', 'Nº Funcionários',
+        'Faturamento', 'Representante', 'CPF Representante',
+        'E-mail', 'Telefone', 'CEP', 'Logradouro', 'Número',
+        'Bairro', 'Cidade', 'UF', 'Possui Imóvel', 'Tipo Matrícula', 'Valor Imóvel', 'DataCadastro'
+      ]);
+
+      sheetEmp.appendRow([
+        empresa.emp_cnpj,
+        empresa.emp_razao,
+        empresa.emp_fantasia || "",
+        empresa.emp_funcionarios,
+        empresa.emp_faturamento,
+        empresa.emp_repr_nome,
+        empresa.emp_repr_cpf,
+        empresa.emp_email,
+        empresa.emp_telefone,
+        empresa.emp_cep,
+        empresa.emp_logradouro,
+        empresa.emp_numero,
+        empresa.emp_bairro,
+        empresa.emp_cidade,
+        empresa.emp_uf,
+        empresa.emp_imovel,
+        empresa.emp_imovel_tipo || "Não possui",
+        empresa.emp_imovel_valor || "",
+        new Date().toISOString()
+      ]);
+
+      // 2. Salvar Dados Bancários
+      if (bancario) {
+        const sheetBanco = getOrCreateSheet(ss, SHEET_BANCOS, [
+          'CNPJ Empresa', 'Banco', 'Agência', 'Conta Corrente', 'DataCadastro'
+        ]);
+        sheetBanco.appendRow([
+          empresa.emp_cnpj,
+          bancario.banco_nome,
+          bancario.banco_agencia,
+          bancario.banco_conta,
+          new Date().toISOString()
+        ]);
+      }
+
+      // 3. Salvar Sócios e Cônjuges
+      if (socios && Array.isArray(socios)) {
+        const sheetSocios = getOrCreateSheet(ss, SHEET_SOCIOS, [
+          'CNPJ Empresa', 'Nome Sócio', 'CPF Sócio', 'RG Sócio', 'Emissão RG Sócio',
+          'Nascimento', 'Participação %', 'Estado Civil', 'Regime',
+          'E-mail Sócio', 'Telefone Sócio', 'Renda Sócio', 'CEP Sócio',
+          'Endereço Sócio', 'Bens Sócio (Imóvel)', 'Valor Bens Sócio', 'Veículos Sócio',
+          'Nome Cônjuge', 'CPF Cônjuge', 'RG Cônjuge', 'Emissão RG Cônjuge',
+          'Nascimento Cônjuge', 'E-mail Cônjuge', 'Telefone Cônjuge',
+          'Incluir Renda Cônjuge', 'Renda Cônjuge', 'DataCadastro'
+        ]);
+
+        socios.forEach(socio => {
+          const d = socio.dados;
+          const c = socio.conjuge;
+
+          sheetSocios.appendRow([
+            empresa.emp_cnpj,
+            d.nome,
+            d.cpf,
+            d.rg || "",
+            d.rg_data_emissao || "",
+            d.nascimento || "",
+            d.participacao || "",
+            d.estado_civil || "",
+            d.regime || "",
+            d.email || "",
+            d.telefone || "",
+            d.renda || "",
+            d.cep || "",
+            (d.logradouro || "") + ", " + (d.numero || ""),
+            d.imovel_tipo || "",
+            d.imovel_valor || "",
+            d.veiculo_placas || "",
+            c ? c.nome : "",
+            c ? c.cpf : "",
+            c ? c.rg : "",
+            c ? c.rg_data_emissao : "",
+            c ? c.nascimento : "",
+            c ? c.email : "",
+            c ? c.telefone : "",
+            c ? c.incluir_renda : "",
+            c ? (c.renda || "") : "",
+            new Date().toISOString()
+          ]);
+        });
+      }
+
+      return ContentService.createTextOutput(JSON.stringify({ success: true }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    return ContentService.createTextOutput(JSON.stringify({ success: false, error: "Tipo de requisição inválido" }))
+      .setMimeType(ContentService.MimeType.JSON);
+
+  } catch(e) {
+    return ContentService.createTextOutput(JSON.stringify({ success: false, error: e.message }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function getOrCreateSheet(ss, name, headers) {
+  let sheet = ss.getSheetByName(name);
+  if (!sheet) {
+    sheet = ss.insertSheet(name);
+    sheet.appendRow(headers);
+    sheet.getRange(1, 1, 1, headers.length)
+      .setFontWeight('bold')
+      .setBackground('#21446a')
+      .setFontColor('#ffffff');
+    sheet.setFrozenRows(1);
+  }
+  return sheet;
+}
+                    </div>
+                    <button class="copy-button" onclick="copiarCodigo()">📋 Copiar Código</button>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">5</div>
+                <div class="step-content">
+                    <h3>Salve o projeto</h3>
+                    <p>Pressione <code style="background: #f0f0f0; padding: 2px 6px; border-radius: 3px;">Ctrl+S</code> para salvar</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">6</div>
+                <div class="step-content">
+                    <h3>Faça o deploy</h3>
+                    <p>Clique em <strong>Implantar</strong> (azul) → <strong>Nova implantação</strong> → Selecione <strong>App da Web</strong> → Configure <strong>Quem pode acessar</strong> como <strong>Qualquer pessoa</strong> → Clique em <strong>Implantar</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="note">
+            <strong>💡 Dica:</strong> Após fazer o deploy, você receberá uma URL. Copie e adicione ao arquivo <code>.env.local</code> como <code>GAS_WEB_APP_URL=URL_AQUI</code>
+        </div>
+
+        <div class="warning">
+            <strong>⚠️ Importante:</strong> Certifique-se de que "Quem pode acessar" está configurado como "Qualquer pessoa" para que o webhook funcione corretamente.
+        </div>
+    </div>
+
+    <script>
+        function copiarCodigo() {
+            const codeBox = document.getElementById('codeBox');
+            const text = codeBox.innerText;
+
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = event.target;
+                const original = btn.innerText;
+                btn.innerText = '✅ Copiado!';
+                btn.classList.add('copied');
+
+                setTimeout(() => {
+                    btn.innerText = original;
+                    btn.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                alert('Erro ao copiar: ' + err);
+            });
+        }
+    </script>
+</body>
+</html>

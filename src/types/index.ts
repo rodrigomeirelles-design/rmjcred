@@ -19,6 +19,17 @@ export interface GarantiaItem {
   validado: boolean;
 }
 
+export interface Tarefa {
+  id: number;
+  oportunidade_id: number;
+  cliente_nome: string;
+  tipo: string;
+  descricao: string;
+  data_vencimento: string;
+  concluida: number; // 0 or 1
+  created_at: string;
+}
+
 export interface Oportunidade {
   id: number;
   empresa_id: number;
@@ -34,6 +45,13 @@ export interface Oportunidade {
   created_at: string;
   updated_at: string;
   
+  // Extended fields adapted from older CRM version
+  canal: string; // 'Financiamento de Veículos', 'Financiamento Imobiliário', etc.
+  modo_comissao: 'credito' | 'liberado' | 'saldo';
+  comissao_porcentagem: number;
+  data_liberacao: string | null;
+  data_proposta: string | null;
+
   // Joined fields
   razao_social?: string;
   cnpj?: string;

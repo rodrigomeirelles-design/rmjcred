@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import db from "@/lib/db";
 
 export async function POST(request: Request) {
   try {
@@ -35,85 +34,86 @@ export async function POST(request: Request) {
     const valorFinanciamento = parseCurrency(simulacao?.valor_financiamento || "");
     const rendaMensal = parseCurrency(financeiro?.renda_mensal || "");
 
-    // Run DB changes in a transaction
-    if (db) {
+    // Run DB changes in a transaction only in development environment
+    if (process.env.NODE_ENV === "development") {
       try {
-        db.transaction(() => {
-          // 1. Create or find empresa record (using CPF as identifier for PF)
-          const cpfClean = proponente.cpf.replace(/\D/g, "");
-          let empresaId: number;
-          
-          // For PF (physical person), we use CPF formatted as a CNPJ-like key
-          const existing = db.prepare("SELECT id FROM empresas WHERE cnpj = ?").get(proponente.cpf) as any;
+        const { default: db } = await import("@/lib/db");
+        if (db) {
+          db.transaction(() => {
+            // 1. Create or find empresa record (using CPF as identifier for PF)
+            const cpfClean = proponente.cpf.replace(/\D/g, "");
+            let empresaId: number;
+            
+            // For PF (physical person), we use CPF formatted as a CNPJ-like key
+            const existing = db.prepare("SELECT id FROM empresas WHERE cnpj = ?").get(proponente.cpf) as any;
 
-          if (existing) {
-            empresaId = existing.id;
-            db.prepare("UPDATE empresas SET razao_social = ?, faturamento = ? WHERE id = ?")
-              .run(proponente.nome, rendaMensal * 12, empresaId);
-          } else {
-            const result = db.prepare("INSERT INTO empresas (cnpj, razao_social, faturamento) VALUES (?, ?, ?)")
-              .run(proponente.cpf, proponente.nome, rendaMensal * 12);
-            empresaId = result.lastInsertRowid as number;
-          }
-
-          // 2. Insert Contato (Proponente)
-          const hasProponente = db.prepare("SELECT id FROM contatos WHERE empresa_id = ? AND nome = ?")
-            .get(empresaId, proponente.nome);
-          if (!hasProponente) {
-            db.prepare("INSERT INTO contatos (empresa_id, nome, whatsapp, cargo) VALUES (?, ?, ?, ?)")
-              .run(empresaId, proponente.nome, proponente.celular || "", "Proponente Principal");
-          }
-
-          // 3. Insert Second Proponent as contact if exists
-          if (segundoProponente && segundoProponente.nome) {
-            const hasSegundo = db.prepare("SELECT id FROM contatos WHERE empresa_id = ? AND nome = ?")
-              .get(empresaId, segundoProponente.nome);
-            if (!hasSegundo) {
-              db.prepare("INSERT INTO contatos (empresa_id, nome, whatsapp, cargo) VALUES (?, ?, ?, ?)")
-                .run(empresaId, segundoProponente.nome, segundoProponente.celular || "", "Segundo Proponente");
+            if (existing) {
+              empresaId = existing.id;
+              db.prepare("UPDATE empresas SET razao_social = ?, faturamento = ? WHERE id = ?")
+                .run(proponente.nome, rendaMensal * 12, empresaId);
+            } else {
+              const result = db.prepare("INSERT INTO empresas (cnpj, razao_social, faturamento) VALUES (?, ?, ?)")
+                .run(proponente.cpf, proponente.nome, rendaMensal * 12);
+              empresaId = result.lastInsertRowid as number;
             }
-          }
 
-          // 4. Create Oportunidade in the pipeline
-          const defaultChecklist = JSON.stringify([
-            { item: "Comprovante de renda", validado: false },
-            { item: "RG/CPF", validado: false },
-            { item: "Comprovante de residência", validado: false },
-            { item: "Certidão de estado civil", validado: false },
-            { item: "Extrato FGTS", validado: false },
-            { item: "Matrícula do imóvel", validado: false }
-          ]);
+            // 2. Insert Contato (Proponente)
+            const hasProponente = db.prepare("SELECT id FROM contatos WHERE empresa_id = ? AND nome = ?")
+              .get(empresaId, proponente.nome);
+            if (!hasProponente) {
+              db.prepare("INSERT INTO contatos (empresa_id, nome, whatsapp, cargo) VALUES (?, ?, ?, ?)")
+                .run(empresaId, proponente.nome, proponente.celular || "", "Proponente Principal");
+            }
 
-          const comissaoEstimada = valorFinanciamento * 0.025; // 2.5% estimated commission
+            // 3. Insert Second Proponent as contact if exists
+            if (segundoProponente && segundoProponente.nome) {
+              const hasSegundo = db.prepare("SELECT id FROM contatos WHERE empresa_id = ? AND nome = ?")
+                .get(empresaId, segundoProponente.nome);
+              if (!hasSegundo) {
+                db.prepare("INSERT INTO contatos (empresa_id, nome, whatsapp, cargo) VALUES (?, ?, ?, ?)")
+                  .run(empresaId, segundoProponente.nome, segundoProponente.celular || "", "Segundo Proponente");
+              }
+            }
 
-          db.prepare(`
-            INSERT INTO oportunidades (
-              empresa_id, 
-              valor_solicitado, 
-              valor_aprovado,
-              comissao_esperada, 
-              status_repasse, 
-              coluna_kanban, 
-              checklist_garantias,
-              canal,
-              modo_comissao,
-              comissao_porcentagem,
-              data_proposta,
-              created_at,
-              updated_at
-            )
-            VALUES (?, ?, NULL, ?, 'pendente', 'prospect', ?, 'Financiamento Imobiliário', 'credito', 2.5, date('now'), CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-          `).run(empresaId, valorFinanciamento, comissaoEstimada, defaultChecklist);
+            // 4. Create Oportunidade in the pipeline
+            const defaultChecklist = JSON.stringify([
+              { item: "Comprovante de renda", validado: false },
+              { item: "RG/CPF", validado: false },
+              { item: "Comprovante de residência", validado: false },
+              { item: "Certidão de estado civil", validado: false },
+              { item: "Extrato FGTS", validado: false },
+              { item: "Matrícula do imóvel", validado: false }
+            ]);
 
-          // 5. Store full payload as JSON in a dedicated table for complete data
-          db.prepare("INSERT INTO fichas_imobiliario (empresa_id, payload) VALUES (?, ?)")
-            .run(empresaId, JSON.stringify(payload));
-        })();
+            const comissaoEstimada = valorFinanciamento * 0.025; // 2.5% estimated commission
+
+            db.prepare(`
+              INSERT INTO oportunidades (
+                empresa_id, 
+                valor_solicitado, 
+                valor_aprovado,
+                comissao_esperada, 
+                status_repasse, 
+                coluna_kanban, 
+                checklist_garantias,
+                canal,
+                modo_comissao,
+                comissao_porcentagem,
+                data_proposta,
+                created_at,
+                updated_at
+              )
+              VALUES (?, ?, NULL, ?, 'pendente', 'prospect', ?, 'Financiamento Imobiliário', 'credito', 2.5, date('now'), CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+            `).run(empresaId, valorFinanciamento, comissaoEstimada, defaultChecklist);
+
+            // 5. Store full payload as JSON in a dedicated table for complete data
+            db.prepare("INSERT INTO fichas_imobiliario (empresa_id, payload) VALUES (?, ?)")
+              .run(empresaId, JSON.stringify(payload));
+          })();
+        }
       } catch (dbErr) {
         console.error("Erro ao salvar no SQLite local:", dbErr);
       }
-    } else {
-      console.warn("SQLite inativo. Ignorando gravação local.");
     }
 
     // Google Apps Script backup integration

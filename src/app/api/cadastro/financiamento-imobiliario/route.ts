@@ -59,7 +59,7 @@ export async function POST(request: Request) {
         .get(empresaId, proponente.nome);
       if (!hasProponente) {
         db.prepare("INSERT INTO contatos (empresa_id, nome, whatsapp, cargo) VALUES (?, ?, ?, ?)")
-          .run(empresaId, proponente.nome, proponente.celular, "Proponente Principal");
+          .run(empresaId, proponente.nome, proponente.celular || "", "Proponente Principal");
       }
 
       // 3. Insert Second Proponent as contact if exists

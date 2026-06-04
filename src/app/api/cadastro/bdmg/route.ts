@@ -43,7 +43,7 @@ export async function POST(request: Request) {
         .get(empresaId, empresa.emp_repr_nome);
       if (!hasRepr) {
         db.prepare("INSERT INTO contatos (empresa_id, nome, whatsapp, cargo) VALUES (?, ?, ?, ?)")
-          .run(empresaId, empresa.emp_repr_nome, empresa.emp_telefone, "Representante Legal");
+          .run(empresaId, empresa.emp_repr_nome, empresa.emp_telefone || "", "Representante Legal");
       }
 
       if (socios && Array.isArray(socios)) {
@@ -53,7 +53,7 @@ export async function POST(request: Request) {
               .get(empresaId, socio.dados.nome);
             if (!hasSocio) {
               db.prepare("INSERT INTO contatos (empresa_id, nome, whatsapp, cargo) VALUES (?, ?, ?, ?)")
-                .run(empresaId, socio.dados.nome, socio.dados.telefone, "Sócio");
+                .run(empresaId, socio.dados.nome, socio.dados.telefone || "", "Sócio");
             }
           }
         }

@@ -312,32 +312,61 @@ export default function CadastroFinanciamentoImobiliario() {
     }
 
     setLoading(true);
+    setError("");
+
+    const payload = {
+      simulacao,
+      proponente,
+      segundo_proponente: adicionarSegundo === "Sim" ? segundoProponente : null,
+      endereco_proponente: enderecoProponente,
+      dados_imovel: dadosImovel,
+      endereco_imovel: dadosImovel.imovel_escolhido === "Sim" ? enderecoImovel : null,
+      financeiro,
+      contas,
+      info_adicional: infoAdicional,
+      aceite_lgpd: aceiteLgpd,
+    };
+
+    // 1. Tentar enviar para a API local (grava no SQLite se rodando localmente)
     try {
       const res = await fetch("/api/cadastro/financiamento-imobiliario", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          simulacao,
-          proponente,
-          segundo_proponente: adicionarSegundo === "Sim" ? segundoProponente : null,
-          endereco_proponente: enderecoProponente,
-          dados_imovel: dadosImovel,
-          endereco_imovel: dadosImovel.imovel_escolhido === "Sim" ? enderecoImovel : null,
-          financeiro,
-          contas,
-          info_adicional: infoAdicional,
-          aceite_lgpd: aceiteLgpd,
-        }),
+        body: JSON.stringify(payload),
       });
 
       const result = await res.json();
       if (result.success) {
         setSuccess(true);
+        setLoading(false);
+        return;
       } else {
-        setError(result.error || "Ocorreu um erro ao enviar sua proposta.");
+        console.warn("API Local retornou erro, tentando envio de contingência...", result.error);
       }
-    } catch {
-      setError("Erro interno de comunicação com a API.");
+    } catch (err) {
+      console.warn("API Local falhou ou está indisponível. Utilizando envio direto para o Google Sheets (GAS)...", err);
+    }
+
+    // 2. Contingência: Envio direto do Navegador para o Google Apps Script (GAS) via CORS
+    try {
+      const gasUrl = process.env.NEXT_PUBLIC_GAS_WEB_APP_URL || "https://script.google.com/macros/s/AKfycbzR6m199DyTnnTN2aeiekwuFdY5Le9MW6M4NyqcbofBNiUH7He4Ri_OpLZuEhSHzWAuWQ/exec";
+      const response = await fetch(gasUrl, {
+        method: "POST",
+        mode: "no-cors", // Crucial para contornar restrições de CORS no redirecionamento do GAS
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          tipo: "financiamento_imobiliario",
+          dados: payload,
+        }),
+      });
+
+      // No modo no-cors a resposta vem opaca (opaque), mas se não jogou exceção, o navegador concluiu o envio
+      setSuccess(true);
+    } catch (gasErr: any) {
+      console.error("Erro no envio de contingência direta ao GAS:", gasErr);
+      setError("Ocorreu um erro ao enviar sua proposta para nossa planilha segura. Verifique sua conexão e tente novamente.");
     } finally {
       setLoading(false);
     }

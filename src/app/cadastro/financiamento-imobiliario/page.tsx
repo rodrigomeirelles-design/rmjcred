@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ShieldCheck, ArrowRight, ArrowLeft, CheckCircle2, User, Building2, MapPin, Wallet, Home } from "lucide-react";
+import { useCadastroSubmit } from "@/hooks/useCadastroSubmit";
 
 const ESTADOS_BR = [
   "AC","AL","AM","AP","BA","CE","DF","ES","GO","MA","MG","MS","MT",
@@ -11,9 +12,14 @@ const ESTADOS_BR = [
 
 export default function CadastroFinanciamentoImobiliario() {
   const [step, setStep] = useState(1);
-  const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+
+  const { submit, isLoading: loading } = useCadastroSubmit({
+    formType: "financiamento-imobiliario",
+    onSuccess: () => setSuccess(true),
+    onError: (msg) => setError(msg),
+  });
 
   // ── Step 1: Simulação ──
   const [simulacao, setSimulacao] = useState({
@@ -311,9 +317,6 @@ export default function CadastroFinanciamentoImobiliario() {
       return;
     }
 
-    setLoading(true);
-    setError("");
-
     const payload = {
       simulacao,
       proponente,
@@ -327,49 +330,7 @@ export default function CadastroFinanciamentoImobiliario() {
       aceite_lgpd: aceiteLgpd,
     };
 
-    // 1. Tentar enviar para a API local (grava no SQLite se rodando localmente)
-    try {
-      const res = await fetch("/api/cadastro/financiamento-imobiliario", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      const result = await res.json();
-      if (result.success) {
-        setSuccess(true);
-        setLoading(false);
-        return;
-      } else {
-        console.warn("API Local retornou erro, tentando envio de contingência...", result.error);
-      }
-    } catch (err) {
-      console.warn("API Local falhou ou está indisponível. Utilizando envio direto para o Google Sheets (GAS)...", err);
-    }
-
-    // 2. Contingência: Envio direto do Navegador para o Google Apps Script (GAS) via CORS
-    try {
-      const gasUrl = process.env.NEXT_PUBLIC_GAS_WEB_APP_URL || "https://script.google.com/macros/s/AKfycbzR6m199DyTnnTN2aeiekwuFdY5Le9MW6M4NyqcbofBNiUH7He4Ri_OpLZuEhSHzWAuWQ/exec";
-      const response = await fetch(gasUrl, {
-        method: "POST",
-        mode: "no-cors", // Crucial para contornar restrições de CORS no redirecionamento do GAS
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          tipo: "financiamento_imobiliario",
-          dados: payload,
-        }),
-      });
-
-      // No modo no-cors a resposta vem opaca (opaque), mas se não jogou exceção, o navegador concluiu o envio
-      setSuccess(true);
-    } catch (gasErr: any) {
-      console.error("Erro no envio de contingência direta ao GAS:", gasErr);
-      setError("Ocorreu um erro ao enviar sua proposta para nossa planilha segura. Verifique sua conexão e tente novamente.");
-    } finally {
-      setLoading(false);
-    }
+    await submit(payload);
   };
 
   // ════════════════════════════════════════════════════════════════

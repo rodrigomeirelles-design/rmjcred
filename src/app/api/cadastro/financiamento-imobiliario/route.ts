@@ -6,7 +6,16 @@ export async function POST(request: Request) {
     const payload = await request.json();
     console.log("Nova Ficha Financiamento Imobiliário recebida:", payload);
 
-    const { simulacao, proponente, segundoProponente, enderecoProponente, imovel, enderecoImovel, financeiro, observacoes } = payload;
+    const { 
+      simulacao, 
+      proponente, 
+      segundo_proponente: segundoProponente, 
+      endereco_proponente: enderecoProponente, 
+      dados_imovel: imovel, 
+      endereco_imovel: enderecoImovel, 
+      financeiro, 
+      info_adicional: observacoes 
+    } = payload;
 
     if (!proponente || !proponente.nome || !proponente.cpf || !proponente.email) {
       return NextResponse.json(
@@ -95,21 +104,8 @@ export async function POST(request: Request) {
       `).run(empresaId, valorFinanciamento, comissaoEstimada, defaultChecklist);
 
       // 5. Store full payload as JSON in a dedicated table for complete data
-      try {
-        db.exec(`
-          CREATE TABLE IF NOT EXISTS fichas_imobiliario (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            empresa_id INTEGER NOT NULL,
-            payload TEXT NOT NULL,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY(empresa_id) REFERENCES empresas(id) ON DELETE CASCADE
-          )
-        `);
-        db.prepare("INSERT INTO fichas_imobiliario (empresa_id, payload) VALUES (?, ?)")
-          .run(empresaId, JSON.stringify(payload));
-      } catch {
-        // Table creation might fail silently on concurrent requests, that's okay
-      }
+      db.prepare("INSERT INTO fichas_imobiliario (empresa_id, payload) VALUES (?, ?)")
+        .run(empresaId, JSON.stringify(payload));
     })();
 
     // Google Apps Script backup integration

@@ -60,6 +60,14 @@ db.exec(`
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY(oportunidade_id) REFERENCES oportunidades(id) ON DELETE SET NULL
   );
+
+  CREATE TABLE IF NOT EXISTS fichas_imobiliario (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    empresa_id INTEGER NOT NULL,
+    payload TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(empresa_id) REFERENCES empresas(id) ON DELETE CASCADE
+  );
 `);
 
 // Safe ALTER TABLE additions for existing databases (ignored if columns exist)

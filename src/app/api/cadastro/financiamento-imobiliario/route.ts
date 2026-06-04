@@ -121,11 +121,16 @@ export async function POST(request: Request) {
           }),
         });
 
-        const gasData = await gasResponse.json();
-        if (!gasData.success) {
-          console.warn("GAS retornou erro:", gasData);
-        } else {
-          console.log("Dados de financiamento imobiliário salvos no Google Sheets (GAS)");
+        const text = await gasResponse.text();
+        try {
+          const gasData = JSON.parse(text);
+          if (!gasData.success) {
+            console.warn("GAS retornou erro:", gasData);
+          } else {
+            console.log("Dados de financiamento imobiliário salvos no Google Sheets (GAS)");
+          }
+        } catch {
+          console.warn("GAS não retornou um JSON válido:", text);
         }
       } catch (gasErr) {
         console.error("Erro ao enviar dados para Google Sheets (GAS):", gasErr);

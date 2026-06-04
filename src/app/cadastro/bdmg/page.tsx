@@ -105,7 +105,7 @@ export default function CadastroBdmg() {
         bairro: "",
         cidade: "",
         uf: "",
-        imovel_tipo: "Não possui",
+        imovel_tipo: "Não",
         imovel_valor: "",
         veiculo_placas: "",
       },
@@ -648,10 +648,14 @@ export default function CadastroBdmg() {
                 </div>
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 90px", gap: "1rem" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 90px", gap: "1rem" }}>
                 <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
                   <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Bairro *</label>
                   <input type="text" required className="apple-input" value={empresa.emp_bairro} onChange={(e) => setEmpresa({ ...empresa, emp_bairro: e.target.value })} placeholder="Bairro" />
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                  <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Complemento</label>
+                  <input type="text" className="apple-input" value={empresa.emp_complemento} onChange={(e) => setEmpresa({ ...empresa, emp_complemento: e.target.value })} placeholder="Sala, Andar, Bloco, etc." />
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
                   <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Cidade *</label>
@@ -797,18 +801,15 @@ export default function CadastroBdmg() {
                     </div>
                   </div>
 
-                  {/* Campo de Bens do Sócio */}
-                  <div style={{ display: "grid", gridTemplateColumns: "1.25fr 1.25fr 1fr", gap: "1rem" }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "1rem" }}>
                     <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
                       <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Possui Imóvel Próprio? *</label>
-                      <select className="apple-select" value={socio.dados.imovel_tipo || "Não possui"} onChange={(e) => handleSocioChange(idx, "imovel_tipo", e.target.value)}>
-                        <option value="Não possui">Não possui</option>
-                        <option value="Escritura/Matrícula">Matrícula no IRPF</option>
-                        <option value="Contrato de Compra">Contrato de Compra</option>
-                        <option value="IPTU">IPTU em seu nome</option>
+                      <select className="apple-select" value={socio.dados.imovel_tipo || "Não"} onChange={(e) => handleSocioChange(idx, "imovel_tipo", e.target.value)}>
+                        <option value="Não">Não</option>
+                        <option value="Sim">Sim</option>
                       </select>
                     </div>
-                    {socio.dados.imovel_tipo && socio.dados.imovel_tipo !== "Não possui" && (
+                    {socio.dados.imovel_tipo === "Sim" && (
                       <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
                         <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Valor Estimado (R$)</label>
                         <input type="text" className="apple-input" value={socio.dados.imovel_valor || ""} onChange={(e) => handleSocioChange(idx, "imovel_valor", handleCurrencyInput(e.target.value))} placeholder="R$ 0,00" />
@@ -907,17 +908,15 @@ export default function CadastroBdmg() {
                       </div>
 
                       {/* Bens do Cônjuge: Imóveis e Veículos */}
-                      <div style={{ display: "grid", gridTemplateColumns: "1.25fr 1.25fr 1fr", gap: "1rem" }}>
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "1rem" }}>
                         <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
                           <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Possui Imóvel Próprio? (Cônjuge)</label>
-                          <select className="apple-select" value={socio.conjuge.imovel_tipo || "Não possui"} onChange={(e) => handleConjugeChange(idx, "imovel_tipo", e.target.value)}>
-                            <option value="Não possui">Não possui</option>
-                            <option value="Escritura/Matrícula">Matrícula no IRPF</option>
-                            <option value="Contrato de Compra">Contrato de Compra</option>
-                            <option value="IPTU">IPTU em nome do cônjuge</option>
+                          <select className="apple-select" value={socio.conjuge.imovel_tipo || "Não"} onChange={(e) => handleConjugeChange(idx, "imovel_tipo", e.target.value)}>
+                            <option value="Não">Não</option>
+                            <option value="Sim">Sim</option>
                           </select>
                         </div>
-                        {socio.conjuge.imovel_tipo && socio.conjuge.imovel_tipo !== "Não possui" && (
+                        {socio.conjuge.imovel_tipo === "Sim" && (
                           <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
                             <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1d1d1f" }}>Valor Estimado (R$)</label>
                             <input type="text" className="apple-input" value={socio.conjuge.imovel_valor || ""} onChange={(e) => handleConjugeChange(idx, "imovel_valor", handleCurrencyInput(e.target.value))} placeholder="R$ 0,00" />

@@ -134,6 +134,70 @@ function doPost(e) {
       
       return ContentService.createTextOutput(JSON.stringify({ success: true }))
         .setMimeType(ContentService.MimeType.JSON);
+    } else if (requestData.tipo === "financiamento_imobiliario") {
+      const payload = requestData.dados;
+      const ss = SpreadsheetApp.getActiveSpreadsheet();
+      
+      const sheet = getOrCreateSheet(ss, 'FinanciamentoImobiliario', [
+        'CPF Proponente', 'Nome Proponente', 'E-mail Proponente', 'Celular Proponente',
+        'Valor do Imóvel', 'Valor Financiado', 'Prazo (meses)', 'Estado do Imóvel', 'Utiliza FGTS', 'Valor FGTS',
+        'Data Nascimento', 'Sexo', 'Nome da Mãe', 'Documento RG', 'Estado Emissão RG', 'Órgão Emissor RG', 'Estado Civil',
+        'Segundo Proponente?', 'Nome 2º Proponente', 'CPF 2º Proponente',
+        'CEP Proponente', 'Cidade Proponente', 'Estado Proponente',
+        'Imóvel Escolhido?', 'Situação Imóvel', 'CEP Imóvel', 'Cidade Imóvel',
+        'Fonte de Renda', 'Renda Mensal', 'Profissão',
+        'Contas Bancárias', 'Observações', 'DataCadastro'
+      ]);
+      
+      const s = payload.simulacao;
+      const p = payload.proponente;
+      const sp = payload.segundo_proponente;
+      const ep = payload.endereco_proponente;
+      const dim = payload.dados_imovel;
+      const eim = payload.endereco_imovel;
+      const f = payload.financeiro;
+      const c = payload.contas;
+      
+      const contasStr = `Santander: Ag ${c.ag_santander || ""}/Cc ${c.cc_santander || ""}; Itaú: Ag ${c.ag_itau || ""}/Cc ${c.cc_itau || ""}; Bradesco: Ag ${c.ag_bradesco || ""}/Cc ${c.cc_bradesco || ""}`;
+      
+      sheet.appendRow([
+        p.cpf,
+        p.nome,
+        p.email,
+        p.celular,
+        s.valor_imovel,
+        s.valor_financiamento,
+        s.prazo,
+        s.estado_imovel,
+        s.utilizar_fgts || "Não",
+        s.valor_fgts || "",
+        p.nascimento,
+        p.sexo,
+        p.nome_mae,
+        p.rg,
+        p.estado_emissao,
+        p.orgao_emissor,
+        p.estado_civil,
+        payload.segundo_proponente ? "Sim" : "Não",
+        sp ? sp.nome : "",
+        sp ? sp.cpf : "",
+        ep.cep,
+        ep.cidade,
+        ep.estado,
+        dim.imovel_escolhido,
+        dim.situacao_imovel || "",
+        eim ? eim.cep : "",
+        eim ? eim.cidade : "",
+        f.fonte_renda,
+        f.renda_mensal,
+        f.profissao,
+        contasStr,
+        payload.info_adicional || "",
+        new Date().toISOString()
+      ]);
+      
+      return ContentService.createTextOutput(JSON.stringify({ success: true }))
+        .setMimeType(ContentService.MimeType.JSON);
     }
     
     return ContentService.createTextOutput(JSON.stringify({ success: false, error: "Tipo de requisição inválido" }))

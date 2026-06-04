@@ -39,11 +39,44 @@ db.exec(`
     data_recusa TEXT,
     checklist_garantias TEXT NOT NULL,
     followup_data TEXT,
+    canal TEXT DEFAULT 'Capital de Giro BDMG',
+    modo_comissao TEXT DEFAULT 'credito',
+    comissao_porcentagem REAL DEFAULT 4.0,
+    data_liberacao TEXT,
+    data_proposta TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY(empresa_id) REFERENCES empresas(id) ON DELETE CASCADE
   );
+
+  CREATE TABLE IF NOT EXISTS tarefas (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    oportunidade_id INTEGER,
+    cliente_nome TEXT NOT NULL,
+    tipo TEXT NOT NULL DEFAULT 'Manual',
+    descricao TEXT NOT NULL,
+    data_vencimento TEXT NOT NULL,
+    concluida INTEGER DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(oportunidade_id) REFERENCES oportunidades(id) ON DELETE SET NULL
+  );
 `);
+
+// Safe ALTER TABLE additions for existing databases (ignored if columns exist)
+const safeAddColumn = (table: string, column: string, type: string, defaultVal?: string) => {
+  try {
+    const def = defaultVal !== undefined ? ` DEFAULT ${defaultVal}` : "";
+    db.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${type}${def}`);
+  } catch {
+    // Column already exists, ignore
+  }
+};
+
+safeAddColumn("oportunidades", "canal", "TEXT", "'Capital de Giro BDMG'");
+safeAddColumn("oportunidades", "modo_comissao", "TEXT", "'credito'");
+safeAddColumn("oportunidades", "comissao_porcentagem", "REAL", "4.0");
+safeAddColumn("oportunidades", "data_liberacao", "TEXT", "NULL");
+safeAddColumn("oportunidades", "data_proposta", "TEXT", "NULL");
 
 // Seed initial data if empty
 const count = db.prepare("SELECT COUNT(*) as count FROM empresas").get() as { count: number };
@@ -51,8 +84,8 @@ if (count.count === 0) {
   const insertEmpresa = db.prepare("INSERT OR IGNORE INTO empresas (cnpj, razao_social, faturamento) VALUES (?, ?, ?)");
   const insertContato = db.prepare("INSERT INTO contatos (empresa_id, nome, whatsapp, cargo) VALUES (?, ?, ?, ?)");
   const insertOportunidade = db.prepare(`
-    INSERT INTO oportunidades (empresa_id, valor_solicitado, valor_aprovado, comissao_esperada, status_repasse, coluna_kanban, checklist_garantias)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO oportunidades (empresa_id, valor_solicitado, valor_aprovado, comissao_esperada, status_repasse, coluna_kanban, checklist_garantias, canal, comissao_porcentagem, data_proposta)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
 
   db.transaction(() => {
@@ -79,8 +112,8 @@ if (count.count === 0) {
         { item: "Equipamentos", validado: false }
       ]);
 
-      insertOportunidade.run(e1, 150000, 150000, 6000, "pendente", "em_preenchimento", pendingChecklist);
-      insertOportunidade.run(e1, 200000, null, 8000, "pendente", "em_analise", allValidated);
+      insertOportunidade.run(e1, 150000, 150000, 6000, "pendente", "em_preenchimento", pendingChecklist, "Capital de Giro BDMG", 4.0, "2025-01-15");
+      insertOportunidade.run(e1, 200000, null, 8000, "pendente", "em_analise", allValidated, "Financiamento Imobiliário", 2.5, "2025-02-10");
     }
 
     // Tecnologia Itajubense
@@ -96,7 +129,7 @@ if (count.count === 0) {
         { item: "Veículos", validado: false },
         { item: "Equipamentos", validado: false }
       ]);
-      insertOportunidade.run(e2, 350000, 320000, 14000, "recebido", "aprovada", pendingChecklist);
+      insertOportunidade.run(e2, 350000, 320000, 14000, "recebido", "aprovada", pendingChecklist, "Capital de Giro BDMG", 4.0, "2025-03-05");
     }
 
     // Metalúrgica Mantiqueira
@@ -112,8 +145,17 @@ if (count.count === 0) {
         { item: "Veículos", validado: false },
         { item: "Equipamentos", validado: false }
       ]);
-      insertOportunidade.run(e3, 500000, null, 20000, "pendente", "aguardando_documentacao", pendingChecklist);
+      insertOportunidade.run(e3, 500000, null, 20000, "pendente", "aguardando_documentacao", pendingChecklist, "Financiamento de Veículos", 3.0, "2025-04-20");
     }
+
+    // Seed initial tasks
+    const insertTarefa = db.prepare(`
+      INSERT INTO tarefas (oportunidade_id, cliente_nome, tipo, descricao, data_vencimento, concluida)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `);
+    insertTarefa.run(null, "Café das Alterosas Ltda", "Manual", "Enviar proposta comercial atualizada", "2025-06-10", 0);
+    insertTarefa.run(null, "Tecnologia Itajubense S.A.", "Reenvio", "Reenviar documentação pendente BDMG", "2025-06-05", 0);
+    insertTarefa.run(null, "Metalúrgica Mantiqueira Eireli", "Manual", "Agendar reunião para apresentação de garantias", "2025-06-15", 0);
   })();
 }
 

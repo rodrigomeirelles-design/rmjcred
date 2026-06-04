@@ -52,13 +52,14 @@ function doPost(e) {
       // 2. Salvar Dados Bancários
       if (bancario) {
         const sheetBanco = getOrCreateSheet(ss, SHEET_BANCOS, [
-          'CNPJ Empresa', 'Banco', 'Agência', 'Conta Corrente', 'DataCadastro'
+          'CNPJ Empresa', 'Banco', 'Agência', 'Conta Corrente', 'Observacoes', 'DataCadastro'
         ]);
         sheetBanco.appendRow([
           empresa.emp_cnpj,
           bancario.banco_nome,
           bancario.banco_agencia,
           bancario.banco_conta,
+          requestData.dados.observacoes ? requestData.dados.observacoes.obs_finais : "",
           new Date().toISOString()
         ]);
       }
@@ -66,19 +67,23 @@ function doPost(e) {
       // 3. Salvar Sócios e Cônjuges
       if (socios && Array.isArray(socios)) {
         const sheetSocios = getOrCreateSheet(ss, SHEET_SOCIOS, [
-          'CNPJ Empresa', 'Nome Sócio', 'CPF Sócio', 'RG Sócio', 'Emissão RG Sócio', 
-          'Nascimento', 'Participação %', 'Estado Civil', 'Regime', 
-          'E-mail Sócio', 'Telefone Sócio', 'Renda Sócio', 'CEP Sócio', 
-          'Endereço Sócio', 'Bens Sócio (Imóvel)', 'Valor Bens Sócio', 'Veículos Sócio',
+          'CNPJ Empresa', 'Nome Sócio', 'CPF Sócio', 'RG Sócio', 'Emissão RG Sócio',
+          'Nascimento', 'Participação %', 'Estado Civil', 'Regime',
+          'Profissão Sócio', 'Nacionalidade Sócio',
+          'E-mail Sócio', 'Telefone Sócio', 'Renda Sócio', 'CEP Sócio',
+          'Logradouro Sócio', 'Número Sócio', 'Complemento Sócio', 'Bairro Sócio', 'Cidade Sócio', 'UF Sócio',
+          'Bens Sócio (Imóvel)', 'Valor Bens Sócio', 'Veículos Sócio',
           'Nome Cônjuge', 'CPF Cônjuge', 'RG Cônjuge', 'Emissão RG Cônjuge',
-          'Nascimento Cônjuge', 'E-mail Cônjuge', 'Telefone Cônjuge', 
-          'Incluir Renda Cônjuge', 'Renda Cônjuge', 'DataCadastro'
+          'Nascimento Cônjuge', 'E-mail Cônjuge', 'Telefone Cônjuge',
+          'CEP Cônjuge', 'Logradouro Cônjuge', 'Número Cônjuge', 'Bairro Cônjuge', 'Cidade Cônjuge', 'UF Cônjuge',
+          'Incluir Renda Cônjuge', 'Renda Cônjuge', 'Imóvel Cônjuge', 'Valor Imóvel Cônjuge', 'Veículos Cônjuge',
+          'DataCadastro'
         ]);
-        
+
         socios.forEach(socio => {
           const d = socio.dados;
           const c = socio.conjuge;
-          
+
           sheetSocios.appendRow([
             empresa.emp_cnpj,
             d.nome,
@@ -89,11 +94,18 @@ function doPost(e) {
             d.participacao || "",
             d.estado_civil || "",
             d.regime || "",
+            d.profissao || "",
+            d.nacionalidade || "",
             d.email || "",
             d.telefone || "",
             d.renda || "",
             d.cep || "",
-            (d.logradouro || "") + ", " + (d.numero || ""),
+            d.logradouro || "",
+            d.numero || "",
+            d.complemento || "",
+            d.bairro || "",
+            d.cidade || "",
+            d.uf || "",
             d.imovel_tipo || "",
             d.imovel_valor || "",
             d.veiculo_placas || "",
@@ -104,8 +116,17 @@ function doPost(e) {
             c ? c.nascimento : "",
             c ? c.email : "",
             c ? c.telefone : "",
+            c ? c.cep : "",
+            c ? c.logradouro : "",
+            c ? c.numero : "",
+            c ? c.bairro : "",
+            c ? c.cidade : "",
+            c ? c.uf : "",
             c ? c.incluir_renda : "",
             c ? (c.renda || "") : "",
+            c ? c.imovel_tipo : "",
+            c ? c.imovel_valor : "",
+            c ? c.veiculo_placas : "",
             new Date().toISOString()
           ]);
         });

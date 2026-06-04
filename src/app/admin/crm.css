@@ -1,119 +1,503 @@
-/* CRM RMJ - Dark Mode CSS */
+/* ============================================================
+   CRM RMJ - Professional Light Theme v2.0
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 .crm-theme {
-  --crm-bg: #09090b; /* zinc-950 */
-  --crm-card: #18181b; /* zinc-900 */
-  --crm-surface: #27272a; /* zinc-800 */
-  --crm-border: #3f3f46; /* zinc-700 */
-  --crm-text: #f4f4f5; /* zinc-100 */
-  --crm-muted: #a1a1aa; /* zinc-400 */
-  
-  --crm-blue: #1e40af; /* blue-800 */
-  --crm-green: #4ade80; /* green-400 */
-  --crm-amber: #fbbf24; /* amber-400 */
-  --crm-red: #ef4444; /* red-500 */
-  
-  --fase1: #0ea5e9; /* sky-500 */
-  --fase2: #8b5cf6; /* violet-500 */
-  --fase3: #f59e0b; /* amber-500 */
-  --fase4: #10b981; /* emerald-500 */
-  --fase5: #ef4444; /* red-500 */
+  /* === Color System === */
+  --crm-bg: #f1f5f9;
+  --crm-card: #ffffff;
+  --crm-surface: #f8fafc;
+  --crm-border: #e2e8f0;
+  --crm-border-light: #f1f5f9;
+  --crm-text: #0f172a;
+  --crm-text-secondary: #334155;
+  --crm-muted: #64748b;
+  --crm-muted-light: #94a3b8;
+
+  /* Accent Colors */
+  --crm-blue: #3b82f6;
+  --crm-blue-dark: #2563eb;
+  --crm-blue-light: #eff6ff;
+  --crm-green: #10b981;
+  --crm-green-light: #ecfdf5;
+  --crm-amber: #f59e0b;
+  --crm-amber-light: #fffbeb;
+  --crm-red: #ef4444;
+  --crm-red-light: #fef2f2;
+  --crm-purple: #8b5cf6;
+  --crm-purple-light: #f5f3ff;
+  --crm-indigo: #6366f1;
+  --crm-cyan: #06b6d4;
+  --crm-teal: #14b8a6;
+
+  /* Pipeline Colors */
+  --fase1: #64748b;
+  --fase2: #3b82f6;
+  --fase3: #f59e0b;
+  --fase4: #10b981;
+  --fase5: #8b5cf6;
+  --fase6: #2563eb;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.03);
 
   background-color: var(--crm-bg);
   color: var(--crm-text);
   min-height: 100vh;
-  font-family: var(--font-montserrat), sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  display: flex;
 }
 
-.crm-container {
-  width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 2rem 1.5rem;
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
+.crm-sidebar {
+  width: 260px;
+  min-width: 260px;
+  background: var(--crm-card);
+  border-right: 1px solid var(--crm-border);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 100;
+  overflow-y: auto;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Navbar */
-.crm-nav {
-  background-color: var(--crm-card);
+.crm-sidebar-header {
+  padding: 1.5rem 1.25rem;
   border-bottom: 1px solid var(--crm-border);
-  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.crm-sidebar-logo {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, var(--crm-blue), var(--crm-indigo));
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 800;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.crm-sidebar-brand {
+  display: flex;
+  flex-direction: column;
+}
+
+.crm-sidebar-brand-name {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--crm-text);
+  line-height: 1.2;
+}
+
+.crm-sidebar-brand-sub {
+  font-size: 0.7rem;
+  color: var(--crm-muted);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.crm-sidebar-section {
+  padding: 1rem 0.75rem 0.5rem;
+}
+
+.crm-sidebar-section-title {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--crm-muted-light);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.crm-sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--crm-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  text-decoration: none;
+}
+
+.crm-sidebar-link:hover {
+  background-color: var(--crm-surface);
+  color: var(--crm-text);
+}
+
+.crm-sidebar-link.active {
+  background-color: var(--crm-blue-light);
+  color: var(--crm-blue-dark);
+  font-weight: 600;
+}
+
+.crm-sidebar-link.active svg {
+  color: var(--crm-blue);
+}
+
+.crm-sidebar-link-badge {
+  margin-left: auto;
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: var(--crm-red);
+  color: white;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  min-width: 18px;
+  text-align: center;
+}
+
+.crm-sidebar-footer {
+  margin-top: auto;
+  padding: 1rem 0.75rem;
+  border-top: 1px solid var(--crm-border);
+}
+
+.crm-sidebar-user {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem;
+}
+
+.crm-sidebar-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--crm-green), var(--crm-teal));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+
+.crm-sidebar-user-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.crm-sidebar-user-name {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--crm-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.crm-sidebar-user-role {
+  font-size: 0.7rem;
+  color: var(--crm-muted);
+}
+
+/* ============================================================
+   MAIN CONTENT
+   ============================================================ */
+.crm-main {
+  flex: 1;
+  margin-left: 260px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.crm-topbar {
+  background: var(--crm-card);
+  border-bottom: 1px solid var(--crm-border);
+  padding: 0.75rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 50;
+  box-shadow: var(--shadow-sm);
 }
 
-.crm-nav-logo {
+.crm-topbar-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--crm-text);
+}
+
+.crm-topbar-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.crm-container {
+  width: 100%;
+  max-width: 100%;
+  padding: 1.5rem 2rem;
+  flex: 1;
+}
+
+/* ============================================================
+   DASHBOARD CARDS
+   ============================================================ */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.dashboard-card {
+  background: var(--crm-card);
+  border: 1px solid var(--crm-border);
+  border-radius: 12px;
+  padding: 1.25rem;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.dashboard-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.dashboard-card-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.dashboard-card-icon.blue { background: var(--crm-blue-light); color: var(--crm-blue); }
+.dashboard-card-icon.green { background: var(--crm-green-light); color: var(--crm-green); }
+.dashboard-card-icon.amber { background: var(--crm-amber-light); color: var(--crm-amber); }
+.dashboard-card-icon.red { background: var(--crm-red-light); color: var(--crm-red); }
+.dashboard-card-icon.purple { background: var(--crm-purple-light); color: var(--crm-purple); }
+
+.dashboard-card-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--crm-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.35rem;
+}
+
+.dashboard-card-value {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--crm-text);
+  line-height: 1.2;
+}
+
+.dashboard-card-sub {
+  font-size: 0.75rem;
+  color: var(--crm-muted);
+  margin-top: 0.25rem;
+}
+
+/* Dashboard chart containers */
+.dashboard-charts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.dashboard-chart-card {
+  background: var(--crm-card);
+  border: 1px solid var(--crm-border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.dashboard-chart-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--crm-text);
+  margin-bottom: 1rem;
+}
+
+/* Pipeline funnel bars */
+.pipeline-bar-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.pipeline-bar-row {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  font-weight: 800;
-  font-size: 1.25rem;
-  color: var(--crm-text);
 }
 
-.crm-nav-links {
+.pipeline-bar-label {
+  width: 130px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--crm-text-secondary);
+  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pipeline-bar-track {
+  flex: 1;
+  height: 24px;
+  background: var(--crm-surface);
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+}
+
+.pipeline-bar-fill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
-  gap: 1.5rem;
   align-items: center;
+  justify-content: flex-end;
+  padding-right: 8px;
+  min-width: fit-content;
 }
 
-.crm-nav-link {
-  color: var(--crm-muted);
+.pipeline-bar-count {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.pipeline-bar-value {
+  width: 100px;
+  font-size: 0.75rem;
   font-weight: 600;
-  font-size: 0.95rem;
-  transition: all 0.2s ease;
+  color: var(--crm-muted);
+  text-align: right;
+  flex-shrink: 0;
 }
 
-.crm-nav-link:hover, .crm-nav-link.active {
+/* Canal chart */
+.canal-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--crm-border-light);
+}
+
+.canal-bar:last-child {
+  border-bottom: none;
+}
+
+.canal-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.canal-name {
+  flex: 1;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--crm-text-secondary);
+}
+
+.canal-count {
+  font-size: 0.8rem;
+  font-weight: 700;
   color: var(--crm-text);
 }
 
-/* Kanban Layout */
+.canal-value {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--crm-muted);
+  width: 110px;
+  text-align: right;
+}
+
+/* ============================================================
+   KANBAN
+   ============================================================ */
 .kanban-board {
   display: flex;
   gap: 1rem;
   overflow-x: auto;
   padding-bottom: 1rem;
   align-items: flex-start;
-  min-height: 70vh;
+  min-height: 65vh;
 }
 
 .kanban-col {
-  flex: 0 0 300px;
-  background-color: var(--crm-card);
-  border-radius: 8px;
+  flex: 0 0 280px;
+  background-color: var(--crm-surface);
+  border-radius: 12px;
   border: 1px solid var(--crm-border);
   display: flex;
   flex-direction: column;
-  max-height: 80vh;
-  transition: background-color 0.2s ease;
+  max-height: 75vh;
+  transition: all 0.2s ease;
 }
 
 .kanban-col.drag-over {
-  background-color: var(--crm-surface);
-  border-color: var(--crm-muted);
+  background-color: var(--crm-blue-light);
+  border-color: var(--crm-blue);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
 }
 
 .kanban-col-header {
-  padding: 1rem;
+  padding: 0.85rem 1rem;
   border-bottom: 1px solid var(--crm-border);
-  border-top: 4px solid var(--border-color, var(--crm-border));
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
+  border-top: 3px solid var(--border-color, var(--crm-border));
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  background: var(--crm-card);
 }
 
 .kanban-col-title-area {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.2rem;
 }
 
 .kanban-col-title {
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   font-weight: 700;
   color: var(--crm-text);
 }
@@ -121,42 +505,47 @@
 .kanban-col-count {
   background-color: var(--crm-surface);
   color: var(--crm-muted);
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0.2rem 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
   border-radius: 999px;
+  border: 1px solid var(--crm-border);
 }
 
 .kanban-col-total {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: var(--crm-muted);
-  font-family: monospace;
+  font-weight: 500;
 }
 
 .kanban-col-list {
-  padding: 0.75rem;
+  padding: 0.6rem;
   overflow-y: auto;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  min-height: 150px;
+  gap: 0.6rem;
+  min-height: 120px;
 }
 
-/* Card */
+/* ============================================================
+   KANBAN CARD
+   ============================================================ */
 .kanban-card {
-  background-color: var(--crm-surface);
+  background-color: var(--crm-card);
   border: 1px solid var(--crm-border);
-  border-radius: 6px;
-  padding: 1rem;
+  border-radius: 8px;
+  padding: 0.85rem;
   cursor: grab;
-  transition: transform 0.15s ease, border-color 0.15s ease;
+  transition: all 0.15s ease;
   user-select: none;
+  box-shadow: var(--shadow-sm);
 }
 
 .kanban-card:hover {
-  border-color: var(--crm-muted);
-  transform: translateY(-2px);
+  border-color: var(--crm-blue);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
 }
 
 .kanban-card:active {
@@ -164,83 +553,101 @@
 }
 
 .kanban-card-title {
-  font-size: 0.95rem;
-  font-weight: 700;
+  font-size: 0.85rem;
+  font-weight: 600;
   color: var(--crm-text);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.35rem;
   line-height: 1.3;
 }
 
 .kanban-card-value {
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--crm-green);
-  font-family: monospace;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
 }
 
 .kanban-card-badges {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
+  gap: 0.35rem;
 }
 
-/* Badges */
+/* ============================================================
+   BADGES
+   ============================================================ */
 .crm-badge {
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
-  font-size: 0.75rem;
-  font-weight: 700;
-  padding: 0.2rem 0.5rem;
-  border-radius: 4px;
+  gap: 0.2rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 0.15rem 0.45rem;
+  border-radius: 5px;
 }
 
 .crm-badge-red {
-  background-color: rgba(239, 68, 68, 0.15);
+  background-color: var(--crm-red-light);
   color: var(--crm-red);
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
 .crm-badge-amber {
-  background-color: rgba(251, 191, 36, 0.15);
-  color: var(--crm-amber);
-  border: 1px solid rgba(251, 191, 36, 0.3);
+  background-color: var(--crm-amber-light);
+  color: #b45309;
+  border: 1px solid rgba(245, 158, 11, 0.2);
 }
 
 .crm-badge-green {
-  background-color: rgba(16, 185, 129, 0.15);
-  color: #10b981;
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  background-color: var(--crm-green-light);
+  color: #047857;
+  border: 1px solid rgba(16, 185, 129, 0.2);
 }
 
-/* Modals & Dialogs */
+.crm-badge-blue {
+  background-color: var(--crm-blue-light);
+  color: var(--crm-blue-dark);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.crm-badge-purple {
+  background-color: var(--crm-purple-light);
+  color: #7c3aed;
+  border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+/* ============================================================
+   MODALS & DRAWERS
+   ============================================================ */
 .crm-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  animation: fadeIn 0.2s ease;
 }
 
 .crm-modal {
   background-color: var(--crm-card);
   border: 1px solid var(--crm-border);
-  border-radius: 12px;
+  border-radius: 16px;
   width: 90%;
   max-width: 500px;
   padding: 2rem;
   position: relative;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--shadow-xl);
+  animation: slideUp 0.25s ease;
 }
 
 .crm-modal-title {
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   font-weight: 700;
   color: var(--crm-text);
   margin-bottom: 1rem;
@@ -249,19 +656,20 @@
 .crm-modal-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 1rem;
+  gap: 0.75rem;
   margin-top: 1.5rem;
 }
 
-/* CRM Sheet / Drawer */
 .crm-drawer-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(4px);
   z-index: 900;
+  animation: fadeIn 0.2s ease;
 }
 
 .crm-drawer {
@@ -270,27 +678,30 @@
   right: 0;
   bottom: 0;
   width: 100%;
-  max-width: 480px;
+  max-width: 500px;
   background-color: var(--crm-card);
   border-left: 1px solid var(--crm-border);
   padding: 2rem;
   z-index: 950;
   display: flex;
   flex-direction: column;
-  box-shadow: -10px 0 25px -5px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--shadow-xl);
   overflow-y: auto;
+  animation: slideRight 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Form Controls */
+/* ============================================================
+   FORM CONTROLS
+   ============================================================ */
 .crm-form-group {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  margin-bottom: 1.25rem;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
 }
 
 .crm-label {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 600;
   color: var(--crm-muted);
 }
@@ -299,46 +710,57 @@
   width: 100%;
   background-color: var(--crm-surface);
   border: 1px solid var(--crm-border);
-  border-radius: 6px;
-  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  padding: 0.65rem 0.85rem;
   color: var(--crm-text);
   font-family: inherit;
-  font-size: 0.95rem;
-  transition: border-color 0.15s ease;
+  font-size: 0.9rem;
+  transition: all 0.15s ease;
 }
 
 .crm-input:focus, .crm-select:focus, .crm-textarea:focus {
   outline: none;
-  border-color: var(--crm-muted);
+  border-color: var(--crm-blue);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
 }
 
-/* Buttons */
+.crm-input::placeholder, .crm-textarea::placeholder {
+  color: var(--crm-muted-light);
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
 .crm-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   font-weight: 600;
-  padding: 0.6rem 1.25rem;
-  border-radius: 6px;
+  padding: 0.55rem 1.15rem;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 0.9rem;
-  gap: 0.5rem;
-  transition: all 0.2s ease;
+  font-size: 0.85rem;
+  gap: 0.4rem;
+  transition: all 0.15s ease;
   border: 1px solid transparent;
+  font-family: inherit;
 }
 
 .crm-btn-primary {
-  background-color: var(--crm-blue);
-  color: var(--crm-text);
+  background: linear-gradient(135deg, var(--crm-blue), var(--crm-blue-dark));
+  color: white;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
 }
 
 .crm-btn-primary:hover {
-  background-color: #2563eb;
+  background: linear-gradient(135deg, var(--crm-blue-dark), #1d4ed8);
+  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.4);
+  transform: translateY(-1px);
 }
 
 .crm-btn-secondary {
   background-color: var(--crm-surface);
-  color: var(--crm-text);
+  color: var(--crm-text-secondary);
   border-color: var(--crm-border);
 }
 
@@ -347,35 +769,335 @@
 }
 
 .crm-btn-danger {
-  background-color: rgba(239, 68, 68, 0.15);
+  background-color: var(--crm-red-light);
   color: var(--crm-red);
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
 .crm-btn-danger:hover {
   background-color: var(--crm-red);
+  color: white;
+}
+
+.crm-btn-sm {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.78rem;
+}
+
+.crm-btn-ghost {
+  background: transparent;
+  color: var(--crm-muted);
+  border: none;
+  padding: 0.4rem 0.6rem;
+}
+
+.crm-btn-ghost:hover {
+  background-color: var(--crm-surface);
   color: var(--crm-text);
 }
 
-/* CRM Table */
+/* ============================================================
+   TABLE
+   ============================================================ */
 .crm-table {
   width: 100%;
-  border-collapse: collapse;
-  margin-top: 1.5rem;
-}
-
-.crm-table th, .crm-table td {
-  padding: 1rem;
-  text-align: left;
-  border-bottom: 1px solid var(--crm-border);
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--crm-card);
+  border: 1px solid var(--crm-border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 
 .crm-table th {
-  font-weight: 700;
+  padding: 0.85rem 1rem;
+  text-align: left;
+  font-weight: 600;
   color: var(--crm-muted);
-  font-size: 0.9rem;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: var(--crm-surface);
+  border-bottom: 1px solid var(--crm-border);
+}
+
+.crm-table td {
+  padding: 0.85rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--crm-border-light);
+  font-size: 0.875rem;
+  color: var(--crm-text-secondary);
 }
 
 .crm-table tbody tr:hover {
-  background-color: rgba(255, 255, 255, 0.02);
+  background-color: var(--crm-blue-light);
+}
+
+.crm-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* ============================================================
+   TAREFAS (Task list)
+   ============================================================ */
+.tarefa-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tarefa-item {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.85rem 1rem;
+  background: var(--crm-card);
+  border: 1px solid var(--crm-border);
+  border-radius: 10px;
+  transition: all 0.15s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.tarefa-item:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.tarefa-item.concluida {
+  opacity: 0.55;
+}
+
+.tarefa-item.concluida .tarefa-descricao {
+  text-decoration: line-through;
+}
+
+.tarefa-item.vencida {
+  border-left: 3px solid var(--crm-red);
+}
+
+.tarefa-checkbox {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  border: 2px solid var(--crm-border);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: var(--crm-card);
+}
+
+.tarefa-checkbox:hover {
+  border-color: var(--crm-blue);
+}
+
+.tarefa-checkbox.checked {
+  background: var(--crm-green);
+  border-color: var(--crm-green);
+  color: white;
+}
+
+.tarefa-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.tarefa-descricao {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--crm-text);
+  margin-bottom: 0.15rem;
+}
+
+.tarefa-meta {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.tarefa-meta-item {
+  font-size: 0.72rem;
+  color: var(--crm-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.tarefa-meta-item.vencida {
+  color: var(--crm-red);
+  font-weight: 600;
+}
+
+/* ============================================================
+   COMISSÕES
+   ============================================================ */
+.comissao-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.comissao-card {
+  background: var(--crm-card);
+  border: 1px solid var(--crm-border);
+  border-radius: 10px;
+  padding: 1.25rem;
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+}
+
+.comissao-card-value {
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin-bottom: 0.25rem;
+}
+
+.comissao-card-label {
+  font-size: 0.75rem;
+  color: var(--crm-muted);
+  font-weight: 500;
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+/* ============================================================
+   ALERT CARDS
+   ============================================================ */
+.alert-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 1rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+
+.alert-card.warning {
+  background: var(--crm-amber-light);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  color: #92400e;
+}
+
+.alert-card.danger {
+  background: var(--crm-red-light);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #991b1b;
+}
+
+.alert-card.info {
+  background: var(--crm-blue-light);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  color: #1e40af;
+}
+
+.alert-card.success {
+  background: var(--crm-green-light);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  color: #065f46;
+}
+
+/* ============================================================
+   EMPTY STATE
+   ============================================================ */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+  color: var(--crm-muted);
+}
+
+.empty-state svg {
+  margin-bottom: 1rem;
+  opacity: 0.4;
+}
+
+.empty-state h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--crm-text-secondary);
+  margin-bottom: 0.35rem;
+}
+
+.empty-state p {
+  font-size: 0.85rem;
+  color: var(--crm-muted);
+}
+
+/* ============================================================
+   MOBILE MENU
+   ============================================================ */
+.crm-mobile-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--crm-text);
+  padding: 0.5rem;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1024px) {
+  .crm-sidebar {
+    transform: translateX(-100%);
+    z-index: 200;
+  }
+
+  .crm-sidebar.open {
+    transform: translateX(0);
+    box-shadow: var(--shadow-xl);
+  }
+
+  .crm-main {
+    margin-left: 0;
+  }
+
+  .crm-mobile-toggle {
+    display: block;
+  }
+
+  .dashboard-charts {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .crm-container {
+    padding: 1rem;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .kanban-col {
+    flex: 0 0 260px;
+  }
 }

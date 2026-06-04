@@ -91,7 +91,7 @@ export async function POST(request: Request) {
     const gasUrl = process.env.GAS_WEB_APP_URL;
     if (gasUrl) {
       try {
-        await fetch(gasUrl, {
+        const gasResponse = await fetch(gasUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -99,8 +99,15 @@ export async function POST(request: Request) {
             dados: payload,
           }),
         });
+
+        const gasData = await gasResponse.json();
+        if (!gasData.success) {
+          console.warn("GAS retornou erro:", gasData);
+        } else {
+          console.log("Dados salvos com sucesso no Google Sheets (GAS)");
+        }
       } catch (gasErr) {
-        console.error("Erro ao enviar dados para a planilha Google Sheets (GAS):", gasErr);
+        console.error("Erro ao enviar dados para Google Sheets (GAS):", gasErr);
       }
     }
 

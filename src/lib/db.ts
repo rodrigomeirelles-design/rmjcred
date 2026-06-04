@@ -34,7 +34,7 @@ const createDbMock = (): SqliteDatabase => {
 let db: SqliteDatabase;
 
 try {
-  const Database = require("better-sqlite3");
+  const Database = eval("require")("better-sqlite3");
   const dbPath = path.join(process.cwd(), "crm.db");
   db = new Database(dbPath) as SqliteDatabase;
 

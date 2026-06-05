@@ -44,38 +44,7 @@ export default function LeadForm({ defaultService = "BDMG" }: LeadFormProps) {
 
       setSuccess(true);
 
-      // 2. Montar mensagem formatada para o WhatsApp
-      let message = `Olá! Solicitei uma simulação no site da RMJ Crédito:\n\n` +
-        `👤 *Nome:* ${formData.nome}\n` +
-        `✉️ *E-mail:* ${formData.email}\n` +
-        `📞 *Telefone:* ${formData.telefone}\n`;
-
-      const isVehicleService = formData.servico === "Veículos" || formData.servico === "Garantia de Veículo";
-
-      if (isVehicleService) {
-        const valVeiculo = parseFloat(formData.valorVeiculo.replace(/[^\d]/g, "")) || 0;
-        const valEntrada = parseFloat(formData.entradaVeiculo.replace(/[^\d]/g, "")) || 0;
-        const valFinanciamento = Math.max(0, valVeiculo - valEntrada);
-
-        message += `🚗 *Serviço:* ${formData.servico === "Veículos" ? "Financiamento de Veículos" : "Crédito com Garantia de Veículo"}\n` +
-          `🚘 *Veículo:* ${formData.marcaModelo}\n` +
-          `📅 *Ano:* ${formData.anoVeiculo}\n` +
-          `💵 *Valor do Veículo:* R$ ${formData.valorVeiculo}\n` +
-          `🪙 *Entrada/Troco:* R$ ${formData.entradaVeiculo || "0 (Sem entrada)"}\n` +
-          `💰 *Valor Financiado/Pretendido:* R$ ${valFinanciamento.toLocaleString("pt-BR")}`;
-      } else {
-        message += `🏢 *Empresa:* ${formData.empresa || "Pessoa Física"}\n` +
-          `💼 *Serviço:* ${formData.servico}\n` +
-          `💵 *Valor Pretendido:* R$ ${formData.valor}`;
-      }
-
-      const encodedMessage = encodeURIComponent(message);
-      const whatsappUrl = `https://wa.me/5535997248658?text=${encodedMessage}`;
-
-      // 3. Abrir o WhatsApp
-      window.open(whatsappUrl, "_blank");
-
-      // 4. Redirecionar para o link do parceiro correspondente se necessário
+      // 2. Redirecionar para o link do parceiro correspondente se necessário
       let partnerUrl = "";
       if (formData.servico === "BDMG") {
         partnerUrl = "https://wwws.bdmg.mg.gov.br/bdmg-digital/landing-page/1423";
@@ -111,9 +80,9 @@ export default function LeadForm({ defaultService = "BDMG" }: LeadFormProps) {
 
       {success ? (
         <div className={styles.successMessage}>
-          <h4>🎉 Solicitação Enviada!</h4>
+          <h4>🎉 Solicitação Recebida com Sucesso!</h4>
           <p>
-            Estamos abrindo o WhatsApp para iniciar seu atendimento e te direcionando para a página de simulação.
+            Obrigado pelo seu contato. Recebemos seus dados de simulação e entraremos em contato via e-mail ou WhatsApp em breve.
           </p>
         </div>
       ) : (

@@ -28,6 +28,24 @@ export async function generateMetadata({ params }: PageProps) {
     title: `${post.title} — Blog RMJ Crédito`,
     description: post.description,
     keywords: post.seoKeywords.join(", "),
+    openGraph: {
+      title: post.title,
+      description: post.description,
+      url: `https://rmjcred.com.br/blog/${post.slug}`,
+      type: "article",
+      images: [
+        {
+          url: post.image,
+          alt: post.title,
+        }
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.description,
+      images: [post.image],
+    }
   };
 }
 
@@ -53,8 +71,92 @@ export default async function BlogPostPage({ params }: PageProps) {
     defaultFormService = "BDMG";
   }
 
+  // Breadcrumb schema
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Início",
+        "item": "https://rmjcred.com.br"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Blog",
+        "item": "https://rmjcred.com.br/blog"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": post.title,
+        "item": `https://rmjcred.com.br/blog/${post.slug}`
+      }
+    ]
+  };
+
+  // Article schema
+  let articleSchema: any = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": post.title,
+    "description": post.description,
+    "datePublished": post.slug === "capital-de-giro-bdmg-itajuba" || post.slug === "home-equity-itajuba-minas-gerais" || post.slug === "home-equity-unificar-dividas" || post.slug === "financiamento-imovel-itajuba" || post.slug === "programa-contador-parceiro-rmj" ? "2026-06-11" : "2026-06-02",
+    "author": {
+      "@type": "Organization",
+      "name": "RMJ Soluções de Crédito",
+      "url": "https://rmjcred.com.br"
+    }
+  };
+
+  if (post.slug === "capital-de-giro-bdmg-itajuba") {
+    articleSchema = {
+      "@context": "https://schema.org",
+      "@type": ["Article", "HowTo"],
+      "headline": "Capital de Giro BDMG em Itajubá: Guia Completo 2026 para Micro e Pequenas Empresas",
+      "description": "Guia passo-a-passo para aprovar capital de giro BDMG em Itajubá com taxa de 1,54% a.m., carência de 12 meses e até R$500 mil.",
+      "author": {
+        "@type": "Organization",
+        "name": "RMJ Soluções de Crédito",
+        "url": "https://rmjcred.com.br"
+      },
+      "datePublished": "2026-06-11",
+      "areaServed": {
+        "@type": "AdministrativeArea",
+        "name": "Itajubá",
+        "addressRegion": "MG",
+        "addressCountry": "BR"
+      }
+    };
+  } else if (post.slug === "home-equity-itajuba-minas-gerais") {
+    articleSchema = {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Home Equity em Itajubá e Minas Gerais: Transforme seu Imóvel em Crédito de Juros Baixos",
+      "author": {
+        "@type": "Organization",
+        "name": "RMJ Soluções de Crédito"
+      },
+      "areaServed": {
+        "@type": "AdministrativeArea",
+        "name": "Itajubá",
+        "addressRegion": "MG"
+      }
+    };
+  }
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
       {/* 1. Header do Artigo */}
       <header className={styles.postHeader}>
         <div className={`${styles.headerContainer} container`}>

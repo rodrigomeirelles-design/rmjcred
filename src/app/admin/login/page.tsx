@@ -167,7 +167,7 @@ export default function AdminLogin() {
         )}
 
         {step === "login" && (
-          <form onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+          <form onSubmit={handleLogin} autoComplete="off" style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
             <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
               <label style={{ fontSize: "0.85rem", fontWeight: "bold", color: "var(--primary-dark)" }}>E-mail *</label>
               <input
@@ -175,7 +175,8 @@ export default function AdminLogin() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="rodrigomeirelles@gmail.com"
+                placeholder="Digite seu e-mail"
+                autoComplete="off"
                 style={{
                   padding: "0.75rem",
                   border: "1px solid var(--neutral-border)",
@@ -194,6 +195,7 @@ export default function AdminLogin() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Digite sua senha"
+                autoComplete="new-password"
                 style={{
                   padding: "0.75rem",
                   border: "1px solid var(--neutral-border)",
@@ -233,7 +235,7 @@ export default function AdminLogin() {
         )}
 
         {step === "forgot" && (
-          <form onSubmit={handleSendCode} style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+          <form onSubmit={handleSendCode} autoComplete="off" style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
             <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
               <label style={{ fontSize: "0.85rem", fontWeight: "bold", color: "var(--primary-dark)" }}>E-mail Administrativo *</label>
               <input
@@ -241,7 +243,8 @@ export default function AdminLogin() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="rodrigomeirelles@gmail.com"
+                placeholder="Digite seu e-mail"
+                autoComplete="off"
                 style={{
                   padding: "0.75rem",
                   border: "1px solid var(--neutral-border)",

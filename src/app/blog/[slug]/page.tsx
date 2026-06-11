@@ -1,128 +1,11 @@
-import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { blogPosts } from "@/data/blogPosts";
 import LeadForm from "@/components/LeadForm";
 import styles from "./page.module.css";
-
-// Helper to convert inline markdown like **bold** to JSX
-function parseInlineMarkdown(text: string): React.ReactNode[] {
-  if (!text) return [];
-  const parts = text.split(/(\*\*.*?\*\*)/g);
-  return parts.map((part, index) => {
-    if (part.startsWith("**") && part.endsWith("**")) {
-      return <strong key={index}>{part.slice(2, -2)}</strong>;
-    }
-    return part;
-  });
-}
-
-function MarkdownParagraph({ content }: { content: string }) {
-  const trimmed = content.trim();
-
-  // 1. Horizontal Rule
-  if (trimmed === "---") {
-    return <hr style={{ border: "none", borderTop: "1px solid var(--neutral-border)", margin: "2rem 0" }} />;
-  }
-
-  // 2. Table
-  if (trimmed.startsWith("|") && trimmed.endsWith("|")) {
-    const lines = trimmed.split("\n").map(l => l.trim()).filter(Boolean);
-    if (lines.length > 0) {
-      const rows = lines.map(line => {
-        const cells = line.split("|").map(c => c.trim());
-        if (cells[0] === "") cells.shift();
-        if (cells[cells.length - 1] === "") cells.pop();
-        return cells;
-      });
-
-      const hasSeparator = rows[1] && rows[1].every(cell => /^:-*-*:?|^-+$/.test(cell));
-      const headerRow = rows[0];
-      const dataRows = hasSeparator ? rows.slice(2) : rows.slice(1);
-
-      return (
-        <div style={{ overflowX: "auto", margin: "1.5rem 0" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", border: "1px solid var(--neutral-border)" }}>
-            <thead>
-              <tr style={{ backgroundColor: "var(--neutral-light)", borderBottom: "2px solid var(--neutral-border)" }}>
-                {headerRow.map((cell, idx) => (
-                  <th key={idx} style={{ padding: "0.75rem", fontWeight: "bold" }}>
-                    {parseInlineMarkdown(cell)}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {dataRows.map((row, rowIdx) => (
-                <tr key={rowIdx} style={{ borderBottom: "1px solid var(--neutral-border)" }}>
-                  {row.map((cell, cellIdx) => (
-                    <td key={cellIdx} style={{ padding: "0.75rem" }}>
-                      {parseInlineMarkdown(cell)}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      );
-    }
-  }
-
-  // 3. Bullet list
-  if (trimmed.startsWith("-") || trimmed.startsWith("*")) {
-    const lines = trimmed.split("\n").map(l => l.trim()).filter(Boolean);
-    return (
-      <ul style={{ paddingLeft: "1.5rem", margin: "1rem 0", listStyleType: "disc" }}>
-        {lines.map((line, idx) => {
-          const cleanLine = line.replace(/^[-*]\s*(?:✅|❌)?\s*/, "");
-          const isCheck = line.includes("✅");
-          const isCross = line.includes("❌");
-          return (
-            <li key={idx} style={{ marginBottom: "0.5rem", listStyleType: isCheck || isCross ? "none" : "disc", marginLeft: isCheck || isCross ? "-1.25rem" : "0" }}>
-              {isCheck && <span style={{ marginRight: "0.5rem" }}>✅</span>}
-              {isCross && <span style={{ marginRight: "0.5rem" }}>❌</span>}
-              {parseInlineMarkdown(cleanLine)}
-            </li>
-          );
-        })}
-      </ul>
-    );
-  }
-
-  // 4. Numbered list
-  if (/^\d+\./.test(trimmed)) {
-    const lines = trimmed.split("\n").map(l => l.trim()).filter(Boolean);
-    return (
-      <ol style={{ paddingLeft: "1.5rem", margin: "1rem 0" }}>
-        {lines.map((line, idx) => {
-          const cleanLine = line.replace(/^\d+\.\s*/, "");
-          return (
-            <li key={idx} style={{ marginBottom: "0.5rem" }}>
-              {parseInlineMarkdown(cleanLine)}
-            </li>
-          );
-        })}
-      </ol>
-    );
-  }
-
-  // 5. Headings
-  if (trimmed.startsWith("###")) {
-    return <h3 style={{ fontSize: "1.4rem", color: "var(--primary-dark)", margin: "2rem 0 1rem 0", fontWeight: 700 }}>{parseInlineMarkdown(trimmed.slice(3).trim())}</h3>;
-  }
-  if (trimmed.startsWith("##")) {
-    return <h2 style={{ fontSize: "1.75rem", color: "var(--primary-dark)", margin: "2.5rem 0 1rem 0", fontWeight: 700 }}>{parseInlineMarkdown(trimmed.slice(2).trim())}</h2>;
-  }
-
-  // 6. Regular paragraph
-  return (
-    <p className={styles.paragraph} style={{ lineHeight: "1.7", margin: "1rem 0", color: "var(--neutral-muted)" }}>
-      {parseInlineMarkdown(content)}
-    </p>
-  );
-}
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 
 interface PageProps {
@@ -267,6 +150,8 @@ export default async function BlogPostPage({ params }: PageProps) {
     };
   }
 
+  const fullMarkdownContent = post.content.join("\n\n");
+
   return (
     <>
       <script
@@ -311,9 +196,9 @@ export default async function BlogPostPage({ params }: PageProps) {
             </div>
             
             <div className={styles.textContent}>
-              {post.content.map((paragraph, index) => (
-                <MarkdownParagraph key={index} content={paragraph} />
-              ))}
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {fullMarkdownContent.replace(/\\n/g, "\n")}
+              </ReactMarkdown>
             </div>
 
             <div className={styles.seoKeywordsList}>

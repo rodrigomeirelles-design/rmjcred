@@ -29,8 +29,7 @@ export const blogPosts: BlogPost[] = [
         "**Vamos começar.**",
         "Imagine que você tem uma **loja de materiais de construção em Itajubá**.",
         "Você precisa **comprar estoque HOJE** (quinta-feira) para revender, mas seus clientes pagam em **30, 60 ou até 90 dias**.",
-        "A diferença entre o dinheiro que você gasta AGORA e o dinheiro que entra DEPOIS é chamado **\\",
-        "**.",
+        "A diferença entre o dinheiro que você gasta AGORA e o dinheiro que entra DEPOIS é chamado **Necessidade de Capital de Giro (NCG)**.",
         "Sem capital de giro suficiente, você fica preso: não consegue comprar estoque, não consegue crescer, e muitas vezes acaba tomando crédito caro em bancos privados pagando 4%, 5%, 6% ao mês.",
         "**É por isso que o BDMG existe**: oferecer crédito subsidiado (mais barato) para empresas em Minas Gerais conseguirem o dinheiro que precisam para crescer **sem quebrar o fluxo de caixa**.",
         "- ✅ **Comércios e lojas** (precisam comprar estoque com antecedência)\\n- ✅ **Indústrias** (compra matéria-prima, produção, depois vende)\\n- ✅ **Distribuidoras** (estoca produtos de fornecedores)\\n- ✅ **Serviços** (antecipam custos antes de receber do cliente)\\n- ✅ **Restaurantes e bares** (compram insumos antes de faturar)",
@@ -100,10 +99,9 @@ export const blogPosts: BlogPost[] = [
         "✅ Quitação cartão: R$30 mil  \\n✅ Quita pessoal: R$20 mil  \\n✅ Quita financiamento: R$15 mil  \\n✅ Sobra para fundo de emergência: R$5 mil",
         "**Resultado:**\\n- Juros cairam de R$4.200/mês para R$560/mês\\n- Economia: R$3.640/mês\\n- Parcela única: R$335/mês (em 240 meses)\\n- Total economizado em 20 anos: R$87 mil",
         "1. **Uma dívida única** (mais fácil controlar)\\n2. **Taxa muito menor** (0,8% vs. 15%)\\n3. **Prazo longo** (até 20 anos)\\n4. **Juros sobre juros diminuem**",
-        "Mesmo checklist do Home Equity normal.",
+        "- **Documentos pessoais do proponente e cônjuge/companheiro (se houver)**:\\n  - **RG ou CNH** (cópia legível dentro do prazo de validade)\\n  - **CPF**\\n  - **Comprovante de Estado Civil** (Certidão de Nascimento ou Casamento/União Estável)\\n- **Comprovantes de Residência** (contas de consumo recentes como energia, água ou internet)\\n- **Comprovantes de Renda**:\\n  - **Assalariados**: 3 últimos holerites + Declaração de IRPF completa\\n  - **Autônomos / Empresários**: Pró-labore + 3 últimos extratos bancários + IRPF completo\\n- **Documentos do Imóvel dado em Garantia**:\\n  - **Matrícula do Imóvel** atualizada (Certidão de Ônus Reais emitida pelo Cartório de Registro de Imóveis nos últimos 30 dias)\\n  - **Cópia do IPTU** mais recente\\n  - **Certidão Negativa de Débitos Municipais** do imóvel (IPTU em dia)",
         "Ana tinha R$55 mil em dívidas e estava sufocada. Pegou Home Equity de R$60 mil, quitou tudo, e agora respira.",
-        "*\\",
-        "* — Ana"
+        "*“Achava que nunca ia sair daquelas dívidas. Home Equity mudou minha vida.”* — Ana"
       ]
   },
   {
@@ -144,10 +142,9 @@ export const blogPosts: BlogPost[] = [
       "content": [
         "Se você é **contador, consultor empresarial, ou especialista em negócios** em Itajubá e quer **ganhar renda extra** indicando clientes para crédito, temos uma oportunidade para você.",
         "Seus clientes chegam até você dizendo:",
-        "*\\",
-        "*  \\n*\\",
-        "*  \\n*\\",
-        "*",
+        "- *\"Preciso de capital de giro rápido, mas o banco negou...\"*",
+        "- *\"Quero comprar um imóvel comercial, mas a burocracia está travando tudo...\"*",
+        "- *\"As taxas de juros do meu banco estão sufocando minha empresa...\"*",
         "E você fica em um dilema:\\n- ❌ Não pode oferecer crédito (não é área sua)\\n- ❌ Se indicar banco, cliente recebe taxa ruim\\n- ❌ Você perde oportunidade de fortalecer relação",
         "A RMJ criou um programa onde **você pode indicar clientes** e **ganhar comissão** em cada aprovação.",
         "**Exemplo:**\\n- Cliente pega R$100 mil\\n- Você recebe R$1-2 mil de comissão\\n- Sem trabalho nenhum (RMJ cuida de tudo)",
@@ -161,8 +158,7 @@ export const blogPosts: BlogPost[] = [
         "**4. RMJ Cuida do Resto:**\\nAprovação, documentação, assinatura—tudo.",
         "**5. Você Recebe Comissão:**\\nDiretamente em sua conta após aprovação.",
         "✅ **Maior taxa de aprovação** do mercado  \\n✅ **Resposta rápida** (em 2 dias)  \\n✅ **Contato direto** com especialista  \\n✅ **Sem cota mínima** de indicações  \\n✅ **Comissão garantida** para cada aprovação",
-        "*\\",
-        "* — Marcos (Contador)",
+        "*“O programa de parceria da RMJ é fantástico. Consigo ajudar meus clientes a conseguirem crédito barato de verdade e ainda faturo uma excelente renda extra com as comissões.”* — Marcos (Contador)",
         "Quer se tornar Parceiro RMJ?",
         "**Envie um WhatsApp:**\\n→ (35) 99724-8658",
         "**Ou preencha o formulário:**\\n→ rmjcred.com.br/programa-parceiro",

@@ -263,3 +263,75 @@
     height: 400px;
   }
 }
+
+/* Markdown typography styling inside textContent */
+.textContent p {
+  font-size: 1.1rem;
+  color: var(--neutral-dark);
+  line-height: 1.8;
+  margin-bottom: 1.25rem;
+}
+
+.textContent h2 {
+  font-size: 1.75rem;
+  color: var(--primary-dark);
+  margin: 2.5rem 0 1rem 0;
+  font-weight: 700;
+}
+
+.textContent h3 {
+  font-size: 1.4rem;
+  color: var(--primary-dark);
+  margin: 2rem 0 1rem 0;
+  font-weight: 700;
+}
+
+.textContent ul {
+  padding-left: 1.5rem;
+  margin: 1rem 0;
+  list-style-type: disc;
+}
+
+.textContent ol {
+  padding-left: 1.5rem;
+  margin: 1rem 0;
+  list-style-type: decimal;
+}
+
+.textContent li {
+  font-size: 1.1rem;
+  color: var(--neutral-dark);
+  line-height: 1.7;
+  margin-bottom: 0.5rem;
+}
+
+.textContent table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  border: 1px solid var(--neutral-border);
+  margin: 1.5rem 0;
+}
+
+.textContent th {
+  background-color: var(--neutral-light);
+  border-bottom: 2px solid var(--neutral-border);
+  padding: 0.75rem;
+  font-weight: bold;
+}
+
+.textContent td {
+  border-bottom: 1px solid var(--neutral-border);
+  padding: 0.75rem;
+}
+
+.textContent hr {
+  border: none;
+  border-top: 1px solid var(--neutral-border);
+  margin: 2rem 0;
+}
+
+.textContent strong {
+  font-weight: 700;
+  color: var(--primary-dark);
+}

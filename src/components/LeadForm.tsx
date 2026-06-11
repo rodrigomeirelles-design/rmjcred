@@ -30,6 +30,22 @@ export default function LeadForm({ defaultService = "BDMG" }: LeadFormProps) {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleCurrencyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    const clean = value.replace(/\D/g, "");
+    if (!clean) {
+      setFormData((prev) => ({ ...prev, [name]: "" }));
+      return;
+    }
+    const cents = parseInt(clean, 10);
+    const num = cents / 100;
+    const formatted = new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    }).format(num);
+    setFormData((prev) => ({ ...prev, [name]: formatted }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -43,24 +59,6 @@ export default function LeadForm({ defaultService = "BDMG" }: LeadFormProps) {
       });
 
       setSuccess(true);
-
-      // 2. Redirecionar para o link do parceiro correspondente se necessário
-      let partnerUrl = "";
-      if (formData.servico === "BDMG") {
-        partnerUrl = "https://wwws.bdmg.mg.gov.br/bdmg-digital/landing-page/1423";
-      } else if (formData.servico === "Veículos" || formData.servico === "Garantia de Veículo") {
-        partnerUrl = "https://loja.franq.com.br/pb/rodrigo-alves8328/financiamentos/96";
-      } else if (formData.servico === "Consórcios") {
-        partnerUrl = "https://loja.franq.com.br/pb/rodrigo-alves8328/financiamentos/97";
-      } else if (formData.servico === "Outros") {
-        partnerUrl = "https://loja.franq.com.br/pb/rodrigo-alves8328";
-      }
-
-      if (partnerUrl) {
-        setTimeout(() => {
-          window.open(partnerUrl, "_blank");
-        }, 1500);
-      }
 
     } catch (error) {
       console.error("Erro ao processar formulário:", error);
@@ -192,8 +190,8 @@ export default function LeadForm({ defaultService = "BDMG" }: LeadFormProps) {
                     name="valorVeiculo"
                     required={isVehicleService}
                     value={formData.valorVeiculo}
-                    onChange={handleChange}
-                    placeholder="Ex: 65.000"
+                    onChange={handleCurrencyChange}
+                    placeholder="R$ 0,00"
                     className={styles.input}
                   />
                 </div>
@@ -204,8 +202,8 @@ export default function LeadForm({ defaultService = "BDMG" }: LeadFormProps) {
                     id="entradaVeiculo"
                     name="entradaVeiculo"
                     value={formData.entradaVeiculo}
-                    onChange={handleChange}
-                    placeholder="Ex: 15.000 (deixe em branco se zero)"
+                    onChange={handleCurrencyChange}
+                    placeholder="R$ 0,00"
                     className={styles.input}
                   />
                 </div>
@@ -248,8 +246,8 @@ export default function LeadForm({ defaultService = "BDMG" }: LeadFormProps) {
                   name="valor"
                   required={!isVehicleService}
                   value={formData.valor}
-                  onChange={handleChange}
-                  placeholder="Ex: 150.000"
+                  onChange={handleCurrencyChange}
+                  placeholder="R$ 0,00"
                   className={styles.input}
                 />
               </div>

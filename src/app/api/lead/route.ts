@@ -8,18 +8,18 @@ export async function POST(request: Request) {
 
     console.log("Novo lead recebido no servidor:", data);
 
-    // Configurar o transportador do Nodemailer usando variáveis de ambiente
-    const smtpHost = process.env.SMTP_HOST;
-    const smtpPort = process.env.SMTP_PORT || "587";
-    const smtpUser = process.env.SMTP_USER;
-    const smtpPass = process.env.SMTP_PASS;
-    const receiverEmail = process.env.LEAD_RECEIVER_EMAIL || "contato@rmjcred.com.br";
+    // Configurar o transportador do Nodemailer usando variáveis de ambiente com fallbacks fixos para Titan Mail
+    const smtpHost = process.env.SMTP_HOST || "smtp.titan.email";
+    const smtpPort = process.env.SMTP_PORT || "465";
+    const smtpUser = process.env.SMTP_USER || "contato@rmjcred.com.br";
+    const smtpPass = process.env.SMTP_PASS || "Malu@2015";
+    const receiverEmail = process.env.LEAD_RECEIVER_EMAIL || "contato@rmjcred.com.br, rodrigomeirelles@gmail.com";
 
     // Se as credenciais estiverem disponíveis, realiza o envio real do e-mail
     if (smtpHost && smtpUser && smtpPass) {
       const transporter = nodemailer.createTransport({
         host: smtpHost,
-        port: parseInt(smtpPort),
+        port: parseInt(smtpPort, 10),
         secure: smtpPort === "465", // true para 465, false para outros
         auth: {
           user: smtpUser,

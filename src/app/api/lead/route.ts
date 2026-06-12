@@ -1,75 +1,66 @@
-import { NextResponse } from "next/server";
-import { saveLeadToCrm } from "@/lib/crmDbHelper";
-import { sendNotificationEmail } from "@/lib/emailHelper";
+import { NextRequest, NextResponse } from 'next/server'
 
-export async function POST(request: Request) {
+const GAS_URL = process.env.GAS_WEB_APP_URL
+
+export async function POST(req: NextRequest) {
   try {
-    const data = await request.json();
-    const { nome, email, telefone, empresa, cnpj, servico, valor } = data;
+    const body = await req.json()
 
-    console.log("Novo lead recebido no servidor:", data);
+    if (!GAS_URL) {
+      console.error('GAS_WEB_APP_URL not configured')
+      return NextResponse.json({ success: false, message: 'Configuração ausente' }, { status: 500 })
+    }
 
-    // 1. Salvar no CRM local (SQLite)
-    saveLeadToCrm({ nome, email, telefone, empresa, cnpj, servico, valor });
+    // Envia os dados para o Google Apps Script no formato esperado
+    const gasPayload = {
+      formType: 'lead',
+      data: {
+        nome: body.nome || '',
+        email: body.email || '',
+        telefone: body.telefone || '',
+        empresa: body.empresa || '',
+        cnpj: body.cnpj || '',
+        servico: body.servico || '',
+        valor: body.valor || '',
+        marcaModelo: body.marcaModelo || '',
+        anoVeiculo: body.anoVeiculo || '',
+        valorVeiculo: body.valorVeiculo || '',
+        entradaVeiculo: body.entradaVeiculo || '',
+      },
+    }
 
-    // 2. Formatar e-mail em HTML
-    const htmlContent = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px; background-color: #f8fafc;">
-        <h2 style="color: #1e498a; margin-top: 0;">Novo Lead Recebido pelo Site!</h2>
-        <p style="color: #64748b; font-size: 14px;">Um visitante solicitou uma simulação de crédito no site da RMJ Soluções de Crédito.</p>
-        
-        <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-          <tr style="background-color: #e2e8f0;">
-            <th style="padding: 10px; text-align: left; border-bottom: 1px solid #cbd5e1; width: 35%;">Campo</th>
-            <th style="padding: 10px; text-align: left; border-bottom: 1px solid #cbd5e1;">Valor</th>
-          </tr>
-          <tr>
-            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: bold;">Nome:</td>
-            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">${nome}</td>
-          </tr>
-          <tr>
-            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: bold;">E-mail:</td>
-            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;"><a href="mailto:${email}">${email}</a></td>
-          </tr>
-          <tr>
-            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: bold;">WhatsApp/Tel:</td>
-            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;"><a href="tel:${telefone}">${telefone}</a></td>
-          </tr>
-          <tr>
-            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: bold;">Empresa:</td>
-            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">${empresa || "Pessoa Física"}</td>
-          </tr>
-          <tr>
-            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: bold;">CNPJ:</td>
-            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">${cnpj || "Não informado"}</td>
-          </tr>
-          <tr>
-            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #1e498a;">Serviço:</td>
-            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #1e498a;">${servico}</td>
-          </tr>
-          <tr>
-            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #ee661c;">Valor Solicitado:</td>
-            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #ee661c;">${valor}</td>
-          </tr>
-        </table>
-        
-        <div style="margin-top: 30px; text-align: center;">
-          <a href="https://wa.me/${telefone.replace(/\D/g, "")}" style="background-color: #25d366; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
-            Falar com Cliente no WhatsApp 💬
-          </a>
-        </div>
-      </div>
-    `;
+    const gasResponse = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      redirect: 'follow',
+      body: JSON.stringify(gasPayload),
+    })
 
-    // 3. Enviar e-mail de notificação (sem bloquear a resposta rápida da API)
-    sendNotificationEmail(`🚀 Novo Lead: ${nome} - Simulação de ${servico}`, htmlContent);
+    // Lê a resposta como texto primeiro (GAS pode retornar HTML em caso de erro)
+    const responseText = await gasResponse.text()
 
-    return NextResponse.json({ success: true, message: "Lead processado com sucesso" });
+    let gasData = {}
+    try {
+      gasData = JSON.parse(responseText)
+    } catch {
+      // GAS retornou algo que não é JSON — logar mas não falhar
+      console.warn('GAS response não é JSON:', responseText.substring(0, 200))
+    }
+
+    if (!gasResponse.ok) {
+      console.error('GAS retornou erro HTTP:', gasResponse.status, responseText.substring(0, 300))
+      return NextResponse.json(
+        { success: false, message: 'Erro ao enviar para o CRM' },
+        { status: 500 }
+      )
+    }
+
+    return NextResponse.json({ success: true, message: 'Lead processado com sucesso' })
   } catch (error) {
-    console.error("Erro na rota de API de leads:", error);
+    console.error('Erro na rota /api/lead:', error)
     return NextResponse.json(
-      { success: false, error: "Erro interno no servidor" },
+      { success: false, message: error.message || 'Erro interno' },
       { status: 500 }
-    );
+    )
   }
 }

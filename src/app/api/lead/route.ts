@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { saveLeadToCrm } from '@/lib/crmDbHelper'
 
 const GAS_URL = process.env.GAS_WEB_APP_URL
 
@@ -10,6 +11,17 @@ export async function POST(req: NextRequest) {
       console.error('GAS_WEB_APP_URL not configured')
       return NextResponse.json({ success: false, message: 'Configuração ausente' }, { status: 500 })
     }
+
+    // Salva o lead no banco de dados local SQLite (CRM) para aparecer no painel Clientes
+    saveLeadToCrm({
+      nome: body.nome || '',
+      email: body.email || '',
+      telefone: body.telefone || '',
+      empresa: body.empresa || '',
+      cnpj: body.cnpj || '',
+      servico: body.servico || '',
+      valor: body.valor || '',
+    });
 
     // Envia os dados para o Google Apps Script no formato esperado
     const gasPayload = {

@@ -48,7 +48,7 @@ Após executar o script, uma janela deve aparecer com "New deployment". Configur
 
 Exemplo:
 ```
-GAS_WEB_APP_URL=https://script.google.com/macros/s/AKfycbzR6m199DyTnnTN2aeiekwuFdY5Le9MW6M4NyqcbofBNiUH7He4Ri_OpLZuEhSHzWAuWQ/exec
+GAS_WEB_APP_URL=https://script.google.com/macros/s/AKfycbyXHiHxY0Llcm5K131Ns-aZvqHC-fW8pra3c7mEYNuomkCiejm62Fy6nGVr4Yn4s2jG6Q/exec
 ```
 
 ---

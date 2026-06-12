@@ -103,7 +103,7 @@ async function tryGasFallback(
     await fetch(gasUrl, {
       method: "POST",
       mode: "no-cors",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "text/plain" },
       body: JSON.stringify({
         formType,
         data,

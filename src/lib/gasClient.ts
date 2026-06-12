@@ -25,7 +25,7 @@ export interface GasResponse {
 export async function sendToGas(payload: GasPayload): Promise<GasResponse> {
   const finalUrl =
     GAS_URL ||
-    "https://script.google.com/macros/s/AKfycbyXHiHxY0Llcm5K131Ns-aZvqHC-fW8pra3c7mEYNuomkCiejm62Fy6nGVr4Yn4s2jG6Q/exec";
+    "https://script.google.com/macros/s/AKfycbyYKZf1JbQBUk5y8GcW86BgsIqyoRZypl849czqJWuhSfGLdzGdMOURO6sw9RlUE7fZ/exec";
 
   const body: GasPayload = {
     ...payload,

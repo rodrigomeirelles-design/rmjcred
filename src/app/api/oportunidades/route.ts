@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server";
 import db from "@/lib/db";
+import { syncGoogleSheetsToCrm } from "@/lib/crmSync";
 
 export async function GET() {
   try {
+    // Sincroniza dados da planilha do Google em background/realtime
+    await syncGoogleSheetsToCrm();
+
     const oportunidades = db.prepare(`
       SELECT o.*, e.razao_social, e.cnpj 
       FROM oportunidades o

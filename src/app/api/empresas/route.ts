@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server";
 import db from "@/lib/db";
+import { syncGoogleSheetsToCrm } from "@/lib/crmSync";
 
 export async function GET() {
   try {
+    // Sincroniza dados da planilha do Google em background/realtime
+    await syncGoogleSheetsToCrm();
+
     const empresas = db.prepare(`
       SELECT e.*, COUNT(o.id) as total_oportunidades 
       FROM empresas e

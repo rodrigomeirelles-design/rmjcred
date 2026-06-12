@@ -1,9 +1,13 @@
 import { NextResponse } from "next/server";
 import db from "@/lib/db";
+import { syncGoogleSheetsToCrm } from "@/lib/crmSync";
 
 // GET /api/dashboard - Aggregated stats for dashboard
 export async function GET() {
   try {
+    // Sincroniza dados da planilha do Google em background/realtime
+    await syncGoogleSheetsToCrm();
+
     // Total stats
     const totalPropostas = db.prepare("SELECT COUNT(*) as count FROM oportunidades").get() as { count: number };
     const totalEmpresas = db.prepare("SELECT COUNT(*) as count FROM empresas").get() as { count: number };

@@ -316,6 +316,94 @@ export default function EmpresaDetalheClient({ id }: DetailProps) {
             </div>
           </div>
 
+          {/* Ficha Completa PJ */}
+          {empresa.proposta_json && (() => {
+            let ficha: any = {};
+            try { ficha = JSON.parse(empresa.proposta_json); } catch(e){}
+            
+            // Extrair sócios dinamicamente
+            const socios = [];
+            for(let i=1; i<=5; i++) {
+              if (ficha[`socio${i}_nome`]) {
+                let part = ficha[`socio${i}_participacao`];
+                if (typeof part === 'number' && part <= 1) part = part * 100;
+                
+                socios.push({
+                  nome: ficha[`socio${i}_nome`],
+                  cpf: ficha[`socio${i}_cpf`],
+                  participacao: part,
+                  telefone: ficha[`socio${i}_telefone`],
+                  renda: ficha[`socio${i}_renda`],
+                  conjuge_nome: ficha[`socio${i}_conjuge_nome`],
+                  conjuge_cpf: ficha[`socio${i}_conjuge_cpf`],
+                });
+              }
+            }
+
+            return (
+              <div style={{ backgroundColor: "var(--crm-card)", border: "1px solid var(--crm-border)", borderRadius: "8px", padding: "1.5rem", marginTop: "0rem" }}>
+                <h3 style={{ fontSize: "1.2rem", fontWeight: "800", color: "var(--crm-amber)", marginBottom: "1.25rem", borderBottom: "1px solid var(--crm-border)", paddingBottom: "0.5rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  <ShieldAlert size={20} /> Ficha de Análise de Crédito (Completa)
+                </h3>
+                
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "1.5rem" }}>
+                  {/* Empresa Addtl Info */}
+                  <div>
+                    <h4 style={{ fontSize: "1rem", color: "var(--crm-text)", marginBottom: "0.75rem", borderBottom: "1px dashed var(--crm-border)", paddingBottom: "0.25rem" }}>🏢 Dados Operacionais</h4>
+                    <ul style={{ listStyle: "none", padding: 0, margin: 0, color: "var(--crm-muted)", fontSize: "0.9rem", lineHeight: "1.6" }}>
+                      <li><strong>Endereço:</strong> {ficha.emp_logradouro}, {ficha.emp_numero} - {ficha.emp_bairro}</li>
+                      <li><strong>Cidade:</strong> {ficha.emp_cidade} / {ficha.emp_uf}</li>
+                      <li><strong>CEP:</strong> {ficha.emp_cep}</li>
+                      <li><strong>Nº Funcionários:</strong> {ficha.emp_funcionarios}</li>
+                      <li><strong>Imóvel Próprio:</strong> {ficha.emp_imovel} {ficha.emp_imovel_tipo ? `(${ficha.emp_imovel_tipo})` : ""}</li>
+                    </ul>
+                  </div>
+
+                  {/* Representante e Banco */}
+                  <div>
+                    <h4 style={{ fontSize: "1rem", color: "var(--crm-text)", marginBottom: "0.75rem", borderBottom: "1px dashed var(--crm-border)", paddingBottom: "0.25rem" }}>💼 Representante & Banco</h4>
+                    <ul style={{ listStyle: "none", padding: 0, margin: 0, color: "var(--crm-muted)", fontSize: "0.9rem", lineHeight: "1.6" }}>
+                      <li><strong>Representante:</strong> {ficha.emp_repr_nome}</li>
+                      <li><strong>CPF:</strong> {ficha.emp_repr_cpf}</li>
+                      <li><strong>E-mail:</strong> {ficha.emp_email}</li>
+                      <li><strong>Banco:</strong> {ficha.banco_nome} {ficha.banco_numero ? `(${ficha.banco_numero})` : ""}</li>
+                      <li><strong>Ag/Conta:</strong> {ficha.banco_agencia} / {ficha.banco_conta}-{ficha.banco_digito}</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <h4 style={{ fontSize: "1rem", color: "var(--crm-text)", marginTop: "2rem", marginBottom: "1rem", borderBottom: "1px dashed var(--crm-border)", paddingBottom: "0.25rem" }}>👥 Sócios e Cônjuges</h4>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "1rem" }}>
+                  {socios.map((s, idx) => (
+                    <div key={idx} style={{ backgroundColor: "var(--crm-surface)", padding: "1rem", borderRadius: "6px", border: "1px solid var(--crm-border)" }}>
+                      <div style={{ fontWeight: "bold", color: "var(--crm-green)", marginBottom: "0.5rem", display: "flex", justifyContent: "space-between" }}>
+                        <span>{s.nome}</span>
+                        <span>{s.participacao ? `${Number(s.participacao).toFixed(0)}%` : ""}</span>
+                      </div>
+                      <div style={{ fontSize: "0.85rem", color: "var(--crm-muted)", lineHeight: "1.5" }}>
+                        <div><strong>CPF:</strong> {s.cpf}</div>
+                        <div><strong>Telefone:</strong> {s.telefone}</div>
+                        {s.conjuge_nome && (
+                          <div style={{ marginTop: "0.5rem", paddingTop: "0.5rem", borderTop: "1px dashed rgba(255,255,255,0.1)" }}>
+                            <div style={{ color: "var(--crm-text)" }}><strong>Cônjuge:</strong> {s.conjuge_nome}</div>
+                            <div><strong>CPF Cônjuge:</strong> {s.conjuge_cpf}</div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {ficha.obs_finais && (
+                  <div style={{ marginTop: "1.5rem", backgroundColor: "var(--crm-surface)", padding: "1rem", borderRadius: "6px" }}>
+                    <strong style={{ display: "block", marginBottom: "0.5rem", fontSize: "0.9rem", color: "var(--crm-text)" }}>Observações Finais:</strong>
+                    <p style={{ fontSize: "0.85rem", color: "var(--crm-muted)", margin: 0, whiteSpace: "pre-wrap" }}>{ficha.obs_finais}</p>
+                  </div>
+                )}
+              </div>
+            );
+          })()}
+
         </div>
       </div>
     </div>

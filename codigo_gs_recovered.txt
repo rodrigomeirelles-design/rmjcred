@@ -1,0 +1,1493 @@
+/**
+
+ * =====================================================================
+
+ * WEB APP – FICHA DE ANÁLISE DE CRÉDITO EMPRESARIAL (PJ)
+
+ * Back-end Google Apps Script | Versão 4.4.0 (Estabilizada e Corrigida)
+
+ * =====================================================================
+
+ */
+
+
+
+const APP_VERSION      = '4.4.0';
+
+const SHEET_ID         = ''; // Vazio = planilha ativa
+
+const PRINT_DATA_START = 6;
+
+
+
+const SHEETS = {
+
+  RESP:  'Respostas',
+
+  LEG:   'Respostas_Legiveis',
+
+  PR:    'Perguntas_Respostas',
+
+  PRINT: 'Impressao_Proposta'
+
+};
+
+
+
+const IMOVEL_TIPOS = ['Não possui', 'IPTU', 'Matrícula', 'Imposto de Renda'];
+
+const ESTADOS_CIVIS_COM_CONJUGE = ['Casado(a)', 'União estável'];
+
+
+
+/* ── ROTEAMENTO DE ENTRADA (doGet) ────────────────────────────────── */
+
+function doGet(e) {
+
+  ensureSheets_();
+
+  initializeAdminSettings_();
+
+  // --- INTEGRAÇÃO ADMIN RMJ (NEXT.JS) ---
+  if (e && e.parameter && e.parameter.api_secret === 'rmj-api-123') {
+    const respSh = ss_().getSheetByName(SHEETS.RESP);
+    const headers = getHeaders_(SHEETS.RESP);
+    if (!headers.length || respSh.getLastRow() < 2) {
+      return ContentService.createTextOutput(JSON.stringify({ empresas_pj: [] })).setMimeType(ContentService.MimeType.JSON);
+    }
+    const data = respSh.getRange(2, 1, respSh.getLastRow() - 1, headers.length).getValues();
+    const result = data.map(row => {
+      const obj = {};
+      headers.forEach((k, i) => {
+        obj[k] = row[i] instanceof Date ? row[i].getTime() : row[i];
+      });
+      return obj;
+    });
+    return ContentService.createTextOutput(JSON.stringify({ empresas_pj: result })).setMimeType(ContentService.MimeType.JSON);
+  }
+  // --------------------------------------
+ 
+
+  
+
+  let page = e && e.parameter ? e.parameter.page : null;
+
+  if (page === 'admin') {
+
+    return HtmlService.createTemplateFromFile('admin')
+
+      .evaluate()
+
+      .setTitle('Painel Admin – RMJ Soluções de Crédito')
+
+      .addMetaTag('viewport', 'width=device-width, initial-scale=1.0')
+
+      .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+
+  }
+
+  
+
+  return HtmlService.createTemplateFromFile('Index')
+
+    .evaluate()
+
+    .setTitle('Análise de Crédito Empresarial – RMJ')
+
+    .addMetaTag('viewport', 'width=device-width, initial-scale=1.0')
+
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+
+}
+
+
+
+function include(n) { 
+
+  return HtmlService.createHtmlOutputFromFile(n).getContent(); 
+
+}
+
+
+
+/* ── EXTRAÇÃO SEGURA DA LOGO DO DRIVE VIA BASE64 ──────────────────── */
+
+function getLogoBase64() {
+
+  try {
+
+    const file = DriveApp.getFileById('1EBXWefGGG1bQDcIi9SxAVFro_HkLCBzW');
+
+    const blob = file.getBlob();
+
+    return 'data:' + blob.getContentType() + ';base64,' + Utilities.base64Encode(blob.getBytes());
+
+  } catch (e) {
+
+    console.error('Erro ao buscar logo do Drive: ' + e.message);
+
+    return ''; 
+
+  }
+
+}
+
+
+
+/* ── AUTENTICAÇÃO E SEGURANÇA ─────────────────────────────────────── */
+
+function initializeAdminSettings_() {
+
+  const props = PropertiesService.getScriptProperties();
+
+  if (!props.getProperty('ADMIN_PASS_HASH')) {
+
+    const tempPass = 'RMJ-TEMP-' + Math.floor(100000 + Math.random() * 900000);
+
+    props.setProperty('ADMIN_PASS_HASH', computeSHA256_(tempPass));
+
+    props.setProperty('ADMIN_FIRST_ACCESS', 'true');
+
+    
+
+    try {
+
+      MailApp.sendEmail({
+
+        to: 'rodrigomeirelles@gmail.com',
+
+        subject: '⚠️ Instalação do Painel Admin RMJ - Credenciais Temporárias',
+
+        htmlBody: `<h3>Sistema RMJ Inicializado</h3>
+
+                   <p><b>Usuário:</b> rodrigomeirelles@gmail.com</p>
+
+                   <p><b>Senha Temporária:</b> <span style="font-size:16px;color:#ee661b;font-weight:bold;">${tempPass}</span></p>
+
+                   <p><i>O sistema exigirá a alteração desta senha no primeiro login.</i></p>`
+
+      });
+
+    } catch(err) {
+
+      console.error('Falha ao enviar e-mail de setup: ' + err.message);
+
+    }
+
+  }
+
+}
+
+
+
+function verifyAdminLogin(email, password) {
+
+  if (email !== 'rodrigomeirelles@gmail.com') return { success: false, message: 'Usuário não autorizado.' };
+
+  const props = PropertiesService.getScriptProperties();
+
+  const storedHash = props.getProperty('ADMIN_PASS_HASH');
+
+  if (storedHash !== computeSHA256_(password)) return { success: false, message: 'Senha incorreta.' };
+
+  const isFirstAccess = props.getProperty('ADMIN_FIRST_ACCESS') === 'true';
+
+  return { success: true, firstAccess: isFirstAccess, token: generateSessionToken_(email) };
+
+}
+
+
+
+function changeAdminPassword(email, currentPassword, newPassword) {
+
+  const loginCheck = verifyAdminLogin(email, currentPassword);
+
+  if (!loginCheck.success) return { success: false, message: 'Senha atual inválida.' };
+
+  if (!newPassword || newPassword.length < 8) return { success: false, message: 'A nova senha deve possuir no mínimo 8 caracteres.' };
+
+  
+
+  const props = PropertiesService.getScriptProperties();
+
+  props.setProperty('ADMIN_PASS_HASH', computeSHA256_(newPassword));
+
+  props.setProperty('ADMIN_FIRST_ACCESS', 'false');
+
+  return { success: true, token: generateSessionToken_(email) };
+
+}
+
+
+
+function recoverAdminPassword(email) {
+
+  if (email !== 'rodrigomeirelles@gmail.com') return { success: false, message: 'Usuário não autorizado.' };
+
+  const tempPass = 'RMJ-REC-' + Math.floor(100000 + Math.random() * 900000);
+
+  const props = PropertiesService.getScriptProperties();
+
+  props.setProperty('ADMIN_PASS_HASH', computeSHA256_(tempPass));
+
+  props.setProperty('ADMIN_FIRST_ACCESS', 'true');
+
+  
+
+  try {
+
+    MailApp.sendEmail({
+
+      to: 'rodrigomeirelles@gmail.com',
+
+      subject: '🔐 Recuperação de Senha - Painel Admin RMJ',
+
+      htmlBody: `<p>A sua nova senha temporária de recuperação é: <b>${tempPass}</b></p>`
+
+    });
+
+    return { success: true };
+
+  } catch(e) {
+
+    return { success: false, message: 'Falha ao enviar e-mail: ' + e.message };
+
+  }
+
+}
+
+
+
+function generateSessionToken_(email) {
+
+  const token = Utilities.getUuid() + '-' + new Date().getTime();
+
+  CacheService.getScriptCache().put('session_' + token, email, 1800);
+
+  return token;
+
+}
+
+
+
+function validateSession_(token) {
+
+  if (!token) return false;
+
+  return CacheService.getScriptCache().get('session_' + token) === 'rodrigomeirelles@gmail.com';
+
+}
+
+
+
+function computeSHA256_(input) {
+
+  const rawHash = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, input, Utilities.Charset.UTF_8);
+
+  let output = '';
+
+  for (let i = 0; i < rawHash.length; i++) {
+
+    let value = rawHash[i];
+
+    if (value < 0) value += 256;
+
+    let byteString = value.toString(16);
+
+    if (byteString.length == 1) byteString = '0' + byteString;
+
+    output += byteString;
+
+  }
+
+  return output;
+
+}
+
+
+
+/* ── APIS DE CONSULTA DO ADMIN ────────────────────────────────────── */
+
+function fetchAllPropostasAdmin(sessionToken) {
+
+  if (!validateSession_(sessionToken)) throw new Error('Sessão expirada. Inicie sessão novamente.');
+
+  const headers = getHeaders_(SHEETS.RESP);
+
+  const respSh = ss_().getSheetByName(SHEETS.RESP);
+
+  if (!headers.length || respSh.getLastRow() < 2) return [];
+
+  
+
+  const data = respSh.getRange(2, 1, respSh.getLastRow() - 1, headers.length).getValues();
+
+  const iId = headers.indexOf('ID'), iCnpj = headers.indexOf('emp_cnpj'), iRazao = headers.indexOf('emp_razao'), iWhen = headers.indexOf('Data/Hora');
+
+  const isUUID = v => typeof v === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(v);
+
+  
+
+  return data.filter(r => isUUID(r[iId])).map(r => ({
+
+    id: String(r[iId]),
+
+    cnpj: String(r[iCnpj]),
+
+    razao: String(r[iRazao]),
+
+    when: r[iWhen] instanceof Date ? r[iWhen].getTime() : new Date(r[iWhen]).getTime()
+
+  })).sort((a, b) => b.when - a.when);
+
+}
+
+
+
+function fetchFullPropostaDataAdmin(sessionToken, propostaId) {
+
+  if (!validateSession_(sessionToken)) throw new Error('Acesso negado.');
+
+  const headers = getHeaders_(SHEETS.RESP);
+
+  const respSh = ss_().getSheetByName(SHEETS.RESP);
+
+  const data = respSh.getRange(2, 1, respSh.getLastRow() - 1, headers.length).getValues();
+
+  const row = data.find(r => r[headers.indexOf('ID')] === propostaId);
+
+  if (!row) throw new Error('Proposta não encontrada.');
+
+  
+
+  const obj = {};
+
+  headers.forEach((k, i) => {
+
+    let val = row[i];
+
+    if (val instanceof Date) {
+
+      obj[k] = Utilities.formatDate(val, 'America/Sao_Paulo', 'dd/MM/yyyy HH:mm');
+
+    } else {
+
+      obj[k] = String(val == null ? '' : val).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+    }
+
+  });
+
+  return obj;
+
+}
+
+
+
+/* ── SUBMISSÃO E NOTIFICAÇÕES ─────────────────────────────────────── */
+
+function submitProposta(payload) {
+
+  const lock = LockService.getScriptLock();
+
+  try { lock.waitLock(30000); } catch(e) { return {ok:false, errors:['Servidor ocupado.']}; }
+
+  try {
+
+    const clean  = sanitizePayload_(payload);
+
+    const errors = validatePayload_(clean);
+
+    if (errors.length) return {ok:false, errors:errors};
+
+    
+
+    const id = Utilities.getUuid(), now = new Date();
+
+    clean._meta = {id, when:now, version:APP_VERSION};
+
+    
+
+    gravarRespostas_(clean);
+
+    gravarLegiveis_(clean);
+
+    gravarPerguntasRespostas_(clean);
+
+    SpreadsheetApp.flush();
+
+    
+
+    dispararNotificacaoEmail_(clean);
+
+    return {ok:true, id};
+
+  } catch(e) {
+
+    return {ok:false, errors:['Erro interno: '+e.message]};
+
+  } finally { lock.releaseLock(); }
+
+}
+
+
+
+function dispararNotificacaoEmail_(p) {
+
+  const listaDestinatarios = ['rodrigomeirelles@gmail.com', 'jj.aline@hotmail.com', 'contato@rmjcred.com.br'];
+
+  const webAppUrl = ScriptApp.getService().getUrl();
+
+  const htmlBody = `
+
+    <div style="font-family:Arial,sans-serif;max-width:600px;color:#555860;border:1px solid #dde4ef;border-radius:12px;padding:20px;">
+
+      <h2 style="color:#234469;">Nova Proposta Recebida</h2>
+
+      <p><b>Empresa:</b> ${p.empresa.emp_razao}<br><b>CNPJ:</b> ${p.empresa.emp_cnpj}</p>
+
+      <p><a href="${webAppUrl}?page=admin" target="_blank" style="background-color:#ee661b;color:#ffffff;padding:10px 20px;border-radius:6px;text-decoration:none;">Aceder ao Painel Admin</a></p>
+
+    </div>`;
+
+  listaDestinatarios.forEach(email => {
+
+    try { MailApp.sendEmail({ to: email, subject: `🚀 Crédito PJ: ${p.empresa.emp_razao}`, htmlBody: htmlBody }); } catch(e){}
+
+  });
+
+}
+
+
+
+/* ── SCHEMAS ──────────────────────────────────────────────────────── */
+
+function getSchema_() {
+
+  return [
+
+    {sec:'Empresa',    key:'emp_razao',        label:'Razão Social',                        type:'text',       required:true},
+
+    {sec:'Empresa',    key:'emp_fantasia',      label:'Nome Fantasia',                       type:'text'},
+
+    {sec:'Empresa',    key:'emp_cnpj',          label:'CNPJ',                                type:'cnpj',       required:true},
+
+    {sec:'Empresa',    key:'emp_funcionarios',  label:'Nº de funcionários',                  type:'int',        required:true},
+
+    {sec:'Empresa',    key:'emp_faturamento',   label:'Faturamento médio mensal (R$)',       type:'money',      required:true},
+
+    {sec:'Empresa',    key:'emp_repr_nome',     label:'Representante Legal',                 type:'text',       required:true},
+
+    {sec:'Empresa',    key:'emp_repr_cpf',      label:'CPF do Representante',                type:'cpf',        required:true},
+
+    {sec:'Empresa',    key:'emp_email',         label:'E-mail',                              type:'email',      required:true},
+
+    {sec:'Empresa',    key:'emp_telefone',      label:'Telefone / WhatsApp',                 type:'phone',      required:true},
+
+    {sec:'Empresa',    key:'emp_cep',           label:'CEP',                                 type:'cep',        required:true},
+
+    {sec:'Empresa',    key:'emp_logradouro',    label:'Rua / Logradouro',                    type:'text',       required:true},
+
+    {sec:'Empresa',    key:'emp_numero',        label:'Número',                              type:'text',       required:true},
+
+    {sec:'Empresa',    key:'emp_complemento',   label:'Complemento',                         type:'text'},
+
+    {sec:'Empresa',    key:'emp_bairro',        label:'Bairro',                              type:'text',       required:true},
+
+    {sec:'Empresa',    key:'emp_cidade',        label:'Cidade',                              type:'text',       required:true},
+
+    {sec:'Empresa',    key:'emp_uf',            label:'UF',                                  type:'uf',         required:true},
+
+    {sec:'Empresa',    key:'emp_imovel',        label:'Possui imóvel no CNPJ?',              type:'simnao',     required:true},
+
+    {sec:'Empresa',    key:'emp_imovel_tipo',   label:'Comprovação do imóvel',               type:'imovel_tipo'},
+
+    {sec:'Empresa',    key:'emp_imovel_valor',  label:'Valor estimado (R$)',                 type:'money'},
+
+    {sec:'Bancario',   key:'banco_nome',        label:'Banco',                               type:'text',       required:true},
+
+    {sec:'Bancario',   key:'banco_numero',      label:'Código do banco',                     type:'text',       required:true},
+
+    {sec:'Bancario',   key:'banco_agencia',     label:'Agência',                             type:'text',       required:true},
+
+    {sec:'Bancario',   key:'banco_conta',       label:'Conta',                               type:'text',       required:true},
+
+    {sec:'Bancario',   key:'banco_digito',      label:'Dígito',                              type:'text',       required:true},
+
+    {sec:'Observacoes',key:'obs_finais',        label:'Observações finais',                  type:'textarea'},
+
+    {sec:'Observacoes',key:'aceite_lgpd',       label:'Aceite LGPD',                         type:'bool',       required:true}
+
+  ];
+
+}
+
+
+
+function getSocioSchema_() {
+
+  return [
+
+    {key:'nome',          label:'Nome completo',                    type:'text',       required:true},
+
+    {key:'cpf',           label:'CPF',                              type:'cpf',        required:true},
+
+    {key:'rg',            label:'RG',                               type:'text',       required:true},
+
+    {key:'participacao',  label:'% Participação',                   type:'percent',    required:true},
+
+    {key:'nascimento',    label:'Data de Nascimento',               type:'date',       required:true},
+
+    {key:'estado_civil',  label:'Estado Civil',                     type:'civil',      required:true},
+
+    {key:'regime',        label:'Regime de Casamento',              type:'regime'},
+
+    {key:'profissao',     label:'Profissão',                        type:'text',       required:true},
+
+    {key:'nacionalidade', label:'Nacionalidade',                    type:'nacionalidade', required:true}, 
+
+    {key:'email',         label:'E-mail',                           type:'email',      required:true},
+
+    {key:'telefone',      label:'Telefone / Celular',               type:'phone',      required:true},
+
+    {key:'renda',         label:'Renda Mensal (conforme IR) (R$)',  type:'money',      required:true},
+
+    {key:'cep',           label:'CEP',                              type:'cep',        required:true},
+
+    {key:'logradouro',    label:'Rua / Logradouro',                 type:'text',       required:true},
+
+    {key:'numero',        label:'Número',                              type:'text',       required:true},
+
+    {key:'complemento',   label:'Complemento',                      type:'text'},
+
+    {key:'bairro',        label:'Bairro',                              type:'text',       required:true},
+
+    {key:'cidade',        label:'Cidade',                           type:'text',       required:true},
+
+    {key:'uf',            label:'UF',                                  type:'uf',         required:true},
+
+    {key:'imovel_tipo',   label:'Imóvel em nome – comprovação',     type:'imovel_tipo'},
+
+    {key:'imovel_valor',  label:'Valor estimado (R$)',              type:'money'},
+
+    {key:'veiculo_placas',label:'Veículo(s) – Placa(s)',            type:'plates'}
+
+  ];
+
+}
+
+
+
+function getConjugeSchema_() {
+
+  return [
+
+    {key:'nome',          label:'Nome do cônjuge',                  type:'text',       required:true},
+
+    {key:'cpf',           label:'CPF do cônjuge',                   type:'cpf',        required:true},
+
+    {key:'rg',            label:'RG do cônjuge',                    type:'text',       required:true},
+
+    {key:'nascimento',    label:'Data de nascimento',               type:'date',       required:true},
+
+    {key:'telefone',      label:'Celular',                          type:'phone',      required:true},
+
+    {key:'email',         label:'E-mail',                           type:'email',      required:true},
+
+    {key:'imovel_tipo',   label:'Imóvel em nome – comprovação',     type:'imovel_tipo'},
+
+    {key:'imovel_valor',  label:'Valor estimado (R$)',              type:'money'},
+
+    {key:'veiculo_placas',label:'Veículo(s) – Placa(s)',            type:'plates'},
+
+    {key:'renda',         label:'Renda Mensal (conforme IR) (R$)',  type:'money'},
+
+    {key:'incluir_renda', label:'Incluir renda do cônjuge na proposta?', type:'simnao'}
+
+  ];
+
+}
+
+
+
+function getFormSchema() { return { empresa:getSchema_(), socio:getSocioSchema_(), conjuge:getConjugeSchema_(), civisComConjuge:ESTADOS_CIVIS_COM_CONJUGE, imovelTipos:IMOVEL_TIPOS }; }
+
+
+
+/* ── SANITIZAÇÃO E VALIDAÇÃO ──────────────────────────────────────── */
+
+function sanitizeString_(v) {
+
+  if (v==null) return '';
+
+  let s=String(v).replace(/[\u0000-\u001F\u007F]/g,'').replace(/<[^>]*>/g,'').trim();
+
+  if (/^[=+\-@|`]/.test(s)) s="'"+s;
+
+  return s.length>500?s.substring(0,500):s;
+
+}
+
+
+
+function sanitizePayload_(p) {
+
+  const out={empresa:{},bancario:{},observacoes:{},socios:[]};
+
+  getSchema_().forEach(f=>{
+
+    const sec=f.sec.toLowerCase(); out[sec]=out[sec]||{};
+
+    out[sec][f.key]=sanitizeString_(((p[f.sec]||p[sec])||{})[f.key]);
+
+  });
+
+  (Array.isArray(p.socios)?p.socios:[]).forEach(s=>{
+
+    const so={dados:{},conjuge:null};
+
+    getSocioSchema_().forEach(f=>so.dados[f.key]=sanitizeString_((s.dados||{})[f.key]));
+
+    if (s.conjuge&&ESTADOS_CIVIS_COM_CONJUGE.indexOf(so.dados.estado_civil)>=0) {
+
+      so.conjuge={};
+
+      getConjugeSchema_().forEach(f=>so.conjuge[f.key]=sanitizeString_(s.conjuge[f.key]));
+
+    }
+
+    out.socios.push(so);
+
+  });
+
+  return out;
+
+}
+
+
+
+function validatePayload_(p) {
+
+  const errs=[];
+
+  const chk=(obj,f,pre)=>{
+
+    const v=(obj||{})[f.key]; const empty=v===''||v==null;
+
+    if(f.required&&empty){errs.push(pre+f.label+' é obrigatório.');return;}
+
+    if(empty)return;
+
+    switch(f.type){
+
+      case 'cpf':    if(!validaCPF_(v))  errs.push(pre+f.label+' inválido.');break;
+
+      case 'cnpj':   if(!validaCNPJ_(v)) errs.push(pre+f.label+' inválido.');break;
+
+      case 'email':  if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) errs.push(pre+f.label+' inválido.');break;
+
+      case 'phone':  if(onlyDigits_(v).length<10) errs.push(pre+f.label+' inválido.');break;
+
+      case 'cep':    if(onlyDigits_(v).length!==8) errs.push(pre+f.label+' inválido.');break;
+
+      case 'uf':     if(!/^[A-Z]{2}$/.test(v)) errs.push(pre+f.label+' inválido.');break;
+
+      case 'int':    if(!/^\d+$/.test(v)) errs.push(pre+f.label+' deve ser inteiro.');break;
+
+      case 'money':  if(parseMoney_(v)<0) errs.push(pre+f.label+' inválido.');break;
+
+      case 'percent':{const n=parseFloat(String(v).replace(',','.'));if(isNaN(n)||n<0||n>100)errs.push(pre+f.label+' deve ser 0–100.');}break;
+
+    }
+
+  };
+
+  getSchema_().forEach(f=>chk(p[f.sec.toLowerCase()],f,''));
+
+  if(!p.socios||!p.socios.length){errs.push('Cadastre ao menos 1 sócio.');return errs;}
+
+  return errs;
+
+}
+
+
+
+function validaCPF_(c){const s=onlyDigits_(c);if(s.length!==11||/^(\d)\1+$/.test(s))return false;let x=0,r;for(let i=1;i<=9;i++)x+=+s[i-1]*(11-i);r=(x*10)%11;if(r>=10)r=0;if(r!==+s[9])return false;x=0;for(let i=1;i<=10;i++)x+=+s[i-1]*(12-i);r=(x*10)%11;if(r>=10)r=0;return r===+s[10];}
+
+function validaCNPJ_(c){const s=onlyDigits_(c);if(s.length!==14||/^(\d)\1+$/.test(s))return false;const calc=b=>{const w=b.length===12?[5,4,3,2,9,8,7,6,5,4,3,2]:[6,5,4,3,2,9,8,7,6,5,4,3,2];let x=0;for(let i=0;i<b.length;i++)x+=+b[i]*w[i];const r=x%11;return r<2?0:11-r;};const d1=calc(s.slice(0,12)),d2=calc(s.slice(0,12)+d1);return d1===+s[12]&&d2===+s[13];}
+
+function onlyDigits_(s){return String(s||'').replace(/\D/g,'');}
+
+function parseMoney_(s){if(typeof s==='number')return s;const t=String(s||'').replace(/[^\d,.-]/g,'').replace(/\./g,'').replace(',','.');const n=parseFloat(t);return isNaN(n)?0:n;}
+
+
+
+/* ── FUNÇÕES DE BASE DE DADOS (PLANILHA) ──────────────────────────── */
+
+function ss_(){return SHEET_ID?SpreadsheetApp.openById(SHEET_ID):SpreadsheetApp.getActiveSpreadsheet();}
+
+
+
+function getHeaders_(shName){
+
+  const cache=CacheService.getScriptCache(),ck='hdr_'+shName;
+
+  const c=cache.get(ck);if(c)return JSON.parse(c);
+
+  const sh=ss_().getSheetByName(shName);
+
+  if(!sh||sh.getLastColumn()===0)return [];
+
+  const h=sh.getRange(1,1,1,sh.getLastColumn()).getValues()[0];
+
+  cache.put(ck,JSON.stringify(h),21600);return h;
+
+}
+
+function invalidateHeaderCache_(){const c=CacheService.getScriptCache();Object.values(SHEETS).forEach(n=>c.remove('hdr_'+n));}
+
+
+
+function ensureSheets_(){
+
+  const s=ss_(); Object.values(SHEETS).forEach(n=>{if(!s.getSheetByName(n))s.insertSheet(n);});
+
+  buildHeaderRow_(); buildPrintTab_();
+
+}
+
+
+
+function buildHeaderRow_(){
+
+  const ss=ss_(),base=['Data/Hora','ID','Versão'],emp=getSchema_();
+
+  const hT=base.concat(emp.map(f=>f.key)),hL=base.concat(emp.map(f=>f.label));
+
+  for(let i=1;i<=5;i++){
+
+    getSocioSchema_().forEach(f=>{hT.push(`socio${i}_${f.key}`);hL.push(`Sócio ${i} – ${f.label}`);});
+
+    getConjugeSchema_().forEach(f=>{hT.push(`socio${i}_conjuge_${f.key}`);hL.push(`Cônjuge ${i} – ${f.label}`);});
+
+  }
+
+  const tec=ss.getSheetByName(SHEETS.RESP),leg=ss.getSheetByName(SHEETS.LEG),pr=ss.getSheetByName(SHEETS.PR);
+
+  if(tec.getLastRow()===0)tec.appendRow(hT);
+
+  if(leg.getLastRow()===0)leg.appendRow(hL);
+
+  if(pr.getLastRow()===0) pr.appendRow(['Data/Hora','ID','Seção','Campo','Pergunta','Resposta']);
+
+  invalidateHeaderCache_();
+
+}
+
+
+
+function gravarRespostas_(p){const sh=ss_().getSheetByName(SHEETS.RESP),h=getHeaders_(SHEETS.RESP);if(!h.length)return;sh.appendRow(h.map(k=>buildCell_(k,p)));}
+
+function gravarLegiveis_(p){const sh=ss_().getSheetByName(SHEETS.LEG),h=getHeaders_(SHEETS.RESP);if(!h.length)return;sh.appendRow(h.map(k=>buildCell_(k,p)));}
+
+
+
+function buildCell_(k,p){
+
+  if(k==='Data/Hora')return p._meta.when;if(k==='ID')return p._meta.id;if(k==='Versão')return p._meta.version;
+
+  const f=getSchema_().find(x=>x.key===k);if(f)return(p[f.sec.toLowerCase()]||{})[k]||'';
+
+  const mc=k.match(/^socio(\d+)_conjuge_(.+)$/),ms=!mc&&k.match(/^socio(\d+)_(.+)$/);
+
+  if(mc){const s=p.socios[+mc[1]-1];return(s&&s.conjuge&&s.conjuge[mc[2]])||'';}
+
+  if(ms){const s=p.socios[+ms[1]-1];return(s&&s.dados&&s.dados[ms[2]])||'';}
+
+  return '';
+
+}
+
+
+
+function gravarPerguntasRespostas_(p){
+
+  const sh=ss_().getSheetByName(SHEETS.PR),rows=[];
+
+  getSchema_().forEach(f=>{const v=(p[f.sec.toLowerCase()]||{})[f.key];if(v!=null&&v!=='')rows.push([p._meta.when,p._meta.id,f.sec,f.key,f.label,v]);});
+
+  if(rows.length)sh.getRange(sh.getLastRow()+1,1,rows.length,6).setValues(rows);
+
+}
+
+
+
+/* ── ABA IMPRESSÃO (Opcional) ─────────────────────────────────────── */
+
+function buildPrintTab_(forceRebuild) {
+
+  const sh=ss_().getSheetByName(SHEETS.PRINT);
+
+  if(!forceRebuild&&sh.getRange(2,1).getValue()==='📅 Mês / Ano (MM/AAAA):')return;
+
+  sh.setHiddenGridlines(true);
+
+  sh.setColumnWidth(1,165);sh.setColumnWidth(2,270);sh.setColumnWidth(3,165);sh.setColumnWidth(4,270);
+
+  sh.protect().setDescription('Gerenciado automaticamente').setWarningOnly(true);
+
+}
+
+
+
+/* ── MENU DA FOLHA DE CÁLCULO ─────────────────────────────────────── */
+
+function onOpen() {
+
+  SpreadsheetApp.getUi().createMenu('Crédito PJ')
+
+    .addItem('Configurar abas', 'reconstruirAbas_')
+
+    .addItem('URL do formulário', 'mostrarUrl_')
+
+    .addToUi();
+
+}
+
+function reconstruirAbas_() { ensureSheets_(); SpreadsheetApp.getUi().alert('Abas configuradas com sucesso!'); }
+
+function mostrarUrl_() { SpreadsheetApp.getUi().alert('O seu URL público é:\n\n' + (ScriptApp.getService().getUrl() || 'Precisa de publicar primeiro!')); }
+
+
+Index.html
+
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<base target="_top">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Análise de Crédito Empresarial – RMJ</title>
+
+<style>
+
+:root {
+
+  --navy: #11223f;         
+
+  --footer-bg: #47668f;    
+
+  --blue-text: #234469;    
+
+  --orange: #ee661b;       
+
+  --graph: #555860;        
+
+  --danger: #cc342f;       
+
+  --ok: #1e7e4e;           
+
+  --bg: #f4f7f6;           
+
+  --line: #dde4ef;         
+
+  --soft: #edf3f9;         
+
+  --card: #ffffff;         
+
+  --shadow: 0 8px 30px rgba(17,34,63,.08);
+
+  --r: 16px;               
+
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+html,body{font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--graph);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;}
+
+
+
+.top-nav { background:#ffffff; height:80px; display:flex; align-items:center; justify-content:center; padding:0 20px; box-shadow:0 2px 10px rgba(0,0,0,0.05); position:relative; z-index:20; }
+
+.nav-container { width:100%; max-width:1020px; display:flex; justify-content:space-between; align-items:center; }
+
+.nav-logo { height:45px; object-fit:contain; }
+
+.btn-outline { border:1px solid #c8d4e5; color:#7b8a9e; background:transparent; padding:8px 16px; border-radius:8px; font-size:13px; font-weight:bold; text-decoration:none; transition:0.2s; display:inline-block; }
+
+.btn-outline:hover { border-color:var(--blue-text); color:var(--blue-text); background:#f8fafc; }
+
+
+
+.hero-section { background:var(--navy); color:#ffffff; padding:50px 20px 120px; }
+
+.hero-inner { max-width:1020px; margin:0 auto; }
+
+.hero-inner h1 { font-size:24px; font-weight:400; margin-bottom:8px; }
+
+.hero-inner p { font-size:15px; color:rgba(255,255,255,0.8); max-width:600px; }
+
+.hero-inner strong { color:var(--orange); font-weight:bold; }
+
+
+
+.wrap { max-width:1020px; margin:-70px auto 60px; padding:0 20px; position:relative; z-index:10; }
+
+.card { background:var(--card); border-radius:var(--r); box-shadow:var(--shadow); padding:32px; margin-bottom:20px; }
+
+
+
+.site-footer { background:var(--footer-bg); color:#ffffff; padding:50px 20px 20px; font-size:14px; }
+
+.footer-container { display:grid; grid-template-columns:repeat(3,1fr); gap:40px; max-width:1020px; margin:0 auto 40px; }
+
+@media(max-width:768px){ .footer-container{grid-template-columns:1fr; gap:30px;} .wrap{margin-top:-40px;} .hero-section{padding:40px 20px 80px;} }
+
+.footer-col { display:flex; flex-direction:column; gap:10px; }
+
+.footer-line { width:30px; height:3px; background:#ffffff; margin-bottom:10px; }
+
+.footer-col h4 { font-size:18px; font-weight:400; color:#ffffff; margin-bottom:5px; }
+
+.footer-col a { color:#ffffff; text-decoration:none; transition:0.2s; font-size:15px; }
+
+.footer-col a:hover { color:var(--orange); }
+
+.footer-col p { line-height:1.8; font-size:14px; color:rgba(255,255,255,0.9); }
+
+.social-icons { display:flex; gap:12px; margin-top:5px; }
+
+.social-icons a { display:inline-flex; align-items:center; justify-content:center; width:38px; height:38px; border-radius:50%; border:1px solid rgba(255,255,255,0.5); color:#ffffff; transition:0.2s; }
+
+.social-icons a:hover { background:rgba(255,255,255,0.1); border-color:#ffffff; }
+
+.social-icons svg { width:20px; height:20px; fill:currentColor; }
+
+.footer-bottom { text-align:center; border-top:1px solid rgba(255,255,255,0.1); padding-top:20px; font-size:12px; color:rgba(255,255,255,0.6); max-width:1020px; margin:0 auto; }
+
+
+
+#loading{position:fixed;inset:0;background:rgba(17,34,63,.90);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;color:#fff;gap:14px;transition:opacity .3s}
+
+#loading.hide{opacity:0;pointer-events:none}
+
+.spinner{width:44px;height:44px;border:4px solid rgba(255,255,255,.25);border-top-color:var(--orange);border-radius:50%;animation:spin .75s linear infinite}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+
+
+
+.stepper{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+
+.step{flex:1;min-width:105px;padding:9px 10px;border-radius:8px;background:var(--soft);color:var(--blue-text);font-size:12px;font-weight:700;text-align:center;border:1px solid transparent;transition:.2s}
+
+.step.active{background:var(--blue-text);color:#fff}
+
+.step.done{background:#d6f0e2;color:var(--ok);border-color:#a4d8bb}
+
+.progress{height:6px;background:var(--soft);border-radius:999px;overflow:hidden;margin-bottom:28px}
+
+.progress-bar{height:100%;background:linear-gradient(90deg,var(--orange),#f49035);transition:width .35s ease;width:0%}
+
+
+
+h2{color:var(--blue-text);font-size:18px;margin-bottom:20px;padding-bottom:10px;border-bottom:2px solid var(--line)}
+
+h3{color:var(--blue-text);font-size:15px}
+
+h4{color:var(--orange);font-size:14px}
+
+
+
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+
+@media(max-width:680px){.grid{grid-template-columns:1fr}}
+
+.field{display:flex;flex-direction:column;gap:6px}
+
+.field.full{grid-column:1/-1}
+
+.field.hidden{display:none!important}
+
+
+
+label{font-size:13px;font-weight:700;color:var(--blue-text);display:flex;align-items:center;gap:5px;line-height:1.4}
+
+.req{color:var(--danger)}
+
+.tip{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;background:var(--soft);color:var(--blue-text);font-size:10px;font-weight:900;cursor:help;border:1px solid var(--line);flex-shrink:0}
+
+
+
+.field-hint{font-size:12px;color:#1e5a96;background:#e8f2ff;border:1px solid #b8d4f5;border-radius:8px;padding:8px 12px;line-height:1.45;margin-top:2px}
+
+.field-hint strong{color:var(--blue-text)}
+
+.field-hint.ok{color:#1e7e4e;background:#d6f0e4;border-color:#a4d8bb}
+
+
+
+input,select,textarea{width:100%;padding:11px 14px;border-radius:8px;border:1.5px solid var(--line);font-size:14px;background:#fff;color:var(--graph);font-family:inherit;transition:border-color .15s,box-shadow .15s}
+
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--blue-text);box-shadow:0 0 0 3px rgba(35,68,105,.10)}
+
+input.invalid,select.invalid,textarea.invalid{border-color:var(--danger);background:#fff6f5}
+
+textarea{min-height:90px;resize:vertical}
+
+.err{font-size:12px;color:var(--danger);min-height:16px;line-height:1.3}
+
+
+
+.nav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:28px;padding-top:20px;border-top:1px solid var(--line)}
+
+button{cursor:pointer;border:none;font-weight:800;font-family:inherit;border-radius:8px;padding:12px 22px;font-size:14px;transition:.15s;line-height:1}
+
+.btn-primary{background:var(--blue-text);color:#fff}.btn-primary:hover{background:#11223f}
+
+.btn-cta{background:linear-gradient(135deg,var(--orange),#f07a2a);color:#fff;padding:14px 28px;font-size:15px;box-shadow:0 6px 18px rgba(238,102,27,.25)}
+
+.btn-cta:hover{transform:translateY(-2px)}.btn-cta:disabled{opacity:.6;transform:none;cursor:not-allowed}
+
+.btn-ghost{background:#fff;color:var(--blue-text);border:1.5px solid var(--line)}.btn-ghost:hover{background:var(--soft)}
+
+.btn-add{background:var(--soft);color:var(--blue-text);border:1.5px dashed var(--blue-text);margin-top:16px;width:100%;padding:12px}
+
+.btn-remove{background:#fff5f5;color:var(--danger);border:1px solid #f5c2c2;padding:6px 12px;font-size:12px;border-radius:6px}
+
+
+
+.plates-list{display:flex;flex-direction:column;gap:8px;margin-bottom:8px}
+
+.plate-row{display:flex;gap:10px;align-items:center}
+
+.plate-input{flex:1;text-transform:uppercase;letter-spacing:1px}
+
+.btn-add-plate{background:var(--soft);color:var(--blue-text);border:1.5px dashed var(--blue-text);padding:8px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+
+.btn-add-plate:hover{background:#dae6f0}
+
+
+
+.socio-block{border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:18px;background:#fafcff}
+
+.socio-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+
+.conjuge-block{margin-top:16px;padding:18px;border-radius:10px;background:#fff8f2;border:1.5px dashed var(--orange)}
+
+.conjuge-header{margin-bottom:12px}
+
+
+
+.checklist{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+
+@media(max-width:560px){.checklist{grid-template-columns:1fr}}
+
+.checklist-item{background:var(--soft);border:1px solid var(--line);padding:12px 16px;border-radius:8px;font-size:13px;display:flex;align-items:center;gap:10px; font-weight: 500;}
+
+.checklist-item::before{content:'📄';flex-shrink:0}
+
+
+
+.summary{background:var(--soft);border-radius:10px;padding:16px;margin-top:18px;font-size:14px;line-height:1.8}
+
+.summary b{color:var(--blue-text)}
+
+.errors-box{background:#fff5f5;border:1.5px solid #f5c2c2;color:var(--danger);border-radius:10px;padding:16px;margin-top:16px;font-size:13px}
+
+.errors-box ul{margin:8px 0 0 18px;padding:0}
+
+.lgpd-row{display:flex;align-items:flex-start;gap:12px;margin-top:18px}
+
+.lgpd-row input[type="checkbox"]{width:auto;margin-top:3px;flex-shrink:0; transform: scale(1.2);}
+
+.lgpd-row label{font-weight:500;color:var(--graph);cursor:pointer}
+
+
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:14px 26px;border-radius:10px;box-shadow:var(--shadow);z-index:9998;display:none;font-size:14px;font-weight:700;max-width:90vw;text-align:center;white-space:pre-line}
+
+.toast.info   {background:var(--blue-text);color:#fff}
+
+.toast.error  {background:var(--danger);color:#fff}
+
+.toast.success{background:var(--ok);color:#fff}
+
+</style>
+
+</head>
+
+<body>
+
+
+
+<div id="loading">
+
+  <div class="spinner"></div>
+
+  <span style="font-size:14px;font-weight:700">A carregar formulário…</span>
+
+</div>
+
+
+
+<div id="app" style="display:none">
+
+  
+
+  <nav class="top-nav">
+
+    <div class="nav-container">
+
+      <img src="https://lh3.googleusercontent.com/d/1EBXWefGGG1bQDcIi9SxAVFro_HkLCBzW" alt="RMJ Soluções de Crédito" class="nav-logo">
+
+      <a href="<?!= ScriptApp.getService().getUrl() ?>?page=admin" target="_top" class="btn-outline">Área da Empresa</a>
+
+    </div>
+
+  </nav>
+
+
+
+  <header class="hero-section">
+
+    <div class="hero-inner">
+
+      <h1>Análise de crédito para a sua empresa.</h1>
+
+      <p>Atendimento <strong>personalizado</strong> e processo 100% digital. Preencha os seus dados com segurança.</p>
+
+    </div>
+
+  </header>
+
+
+
+  <div class="wrap">
+
+    <div class="card">
+
+      <div class="stepper" id="stepper"></div>
+
+      <div class="progress"><div class="progress-bar" id="progress-bar"></div></div>
+
+      <form id="form" novalidate autocomplete="off">
+
+
+
+        <section data-step="0">
+
+          <h2>Dados da Empresa</h2>
+
+          <div class="grid" id="grid-empresa"></div>
+
+        </section>
+
+
+
+        <section data-step="1" hidden>
+
+          <h2>Dados dos Sócios</h2>
+
+          <div id="socios-wrap"></div>
+
+          <button type="button" class="btn-add" id="btn-add-socio">＋ Adicionar Sócio</button>
+
+        </section>
+
+
+
+        <section data-step="2" hidden>
+
+          <h2>Conta para Liberação do Crédito</h2>
+
+          <div class="grid" id="grid-bancario"></div>
+
+        </section>
+
+
+
+        <section data-step="3" hidden>
+
+          <h2>Documentos &amp; Envio</h2>
+
+          <p style="font-size:14px;color:var(--graph)">Tenha estes documentos à mão — o envio será combinado por e-mail ou WhatsApp após esta etapa:</p>
+
+          <div class="checklist">
+
+            <div class="checklist-item">IR dos últimos 2 anos (sócios)</div>
+
+            <div class="checklist-item">Extrato Simples Nacional (PGDAS-D via e-CAC)</div>
+
+            <div class="checklist-item">Comprovante de morada (sócios e empresa)</div>
+
+            <div class="checklist-item">CPF e RG de todos os sócios</div>
+
+            <div class="checklist-item">12 últimos comprovantes Simples Nacional</div>
+
+            <div class="checklist-item">Cartão CNPJ atualizado</div>
+
+          </div>
+
+          <div class="grid" style="margin-top:20px" id="grid-obs"></div>
+
+          <div class="lgpd-row">
+
+            <input type="checkbox" id="aceite_lgpd">
+
+            <label for="aceite_lgpd">Li e aceito o tratamento dos meus dados conforme a <strong>LGPD (Lei 13.709/2018)</strong>, exclusivamente para análise de crédito. <span class="req">*</span></label>
+
+          </div>
+
+          <div class="err" id="err-lgpd"></div>
+
+          <div id="resumo" class="summary"></div>
+
+          <div id="errors-box" class="errors-box" hidden></div>
+
+        </section>
+
+
+
+        <div class="nav">
+
+          <button type="button" class="btn-ghost" id="btn-prev">← Voltar</button>
+
+          <button type="button" class="btn-primary" id="btn-next">Avançar →</button>
+
+          <button type="button" class="btn-cta" id="btn-submit" hidden>🚀 Enviar Proposta para Análise</button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+
+
+  <footer class="site-footer">
+
+    <div class="footer-container">
+
+      <div class="footer-col">
+
+        <div class="footer-line"></div>
+
+        <a href="https://rmjcred.com.br/sobre-ns" target="_blank">Sobre nós</a>
+
+        <a href="https://rmjcred.com.br/#page-3" target="_blank">Nossos Parceiros</a>
+
+        <a href="#">Indicadores Económicos</a>
+
+      </div>
+
+      <div class="footer-col">
+
+        <div class="footer-line"></div>
+
+        <h4>Fale Connosco</h4>
+
+        <p>Rua Felipe Pizutto, 193 / 1203 - Itajubá - MG<br>Tel: (35) 99724-8658<br>contato@rmjcred.com.br</p>
+
+      </div>
+
+      <div class="footer-col social-col">
+
+         <h4>Siga-nos</h4>
+
+         <div class="social-icons">
+
+           <a href="https://www.instagram.com/rmjcred?igsh=MXdza242cWxqbG1jaA%3D%3D&utm_source=qr" target="_blank" aria-label="Instagram">
+
+             <svg viewBox="0 0 24 24"><path d="M7.8,2H16.2C19.4,2 22,4.6 22,7.8V16.2A5.8,5.8 0 0,1 16.2,22H7.8C4.6,22 2,19.4 2,16.2V7.8A5.8,5.8 0 0,1 7.8,2M7.6,4A3.6,3.6 0 0,0 4,7.6V16.4C4,18.39 5.61,20 7.6,20H16.4A3.6,3.6 0 0,0 20,16.4V7.6C20,5.61 18.39,4 16.4,4H7.6M17.25,5.5A1.25,1.25 0 0,1 18.5,6.75A1.25,1.25 0 0,1 17.25,8A1.25,1.25 0 0,1 16,6.75A1.25,1.25 0 0,1 17.25,5.5M12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9Z" /></svg>
+
+           </a>
+
+           <a href="https://wa.me/message/B22U5FHSIIFYE1" target="_blank" aria-label="WhatsApp">
+
+             <svg viewBox="0 0 24 24"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 15 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67M8.53 7.33C8.37 7.33 8.1 7.39 7.87 7.64C7.65 7.89 7 8.5 7 9.71C7 10.93 7.89 12.1 8 12.27C8.14 12.44 9.76 14.94 12.25 16C12.84 16.27 13.3 16.42 13.66 16.53C14.25 16.72 14.79 16.69 15.22 16.63C15.7 16.56 16.68 16.03 16.89 15.45C17.1 14.87 17.1 14.38 17.04 14.27C16.97 14.17 16.81 14.11 16.56 14C16.31 13.86 15.09 13.26 14.87 13.18C14.64 13.1 14.5 13.06 14.31 13.3C14.15 13.55 13.67 14.11 13.53 14.27C13.38 14.44 13.24 14.46 13 14.34C12.74 14.21 11.94 13.95 11 13.11C10.26 12.45 9.77 11.64 9.62 11.39C9.5 11.15 9.61 11 9.73 10.89C9.84 10.78 10 10.6 10.1 10.45C10.23 10.31 10.27 10.2 10.35 10.04C10.43 9.87 10.39 9.73 10.33 9.61C10.27 9.5 9.77 8.26 9.56 7.77C9.36 7.29 9.16 7.35 9 7.34C8.86 7.34 8.7 7.33 8.53 7.33Z" /></svg>
+
+           </a>
+
+           <a href="https://www.facebook.com/share/18sjhaifhR/?mibextid=wwXIfr" target="_blank" aria-label="Facebook">
+
+             <svg viewBox="0 0 24 24"><path d="M12 2.04C6.5 2.04 2 6.53 2 12.06C2 17.06 5.66 21.21 10.44 21.96V14.96H7.9V12.06H10.44V9.85C10.44 7.34 11.93 5.96 14.22 5.96C15.31 5.96 16.45 6.15 16.45 6.15V8.62H15.19C13.95 8.62 13.56 9.39 13.56 10.18V12.06H16.34L15.89 14.96H13.56V21.96A10 10 0 0 0 22 12.06C22 6.53 17.5 2.04 12 2.04Z" /></svg>
+
+           </a>
+
+           <a href="https://rmjcred.com.br/" target="_blank" aria-label="Website">
+
+             <svg viewBox="0 0 24 24"><path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M17.9,16.5C17.65,15.7 16.7,15.15 15.65,15C15.6,15.5 15.5,16 15.3,16.45L15.3,16.45C16.3,16.85 17.15,17.5 17.9,18.35C18.6,17.4 19.1,16.25 19.35,15C18.9,15.55 18.4,16.05 17.9,16.5M16.5,8C16.8,8.8 17.1,9.6 17.3,10.5C16.5,10.2 15.6,10 14.75,9.9C15.25,9.25 15.8,8.6 16.5,8M12.4,4.2C13.3,5 14.1,6 14.7,7.1C14,7.2 13.2,7.3 12.4,7.35V4.2M11.6,4.2V7.35C10.8,7.3 10,7.2 9.3,7.1C9.9,6 10.7,5 11.6,4.2M9.3,8.4C8.8,9 8.35,9.75 8,10.5C8.35,10.7 8.75,10.9 9.15,11.2C9.5,10.25 10,9.3 10.6,8.4C10.15,8.4 9.7,8.4 9.3,8.4M6.7,8.6C7.4,9.2 8.2,9.7 9.05,10.1C8.6,10.85 8.25,11.65 8,12.5H6.2C6.3,11.1 6.8,9.8 7.55,8.6M6.2,13.5H8C8.25,14.35 8.6,15.15 9.05,15.9C8.2,16.3 7.4,16.8 6.7,17.4C5.9,16.2 5.3,14.9 5.2,13.5M9.15,14.8C8.75,15.1 8.35,15.3 8,15.5C8.35,16.25 8.8,17 9.3,17.6C9.7,17.6 10.15,17.6 10.6,17.6C10,16.7 9.5,15.75 9.15,14.8M10.6,12.5C10.6,13 10.7,13.5 10.8,14C11,14.3 11.3,14.6 11.6,14.9V12.5H10.6M12.4,14.9C12.7,14.6 13,14.3 13.2,14C13.3,13.5 13.4,13 13.4,12.5H12.4V14.9M14.75,16.1C15.6,16 16.5,15.8 17.3,15.5C17.1,14.6 16.8,13.8 16.5,13M17.9,18.35C17.15,17.5 16.3,16.85 15.3,16.45L15.3,16.45C15.5,16 15.6,15.5 15.65,15C16.7,15.15 17.65,15.7 17.9,16.5M16.5,8C15.8,8.6 15.25,9.25 14.75,9.9C15.6,10 16.5,10.2 17.3,10.5C17.1,9.6 16.8,8.8 16.5,8M12.4,4.2V7.35C13.2,7.3 14,7.2 14.7,7.1C14.1,6 13.3,5 12.4,4.2Z" /></svg>
+
+           </a>
+
+           <a href="https://www.youtube.com/@Rmjcred" target="_blank" aria-label="YouTube">
+
+             <svg viewBox="0 0 24 24"><path d="M21.58,7.19C21.35,6.31 20.69,5.65 19.81,5.42C18.25,5 12,5 12,5C12,5 5.75,5 4.19,5.42C3.31,5.65 2.65,6.31 2.42,7.19C2,8.75 2,12 2,12C2,12 2,15.25 2.42,16.81C2.65,17.69 3.31,18.35 4.19,18.58C5.75,19 12,19 12,19C12,19 18.25,19 19.81,18.58C20.69,18.35 21.35,17.69 21.58,16.81C22,15.25 22,12 22,12C22,12 22,8.75 21.58,7.19M10,15V9L15.2,12L10,15Z" /></svg>
+
+           </a>
+
+         </div>
+
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+
+      &copy; 2026 RMJ Soluções de Crédito - Dados protegidos pela LGPD
+
+    </div>
+
+  </footer>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+
+
+<script>
+
+'use strict';
+
+var SCHEMA=null,STEP=0,TOTAL_STEPS=4;
+
+var STEP_LABELS=['1. Empresa','2. Sócios','3. Bancário','4. Envio'];
+
+var _socioSeq=0,activeSocios=[];
+
+var IMOVEL_TIPOS_FB=['Não possui','IPTU','Matrícula','Imposto de Renda'];
+
+
+
+var SCHEMA_FALLBACK={
+
+  empresa:[
+
+    {sec:'Empresa',    key:'emp_razao',        label:'Razão Social',                        type:'text',       required:true},
+
+    {sec:'Empresa',    key:'emp_fantasia',      label:'Nome Fantasia',                       type:'text'},
+
+    {sec:'Empresa',    key:'emp_cnpj',          label:'CNPJ',                                type:'cnpj',       required:true},
+
+    {sec:'Empresa',    key:'emp_funcionarios',  label:'Nº de funcionários',                  type:'int',        required:true},
+
+    {sec:'Empresa',    key:'emp_faturamento',   label:'Faturamento médio mensal (R$)',       type:'money',      required:true},
+
+    {sec:'Empresa',    key:'emp_repr_nome',     label:'Representante Legal',                 type:'text',       required:true},
+
+    {sec:'Empresa',    key:'emp_repr_cpf',      label:'CPF do Representante',                type:'cpf',        required:true},
+
+    {sec:'Empresa',    key:'emp_email',         label:'E-mail',                              type:'email',      required:true},
+
+    {sec:'Empresa',    key:'emp_telefone',      label:'Telefone / WhatsApp',                 type:'phone',      required:true},
+
+    {sec:'Empresa',    key:'emp_cep',           label:'CEP',                                 type:'cep',        required:true},
+
+    {sec:'Empresa',    key:'emp_logradouro',    label:'Rua / Logradouro',                    type:'text',       required:true},
+
+    {sec:'Empresa',    key:'emp_numero',        label:'Número',                              type:'text',       required:true},
+
+    {sec:'Empresa',    key:'emp_complemento',   label:'Complemento',                         type:'text'},
+
+    {sec:'Empresa',    key:'emp_bairro',        label:'Bairro',                              type:'text',       required:true},
+
+    {sec:'Empresa',    key:'emp_cidade',        label:'Cidade',                              type:'text',       required:true},
+
+    {sec:'Empresa',    key:'emp_uf',            label:'UF',                                  type:'uf',         required:true},
+
+    {sec:'Empresa',    key:'emp_imovel',        label:'Possui imóvel no CNPJ?',              type:'simnao',     required:true},
+
+    {sec:'Empresa',    key:'emp_imovel_tipo',   label:'Comprovação do imóvel',               type:'imovel_tipo'},
+
+    {sec:'Empresa',    key:'emp_imovel_valor',  label:'Valor estimado (R$)',                 type:'money'},
+
+    {sec:'Bancario',   key:'banco_nome',        label:'Banco',                               type:'text',       required:true},
+
+    {sec:'Bancario',   key:'banco_numero',      label:'Código do banco',                     type:'text',       required:true},
+
+    {sec:'Bancario',   key:'banco_agencia',     label:'Agência',                             type:'text',       required:true},
+
+    {sec:'Bancario',   key:'banco_conta',       label:'Conta',                               type:'text',       required:true},
+
+    {sec:'Bancario',   key:'banco_digito',      label:'Dígito',                              type:'text',       required:true},
+
+    {sec:'Observacoes',key:'obs_finais',        label:'Observações finais',                  type:'textarea'},
+
+    {sec:'Observacoes',key:'aceite_lgpd',       label:'Aceite LGPD',                         type:'bool',       required:true}
+
+  ],
+
+  socio:[
+
+    {key:'nome',          label:'Nome completo',                    type:'text',       required:true},
+
+    {key:'cpf',           label:'CPF',                              type:'cpf',        required:true},
+
+    {key:'rg',            label:'RG',                               type:'text',       required:true},
+
+    {key:'participacao',  label:'% Participação',                   type:'percent',    required:true},
+
+    {key:'nascimento',    label:'Data de Nascimento',               type:'date',       required:true},
+
+    {key:'estado_civil',  label:'Estado Civil',                     type:'civil',      required:true},
+
+    {key:'regime',        label:'Regime de Casamento',              type:'regime'},
+
+    {key:'profissao',     label:'Profissão',                        type:'text',       required:true},
+
+    {key:'nacionalidade', label:'Nacionalidade',                    type:'nacionalidade', required:true}, 
+
+    {key:'email',         label:'E-mail',                           type:'email',      required:true},
+
+    {key:'telefone',      label:'Telefone / Celular',               type:'phone',      required:true},
+
+    {key:'renda',         label:'Renda Mensal (conforme IR) (R$)',  type:'money',      required:true},
+
+    {key:'cep',           label:'CEP',                              type:'cep',        required:true},
+
+    {key:'logradouro',    label:'Rua / Logradouro',                 type:'text',       required:true},
+
+    {key:'numero',        label:'Número',                           type:'text',       required:true},
+
+    {key:'complemento',   label:'Complemento',                      type:'text'},
+
+    {key:'bairro',        label:'Bairro',                           type:'text',       required:true},
+
+    {key:'cidade',        label:'Cidade',                           type:'text',       required:true},
+
+    {key:'uf',            label:'UF',                               type:'uf',         required:true},
+
+    {key:'imovel_tipo',   label:'Imóvel em nome – comprovação',     type:'imovel_tipo'},
+
+    {key:'imovel_valor',  label:'Valor estimado (R$)',              type:'money'},
+
+    {key:'veiculo_placas',label:'Veículo(s) – Placa(s)',            type:'plates'}
+
+  ],
+
+  conjuge:[
+
+    {key:'nome',          label:'Nome do cônjuge',                  type:'text',       required:true},
+
+    {key:'cpf',           label:'CPF do cônjuge',                   type:'cpf',        required:true},
+
+    {key:'rg',            label:'RG do cônjuge',                    type:'text',       required:true},
+
+    {key:'nascimento',    label:'Data de nascimento',               type:'date',       required:true},
+
+    {key:'telefone',      label:'Celular',                          type:'phone',      required:true},
+
+    {key:'email',         label:'E-mail',                       
+<truncated 45932 bytes>
+
+NOTE: The output was truncated because it was too long. Use a more targeted query or a smaller range to get the information you need.

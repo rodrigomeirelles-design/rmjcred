@@ -8,9 +8,9 @@ const GAS_URL =
   process.env.GAS_WEB_APP_URL ||
   "https://script.google.com/macros/s/AKfycbyYKZf1JbQBUk5y8GcW86BgsIqyoRZypl849czqJWuhSfGLdzGdMOURO6sw9RlUE7fZ/exec";
 
-// Simple in-memory cache to prevent syncing more than once every 10 seconds
+// Simple in-memory cache to prevent syncing more than once every 5 minutes
 let lastSyncTime = 0;
-const SYNC_COOLDOWN_MS = 10000;
+const SYNC_COOLDOWN_MS = 300000;
 
 export async function syncGoogleSheetsToCrm(): Promise<void> {
   const now = Date.now();
@@ -23,64 +23,47 @@ export async function syncGoogleSheetsToCrm(): Promise<void> {
   console.log("[CRM Sync] Iniciando sincronização ativa com Google Sheets...");
 
   try {
-    // Tenta ler diretamente do Google Sheets via API (Nova Arquitetura)
-    let empresas_pj_api: any[] = [];
+    // Leitura via Google Sheets API v4
     const clientEmail = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
     const privateKey = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, "\n");
-    const sheetId = process.env.GOOGLE_SHEET_ID || "1JppJHhTWw8d4AV_4FAvGk-bEliLr-co-saAAhDSasKeXW-o4sl0DRPr1";
+    const sheetId = process.env.GOOGLE_SHEET_ID || "1D8kQJSUp5UwlUsc-9-P9Nj-rft0BADbGeBg0aHPjT-8";
 
-    if (clientEmail && privateKey) {
-      try {
-        console.log("[CRM Sync] Lendo diretamente via Google Sheets API...");
-        const auth = new google.auth.GoogleAuth({
-          credentials: { client_email: clientEmail, private_key: privateKey },
-          scopes: ["https://www.googleapis.com/auth/spreadsheets.readonly"],
-        });
-        const sheets = google.sheets({ version: "v4", auth });
-        const res = await sheets.spreadsheets.values.get({
-          spreadsheetId: sheetId,
-          range: "Respostas",
-        });
-        const rows = res.data.values;
-        if (rows && rows.length > 1) {
-          const headers = rows[0];
-          empresas_pj_api = rows.slice(1).map(row => {
-            const obj: any = {};
-            headers.forEach((header: string, index: number) => {
-              obj[header] = row[index] || "";
-            });
-            return obj;
-          });
-        }
-      } catch (err: any) {
-        console.error("[CRM Sync] Erro ao ler Google Sheets API:", err.message);
-      }
+    if (!clientEmail || !privateKey) {
+      console.log("[CRM Sync] Credenciais Google não configuradas. Interrompendo sync.");
+      return;
     }
 
-    // Leitura das planilhas antigas (v3.2) via Web App
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 6000);
-
-    const response = await fetch(`${GAS_URL}?api_secret=rmj-api-123`, {
-      method: "GET",
-      signal: controller.signal,
-      headers: { "Cache-Control": "no-cache" },
+    console.log("[CRM Sync] Executando batchGet na Google Sheets API...");
+    const auth = new google.auth.GoogleAuth({
+      credentials: { client_email: clientEmail, private_key: privateKey },
+      scopes: ["https://www.googleapis.com/auth/spreadsheets.readonly"],
     });
+    
+    const sheets = google.sheets({ version: "v4", auth });
+    
+    const ranges = ["Empresas!A:Z", "LeadsRapidos!A:Z", "DadosBancarios!A:Z", "Socios!A:Z"];
+    const res = await sheets.spreadsheets.values.batchGet({
+      spreadsheetId: sheetId,
+      ranges: ranges,
+    });
+    
+    const parseSheet = (sheetData: any) => {
+      if (!sheetData || !sheetData.values || sheetData.values.length < 2) return [];
+      const headers = sheetData.values[0];
+      return sheetData.values.slice(1).map((row: any[]) => {
+        const obj: any = {};
+        headers.forEach((header: string, index: number) => {
+          obj[header] = row[index] || "";
+        });
+        return obj;
+      });
+    };
 
-    clearTimeout(timeoutId);
-
-    if (!response.ok) {
-      throw new Error(`Apps Script retornou status HTTP ${response.status}`);
-    }
-
-    const data = await response.json();
-    if (!data || data.error) {
-      throw new Error(data?.error || "Resposta JSON inválida");
-    }
-
-    const { empresas, socios, bancos, imobiliario, leads } = data;
-    // Se a Sheets API falhou ou não está configurada, usa o fallback do Web App se existir
-    const empresas_pj = empresas_pj_api.length > 0 ? empresas_pj_api : (data.empresas_pj || []);
+    const valueRanges = res.data.valueRanges || [];
+    const empresas = parseSheet(valueRanges[0]);
+    const leads = parseSheet(valueRanges[1]);
+    const bancos = parseSheet(valueRanges[2]);
+    const socios = parseSheet(valueRanges[3]);
 
     // Run inside a database transaction
     const transaction = db.transaction(() => {
@@ -106,10 +89,10 @@ export async function syncGoogleSheetsToCrm(): Promise<void> {
 
           if (existing) {
             empresaId = existing.id;
-            db.prepare("UPDATE empresas SET faturamento = ?, razao_social = ? WHERE id = ?")
+            db.prepare("UPDATE empresas SET faturamento = ?, razao_social = ?, fonte = 'Empresa' WHERE id = ?")
               .run(faturamento, emp["Razão Social"] || emp.RazaoSocial || cnpj, empresaId);
           } else {
-            const res = db.prepare("INSERT INTO empresas (cnpj, razao_social, faturamento) VALUES (?, ?, ?)")
+            const res = db.prepare("INSERT INTO empresas (cnpj, razao_social, faturamento, fonte) VALUES (?, ?, ?, 'Empresa')")
               .run(cnpj, emp["Razão Social"] || emp.RazaoSocial || cnpj, faturamento);
             empresaId = res.lastInsertRowid;
           }
@@ -225,8 +208,9 @@ export async function syncGoogleSheetsToCrm(): Promise<void> {
 
           if (existing) {
             empresaId = existing.id;
+            db.prepare("UPDATE empresas SET fonte = 'Lead Rápido' WHERE id = ?").run(empresaId);
           } else {
-            const res = db.prepare("INSERT INTO empresas (cnpj, razao_social, faturamento) VALUES (?, ?, ?)")
+            const res = db.prepare("INSERT INTO empresas (cnpj, razao_social, faturamento, fonte) VALUES (?, ?, ?, 'Lead Rápido')")
               .run(cnpjKey, lead.Empresa || `${nome} (Pessoa Física)`, 0);
             empresaId = res.lastInsertRowid;
           }
@@ -253,48 +237,6 @@ export async function syncGoogleSheetsToCrm(): Promise<void> {
               )
               VALUES (?, ?, ?, 'pendente', 'prospect', ?, ?)
             `).run(empresaId, valorSolicitado, comissaoEsperada, defaultChecklist, canal);
-          }
-        }
-      }
-
-      // 4. Sync Empresas PJ (Formulário 4.4.0 Completo)
-      if (empresas_pj && Array.isArray(empresas_pj)) {
-        for (const emp of empresas_pj) {
-          const cnpj = emp.emp_cnpj;
-          const razao = emp.emp_razao || "Empresa PJ sem Razão";
-          if (!cnpj) continue;
-
-          const faturamento = parseCurrencyToFloat(emp.emp_faturamento);
-          const rawJson = JSON.stringify(emp);
-
-          const existing = db.prepare("SELECT id FROM empresas WHERE cnpj = ?").get(cnpj) as { id: number } | undefined;
-          let empresaId: number | bigint;
-
-          if (existing) {
-            empresaId = existing.id;
-            db.prepare("UPDATE empresas SET faturamento = ?, razao_social = ?, proposta_json = ? WHERE id = ?")
-              .run(faturamento, razao, rawJson, empresaId);
-          } else {
-            const res = db.prepare("INSERT INTO empresas (cnpj, razao_social, faturamento, proposta_json) VALUES (?, ?, ?, ?)")
-              .run(cnpj, razao, faturamento, rawJson);
-            empresaId = res.lastInsertRowid;
-          }
-
-          // Inserir oportunidade padrão BDMG se não houver
-          const oppExisting = db.prepare("SELECT id FROM oportunidades WHERE empresa_id = ? AND canal = 'Capital de Giro BDMG'").get(empresaId);
-          if (!oppExisting) {
-            const defaultChecklist = JSON.stringify([
-              { item: "Imóvel", validado: false },
-              { item: "Recebíveis", validado: false },
-              { item: "Aval dos sócios", validado: false },
-              { item: "Veículos", validado: false },
-              { item: "Equipamentos", validado: false }
-            ]);
-            db.prepare(`
-              INSERT INTO oportunidades (
-                empresa_id, valor_solicitado, comissao_esperada, status_repasse, coluna_kanban, checklist_garantias, canal
-              ) VALUES (?, ?, ?, 'pendente', 'prospect', ?, 'Capital de Giro BDMG')
-            `).run(empresaId, 0, 0, defaultChecklist);
           }
         }
       }

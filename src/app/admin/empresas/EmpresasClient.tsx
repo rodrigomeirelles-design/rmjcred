@@ -174,9 +174,14 @@ export default function EmpresasClient() {
                     <td>
                       <Link 
                         href={`/admin/empresas/${emp.id}`}
-                        style={{ color: "var(--crm-text)", fontWeight: "700", textDecoration: "underline" }}
+                        style={{ color: "var(--crm-text)", fontWeight: "700", textDecoration: "underline", display: "flex", alignItems: "center", gap: "0.5rem" }}
                       >
                         {emp.razao_social}
+                        {emp.fonte && (
+                          <span className={`crm-badge ${emp.fonte === 'Empresa' ? 'crm-badge-green' : 'crm-badge-amber'}`} style={{ fontSize: "0.65rem", padding: "0.2rem 0.4rem" }}>
+                            {emp.fonte}
+                          </span>
+                        )}
                       </Link>
                     </td>
                     <td style={{ color: "var(--crm-muted)" }}>{emp.cnpj}</td>

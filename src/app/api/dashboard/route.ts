@@ -1,9 +1,14 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import db from "@/lib/db";
 import { syncGoogleSheetsToCrm } from "@/lib/crmSync";
 
 // GET /api/dashboard - Aggregated stats for dashboard
 export async function GET() {
+  const cookieStore = await cookies();
+  if (!cookieStore.get("rmj_admin_session")) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   try {
     // Sincroniza dados da planilha do Google em background/realtime
     await syncGoogleSheetsToCrm();

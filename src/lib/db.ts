@@ -113,6 +113,7 @@ try {
   };
 
   safeAddColumn("empresas", "proposta_json", "TEXT");
+  safeAddColumn("empresas", "fonte", "TEXT", "'Empresa'");
   safeAddColumn("oportunidades", "canal", "TEXT", "'Capital de Giro BDMG'");
   safeAddColumn("oportunidades", "modo_comissao", "TEXT", "'credito'");
   safeAddColumn("oportunidades", "comissao_porcentagem", "REAL", "4.0");

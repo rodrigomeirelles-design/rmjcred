@@ -68,15 +68,15 @@ function propostaToRow(p: Proposta): string[] {
         s.profissao, s.nacionalidade, s.email, s.telefone, String(s.renda),
         s.cep, s.logradouro, s.numero, s.complemento ?? "",
         s.bairro, s.cidade, s.uf,
-        s.imovel_tipo, String(s.imovel_valor ?? ""),
-        s.veiculo_placas.join(";"),
+        s.possui_imovel, String(s.possui_imovel === "sim" ? (s.imovel_valor ?? "") : ""),
+        s.possui_veiculo === "sim" ? (s.veiculo_placas || []).join(";") : "",
       );
       const c = s.conjuge;
       if (c) {
         base.push(
           c.nome, c.cpf, c.rg, c.nascimento, c.telefone, c.email,
-          c.imovel_tipo, String(c.imovel_valor ?? ""),
-          c.veiculo_placas.join(";"), String(c.renda ?? ""), c.incluir_renda,
+          c.possui_imovel, String(c.possui_imovel === "sim" ? (c.imovel_valor ?? "") : ""),
+          c.possui_veiculo === "sim" ? (c.veiculo_placas || []).join(";") : "", String(c.incluir_renda === "sim" ? (c.renda ?? "") : ""), c.incluir_renda,
         );
       } else {
         base.push(...Array(11).fill(""));
@@ -154,8 +154,10 @@ function rowToProposta(headers: string[], row: string[]): Proposta {
         bairro: get(`socio${i+1}_bairro`),
         cidade: get(`socio${i+1}_cidade`),
         uf: get(`socio${i+1}_uf`),
+        possui_imovel: (get(`socio${i+1}_imovel_tipo`) || "nao") as "sim" | "nao",
         imovel_tipo: get(`socio${i+1}_imovel_tipo`),
         imovel_valor: parseFloat(get(`socio${i+1}_imovel_valor`)) || null,
+        possui_veiculo: get(`socio${i+1}_veiculo_placas`) ? "sim" : "nao",
         veiculo_placas: get(`socio${i+1}_veiculo_placas`).split(";").filter(Boolean),
         conjuge: conjugeNome ? {
           nome: conjugeNome,
@@ -164,8 +166,10 @@ function rowToProposta(headers: string[], row: string[]): Proposta {
           nascimento: get(`conjuge${i+1}_nascimento`),
           telefone: get(`conjuge${i+1}_telefone`),
           email: get(`conjuge${i+1}_email`),
+          possui_imovel: (get(`conjuge${i+1}_imovel_tipo`) || "nao") as "sim" | "nao",
           imovel_tipo: get(`conjuge${i+1}_imovel_tipo`),
           imovel_valor: parseFloat(get(`conjuge${i+1}_imovel_valor`)) || null,
+          possui_veiculo: get(`conjuge${i+1}_veiculo_placas`) ? "sim" : "nao",
           veiculo_placas: get(`conjuge${i+1}_veiculo_placas`).split(";").filter(Boolean),
           renda: parseFloat(get(`conjuge${i+1}_renda`)) || null,
           incluir_renda: (get(`conjuge${i+1}_incluir_renda`) || "nao") as "sim" | "nao",
@@ -178,24 +182,44 @@ function rowToProposta(headers: string[], row: string[]): Proposta {
 export async function getPropostas(): Promise<Proposta[]> {
   const auth = getAuth();
   const sheets = google.sheets({ version: "v4", auth });
-  const res = await sheets.spreadsheets.values.get({
-    spreadsheetId: SHEET_ID,
-    range: `${SHEET_NAME}!A1:ZZ`,
-  });
-  const rows = res.data.values ?? [];
-  if (rows.length < 2) return [];
-  const headers = rows[0] as string[];
-  return rows.slice(1).map((row) => rowToProposta(headers, row as string[]));
+  try {
+    const res = await sheets.spreadsheets.values.get({
+      spreadsheetId: SHEET_ID,
+      range: `${SHEET_NAME}!A1:ZZ`,
+    });
+    const rows = res.data.values ?? [];
+    if (rows.length < 2) return [];
+    const headers = rows[0] as string[];
+    return rows.slice(1).map((row) => rowToProposta(headers, row as string[]));
+  } catch (error: any) {
+    if (error.message?.includes("Unable to parse range")) return [];
+    throw error;
+  }
 }
 
-export async function appendProposta(proposta: Proposta): Promise<void> {
-  const auth = getAuth();
-  const sheets = google.sheets({ version: "v4", auth });
-  const res = await sheets.spreadsheets.values.get({
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function ensurePropostasSheet(sheets: any): Promise<void> {
+  const meta = await sheets.spreadsheets.get({ spreadsheetId: SHEET_ID });
+  const exists = meta.data.sheets?.some((s: any) => s.properties?.title === SHEET_NAME);
+  if (!exists) {
+    await sheets.spreadsheets.batchUpdate({
+      spreadsheetId: SHEET_ID,
+      requestBody: { requests: [{ addSheet: { properties: { title: SHEET_NAME } } }] },
+    });
+    await sheets.spreadsheets.values.update({
+      spreadsheetId: SHEET_ID,
+      range: `${SHEET_NAME}!A1`,
+      valueInputOption: "RAW",
+      requestBody: { values: [SHEET_HEADERS] },
+    });
+    return;
+  }
+
+  const check = await sheets.spreadsheets.values.get({
     spreadsheetId: SHEET_ID,
     range: `${SHEET_NAME}!A1:A1`,
   });
-  if (!res.data.values) {
+  if (!check.data.values) {
     await sheets.spreadsheets.values.update({
       spreadsheetId: SHEET_ID,
       range: `${SHEET_NAME}!A1`,
@@ -203,6 +227,12 @@ export async function appendProposta(proposta: Proposta): Promise<void> {
       requestBody: { values: [SHEET_HEADERS] },
     });
   }
+}
+
+export async function appendProposta(proposta: Proposta): Promise<void> {
+  const auth = getAuth();
+  const sheets = google.sheets({ version: "v4", auth });
+  await ensurePropostasSheet(sheets);
   await sheets.spreadsheets.values.append({
     spreadsheetId: SHEET_ID,
     range: `${SHEET_NAME}!A1`,

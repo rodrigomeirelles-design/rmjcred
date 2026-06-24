@@ -1,7 +1,7 @@
 "use client";
 
-import { usePathname } from "next/navigation";
-import { User } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { User, LogOut } from "lucide-react";
 
 const BREADCRUMBS: Record<string, string> = {
   "/admin/propostas": "Propostas",
@@ -11,7 +11,17 @@ const BREADCRUMBS: Record<string, string> = {
 
 export default function AdminHeader() {
   const pathname = usePathname();
+  const router = useRouter();
+
+  if (pathname === "/admin/login" || pathname === "/admin/esqueci-senha") return null;
+
   const page = BREADCRUMBS[pathname] || "Admin";
+
+  const handleLogout = async () => {
+    await fetch("/api/auth/logout", { method: "POST" });
+    router.push("/admin/login");
+    router.refresh();
+  };
 
   return (
     <header className="h-14 bg-[var(--color-brand-primary)] flex items-center justify-between px-6 flex-shrink-0">
@@ -20,11 +30,21 @@ export default function AdminHeader() {
         <span>/</span>
         <span>{page}</span>
       </div>
-      <div className="flex items-center gap-2">
-        <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-          <User className="w-4 h-4 text-white" />
+      <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+            <User className="w-4 h-4 text-white" />
+          </div>
+          <span className="text-sm text-white font-medium hidden sm:block">Admin</span>
         </div>
-        <span className="text-sm text-white font-medium hidden sm:block">Admin</span>
+        <button
+          onClick={handleLogout}
+          className="text-white/80 hover:text-white hover:bg-white/10 p-2 rounded-lg transition-colors flex items-center gap-2"
+          title="Sair"
+        >
+          <LogOut className="w-4 h-4" />
+          <span className="text-sm font-medium hidden sm:block">Sair</span>
+        </button>
       </div>
     </header>
   );

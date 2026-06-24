@@ -13,6 +13,7 @@ const NAV_ITEMS = [
 
 export default function AdminSidebar() {
   const pathname = usePathname();
+  if (pathname === "/admin/login" || pathname === "/admin/esqueci-senha") return null;
 
   return (
     <aside className="w-56 flex-shrink-0 bg-[var(--color-secondary)] flex flex-col h-full"

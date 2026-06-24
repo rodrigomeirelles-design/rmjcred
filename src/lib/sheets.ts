@@ -252,3 +252,67 @@ function colIndexToLetter(index: number): string {
   }
   return letter;
 }
+
+export async function getConfig(key: string): Promise<string | null> {
+  const auth = getAuth();
+  const sheets = google.sheets({ version: "v4", auth });
+  try {
+    const res = await sheets.spreadsheets.values.get({
+      spreadsheetId: SHEET_ID,
+      range: "Config!A:B",
+    });
+    const rows = res.data.values ?? [];
+    const row = rows.find(r => r[0] === key);
+    return row ? row[1] : null;
+  } catch (error: any) {
+    if (error.message?.includes("Unable to parse range")) {
+      return null;
+    }
+    throw error;
+  }
+}
+
+export async function setConfig(key: string, value: string): Promise<void> {
+  const auth = getAuth();
+  const sheets = google.sheets({ version: "v4", auth });
+  
+  try {
+    await sheets.spreadsheets.values.get({
+      spreadsheetId: SHEET_ID,
+      range: "Config!A1",
+    });
+  } catch (error: any) {
+    if (error.message?.includes("Unable to parse range")) {
+      await sheets.spreadsheets.batchUpdate({
+        spreadsheetId: SHEET_ID,
+        requestBody: {
+          requests: [{ addSheet: { properties: { title: "Config" } } }]
+        }
+      });
+    }
+  }
+
+  const res = await sheets.spreadsheets.values.get({
+    spreadsheetId: SHEET_ID,
+    range: "Config!A:B",
+  });
+  
+  const rows = res.data.values ?? [];
+  const rowIndex = rows.findIndex(r => r[0] === key);
+  
+  if (rowIndex === -1) {
+    await sheets.spreadsheets.values.append({
+      spreadsheetId: SHEET_ID,
+      range: "Config!A:B",
+      valueInputOption: "RAW",
+      requestBody: { values: [[key, value]] },
+    });
+  } else {
+    await sheets.spreadsheets.values.update({
+      spreadsheetId: SHEET_ID,
+      range: `Config!B${rowIndex + 1}`,
+      valueInputOption: "RAW",
+      requestBody: { values: [[value]] },
+    });
+  }
+}

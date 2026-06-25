@@ -5,7 +5,7 @@ import { PropostaFormData, UF_LIST } from "@/types";
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
 import Button from "@/components/ui/Button";
-import { maskCPF, maskPhone, maskCEP, validarCPF, buscarCEP } from "@/lib/utils";
+import { maskCPF, maskPhone, maskCEP, maskMoney, parseMoney, validarCPF, buscarCEP } from "@/lib/utils";
 import { useState } from "react";
 import { Plus, Trash2, ChevronDown, ChevronUp } from "lucide-react";
 
@@ -22,7 +22,6 @@ const REGIME_OPTIONS = [
   { value: "Comunhão Parcial", label: "Comunhão Parcial" },
   { value: "Comunhão Universal", label: "Comunhão Universal" },
   { value: "Separação Total", label: "Separação Total" },
-  { value: "Participação Final nos Aquestos", label: "Participação Final nos Aquestos" },
 ];
 const IMOVEL_TIPO_OPTIONS = [
   { value: "IPTU", label: "IPTU" },
@@ -83,8 +82,12 @@ function SocioCard({ form, index, onRemove, canRemove }: {
   const prefix = `socios.${index}` as const;
   const estadoCivil = watch(`socios.${index}.estado_civil`);
   const exigeConjuge = EXIGE_CONJUGE.includes(estadoCivil);
-  const imovelTipo = watch(`socios.${index}.imovel_tipo`);
-  const conjugeImovelTipo = watch(`socios.${index}.conjuge.imovel_tipo`);
+  const possuiImovel = watch(`socios.${index}.possui_imovel`);
+  const imovelResidencial = watch(`socios.${index}.imovel_residencial`);
+  const possuiVeiculo = watch(`socios.${index}.possui_veiculo`);
+  const conjugePossuiImovel = watch(`socios.${index}.conjuge.possui_imovel`);
+  const conjugePossuiVeiculo = watch(`socios.${index}.conjuge.possui_veiculo`);
+  const incluirRenda = watch(`socios.${index}.conjuge.incluir_renda`);
   const socioErrors = errors.socios?.[index];
 
   async function handleCEP(cep: string) {
@@ -265,13 +268,21 @@ function SocioCard({ form, index, onRemove, canRemove }: {
                 />
               )}
             />
-            <Input
-              label="Renda Mensal (conforme IR) R$"
-              type="number"
-              min={0}
-              required
-              error={socioErrors?.renda?.message}
-              {...register(`${prefix}.renda`, { required: "Obrigatório", valueAsNumber: true })}
+            <Controller
+              name={`${prefix}.renda`}
+              control={control}
+              rules={{ required: "Obrigatório" }}
+              render={({ field }) => (
+                <Input
+                  label="Renda Mensal (conforme IR) R$"
+                  required
+                  placeholder="R$ 0,00"
+                  error={socioErrors?.renda?.message}
+                  value={field.value ? maskMoney(String(Math.round(Number(field.value) * 100))) : ""}
+                  onChange={(e) => field.onChange(parseMoney(e.target.value))}
+                  onBlur={field.onBlur}
+                />
+              )}
             />
           </div>
 
@@ -320,34 +331,120 @@ function SocioCard({ form, index, onRemove, canRemove }: {
               <p className="text-xs text-blue-700">Declarar bens favorece a análise. Eles <strong>não entram como garantia</strong>.</p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Controller
-                name={`${prefix}.imovel_tipo`}
-                control={control}
-                rules={{ required: "Selecione uma opção" }}
-                render={({ field }) => (
-                  <Select label="Imóvel em nome" required placeholder="Selecione" options={IMOVEL_TIPO_OPTIONS} error={socioErrors?.imovel_tipo?.message} value={field.value || ""} onChange={field.onChange} onBlur={field.onBlur} />
-                )}
-              />
-              {imovelTipo && imovelTipo !== "Não possui" && (
-                <Input
-                  label="Valor estimado (R$)"
-                  type="number"
-                  min={0}
-                  error={socioErrors?.imovel_valor?.message}
-                  {...register(`${prefix}.imovel_valor`, { valueAsNumber: true })}
-                />
+              <div className="sm:col-span-2">
+                <p className="label-base mb-2">
+                  Possui imóvel em nome? <span className="text-red-500">*</span>
+                </p>
+                <div className="flex gap-4">
+                  {(["sim", "nao"] as const).map((val) => (
+                    <label key={val} className="flex items-center gap-2 cursor-pointer">
+                      <input type="radio" value={val} className="accent-[var(--color-brand-primary)] w-4 h-4" {...register(`${prefix}.possui_imovel`, { required: "Obrigatório" })} />
+                      <span className="text-sm">{val === "sim" ? "Sim" : "Não"}</span>
+                    </label>
+                  ))}
+                </div>
+                {socioErrors?.possui_imovel && <p className="text-xs text-red-500 mt-1">{socioErrors.possui_imovel.message}</p>}
+              </div>
+
+              {possuiImovel === "sim" && (
+                <>
+                  <div className="sm:col-span-2">
+                    <Controller
+                      name={`${prefix}.imovel_valor`}
+                      control={control}
+                      rules={{ required: "Obrigatório", validate: (v) => Number(v) > 0 || "Informe o valor" }}
+                      render={({ field }) => (
+                        <Input
+                          label="Valor dos imóveis comprovados com IRPF ou IPTU (R$)"
+                          required
+                          placeholder="R$ 0,00"
+                          error={socioErrors?.imovel_valor?.message}
+                          value={field.value ? maskMoney(String(Math.round(Number(field.value) * 100))) : ""}
+                          onChange={(e) => field.onChange(parseMoney(e.target.value))}
+                          onBlur={field.onBlur}
+                        />
+                      )}
+                    />
+                  </div>
+
+                  <div className="sm:col-span-2">
+                    <p className="label-base mb-2">
+                      Dentre estes imóveis, algum é residencial? <span className="text-red-500">*</span>
+                    </p>
+                    <div className="flex gap-4">
+                      {(["sim", "nao"] as const).map((val) => (
+                        <label key={val} className="flex items-center gap-2 cursor-pointer">
+                          <input type="radio" value={val} className="accent-[var(--color-brand-primary)] w-4 h-4" {...register(`${prefix}.imovel_residencial`, { required: "Obrigatório" })} />
+                          <span className="text-sm">{val === "sim" ? "Sim" : "Não"}</span>
+                        </label>
+                      ))}
+                    </div>
+                    {socioErrors?.imovel_residencial && <p className="text-xs text-red-500 mt-1">{(socioErrors.imovel_residencial as { message?: string }).message}</p>}
+                  </div>
+
+                  <div className="sm:col-span-2">
+                    <p className="label-base mb-2">
+                      Reside em imóvel próprio? <span className="text-red-500">*</span>
+                    </p>
+                    <div className="flex gap-4">
+                      {(["sim", "nao"] as const).map((val) => (
+                        <label key={val} className="flex items-center gap-2 cursor-pointer">
+                          <input type="radio" value={val} className="accent-[var(--color-brand-primary)] w-4 h-4" {...register(`${prefix}.reside_imovel_proprio`, { required: "Obrigatório" })} />
+                          <span className="text-sm">{val === "sim" ? "Sim" : "Não"}</span>
+                        </label>
+                      ))}
+                    </div>
+                    {socioErrors?.reside_imovel_proprio && <p className="text-xs text-red-500 mt-1">{(socioErrors.reside_imovel_proprio as { message?: string }).message}</p>}
+                  </div>
+
+                  {imovelResidencial === "sim" && (
+                    <div className="sm:col-span-2">
+                      <Controller
+                        name={`${prefix}.imovel_residencial_valor`}
+                        control={control}
+                        rules={{ required: "Obrigatório", validate: (v) => Number(v) > 0 || "Informe o valor" }}
+                        render={({ field }) => (
+                          <Input
+                            label="Maior valor de imóvel residencial declarado, conforme comprovação válida (R$)"
+                            required
+                            placeholder="R$ 0,00"
+                            error={socioErrors?.imovel_residencial_valor?.message}
+                            value={field.value ? maskMoney(String(Math.round(Number(field.value) * 100))) : ""}
+                            onChange={(e) => field.onChange(parseMoney(e.target.value))}
+                            onBlur={field.onBlur}
+                          />
+                        )}
+                      />
+                    </div>
+                  )}
+                </>
               )}
             </div>
             <div>
-              <p className="label-base mb-2">Veículo(s) — Placa(s)</p>
-              <Controller
-                name={`${prefix}.veiculo_placas`}
-                control={control}
-                defaultValue={[]}
-                render={({ field }) => (
-                  <PlacasInput value={field.value || []} onChange={field.onChange} />
-                )}
-              />
+              <p className="label-base mb-2">
+                Possui veículo(s) próprio(s)? <span className="text-red-500">*</span>
+              </p>
+              <div className="flex gap-4 mb-4">
+                {(["sim", "nao"] as const).map((val) => (
+                  <label key={val} className="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" value={val} className="accent-[var(--color-brand-primary)] w-4 h-4" {...register(`${prefix}.possui_veiculo`, { required: "Obrigatório" })} />
+                    <span className="text-sm">{val === "sim" ? "Sim" : "Não"}</span>
+                  </label>
+                ))}
+              </div>
+              {possuiVeiculo === "sim" && (
+                <>
+                  <p className="label-base mb-2">Veículo(s) — Placa(s)</p>
+                  <Controller
+                    name={`${prefix}.veiculo_placas`}
+                    control={control}
+                    defaultValue={[]}
+                    render={({ field }) => (
+                      <PlacasInput value={field.value || []} onChange={field.onChange} />
+                    )}
+                  />
+                </>
+              )}
             </div>
           </div>
 
@@ -412,10 +509,9 @@ function SocioCard({ form, index, onRemove, canRemove }: {
                     pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "E-mail inválido" },
                   })}
                 />
-                <Input label="Renda Mensal (IR) R$" type="number" min={0} {...register(`${prefix}.conjuge.renda`, { valueAsNumber: true })} />
                 <div className="sm:col-span-2">
                   <p className="label-base mb-2">
-                    Incluir renda do cônjuge na proposta? <span className="text-red-500">*</span>
+                    Deseja incluir a renda do cônjuge na proposta? <span className="text-red-500">*</span>
                   </p>
                   <div className="flex gap-4">
                     {(["sim", "nao"] as const).map((val) => (
@@ -427,26 +523,80 @@ function SocioCard({ form, index, onRemove, canRemove }: {
                   </div>
                   <p className="text-xs text-[var(--color-text-muted)] mt-1">Somar a renda pode expandir o limite de crédito aprovado.</p>
                 </div>
-                <div className="sm:col-span-2">
+                {incluirRenda === "sim" && (
                   <Controller
-                    name={`${prefix}.conjuge.imovel_tipo`}
+                    name={`${prefix}.conjuge.renda`}
                     control={control}
+                    rules={{ required: "Obrigatório" }}
                     render={({ field }) => (
-                      <Select label="Imóvel em nome do cônjuge" placeholder="Selecione" options={IMOVEL_TIPO_OPTIONS} value={field.value || ""} onChange={field.onChange} onBlur={field.onBlur} />
+                      <Input
+                        label="Renda Mensal do Cônjuge (IR) R$"
+                        required
+                        placeholder="R$ 0,00"
+                        error={socioErrors?.conjuge?.renda?.message}
+                        value={field.value ? maskMoney(String(Math.round(Number(field.value) * 100))) : ""}
+                        onChange={(e) => field.onChange(parseMoney(e.target.value))}
+                        onBlur={field.onBlur}
+                      />
                     )}
                   />
-                </div>
-                {conjugeImovelTipo && conjugeImovelTipo !== "Não possui" && (
-                  <Input label="Valor estimado (R$)" type="number" min={0} {...register(`${prefix}.conjuge.imovel_valor`, { valueAsNumber: true })} />
                 )}
                 <div className="sm:col-span-2">
-                  <p className="label-base mb-2">Veículo(s) — Placa(s) do cônjuge</p>
-                  <Controller
-                    name={`${prefix}.conjuge.veiculo_placas`}
-                    control={control}
-                    defaultValue={[]}
-                    render={({ field }) => <PlacasInput value={field.value || []} onChange={field.onChange} />}
-                  />
+                  <p className="label-base mb-2">
+                    Cônjuge possui imóvel em nome?
+                  </p>
+                  <div className="flex gap-4">
+                    {(["sim", "nao"] as const).map((val) => (
+                      <label key={val} className="flex items-center gap-2 cursor-pointer">
+                        <input type="radio" value={val} className="accent-[var(--color-brand-primary)] w-4 h-4" {...register(`${prefix}.conjuge.possui_imovel`)} />
+                        <span className="text-sm">{val === "sim" ? "Sim" : "Não"}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+                {conjugePossuiImovel === "sim" && (
+                  <div className="sm:col-span-2">
+                    <Controller
+                      name={`${prefix}.conjuge.imovel_valor`}
+                      control={control}
+                      rules={{ required: "Obrigatório", validate: (v) => Number(v) > 0 || "Informe o valor" }}
+                      render={({ field }) => (
+                        <Input
+                          label="Valor dos imóveis comprovados (R$)"
+                          required
+                          placeholder="R$ 0,00"
+                          error={socioErrors?.conjuge?.imovel_valor?.message}
+                          value={field.value ? maskMoney(String(Math.round(Number(field.value) * 100))) : ""}
+                          onChange={(e) => field.onChange(parseMoney(e.target.value))}
+                          onBlur={field.onBlur}
+                        />
+                      )}
+                    />
+                  </div>
+                )}
+                <div className="sm:col-span-2">
+                  <p className="label-base mb-2">
+                    Cônjuge possui veículo(s) próprio(s)?
+                  </p>
+                  <div className="flex gap-4 mb-4">
+                    {(["sim", "nao"] as const).map((val) => (
+                      <label key={val} className="flex items-center gap-2 cursor-pointer">
+                        <input type="radio" value={val} className="accent-[var(--color-brand-primary)] w-4 h-4" {...register(`${prefix}.conjuge.possui_veiculo`)} />
+                        <span className="text-sm">{val === "sim" ? "Sim" : "Não"}</span>
+                      </label>
+                    ))}
+                  </div>
+                  {conjugePossuiVeiculo === "sim" && (
+                    <>
+                      <p className="label-base mb-2">Veículo(s) — Placa(s) do cônjuge</p>
+                      <Controller
+                        name={`${prefix}.conjuge.veiculo_placas`}
+                        control={control}
+                        defaultValue={[]}
+                        render={({ field }) => <PlacasInput value={field.value || []} onChange={field.onChange} />}
+                      />
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -472,20 +622,14 @@ export default function Step2Socios({ form }: Step2Props) {
       email: "", telefone: "", renda: 0,
       cep: "", logradouro: "", numero: "", complemento: "",
       bairro: "", cidade: "", uf: "",
-      imovel_tipo: "Não possui", imovel_valor: null, veiculo_placas: [],
+      possui_imovel: "nao", imovel_valor: null, imovel_residencial: undefined, reside_imovel_proprio: undefined, imovel_residencial_valor: null, possui_veiculo: "nao", veiculo_placas: [],
     });
   }
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between mb-2">
-        <div>
-          <h2 className="text-lg font-semibold text-[var(--color-text)]">Sócios da Empresa</h2>
-          <p className="text-sm text-[var(--color-text-muted)]">Mínimo 1, máximo 5 sócios</p>
-        </div>
-        <div className={`text-sm font-mono font-medium px-3 py-1 rounded-full ${totalParticipacao > 100 ? "bg-red-100 text-red-700" : totalParticipacao === 100 ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-600"}`}>
-          {totalParticipacao.toFixed(1)}% / 100%
-        </div>
+      <div className="mb-2">
+        <h2 className="text-lg font-semibold text-[var(--color-text)]">Sócios da Empresa</h2>
       </div>
 
       {totalParticipacao > 100 && (

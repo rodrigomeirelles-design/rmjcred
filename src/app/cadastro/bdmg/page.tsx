@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import { PropostaFormData, DEFAULT_GARANTIAS } from "@/types";
+import { PropostaFormData } from "@/types";
 import FormStepper from "@/components/form/FormStepper";
 import Step1Empresa from "@/components/form/steps/Step1Empresa";
 import Step2Socios from "@/components/form/steps/Step2Socios";
@@ -13,7 +13,7 @@ import Button from "@/components/ui/Button";
 import { ChevronLeft, ChevronRight, Send } from "lucide-react";
 
 const STEP_FIELDS: (keyof PropostaFormData)[][] = [
-  ["emp_razao", "emp_cnpj", "emp_funcionarios", "emp_faturamento", "emp_repr_nome", "emp_repr_cpf", "emp_email", "emp_telefone", "emp_cep", "emp_logradouro", "emp_numero", "emp_bairro", "emp_cidade", "emp_uf", "emp_imovel"],
+  ["emp_razao", "emp_cnpj", "emp_funcionarios", "emp_regime_tributario", "emp_repr_nome", "emp_repr_cpf", "emp_email", "emp_telefone", "emp_cep", "emp_logradouro", "emp_numero", "emp_bairro", "emp_cidade", "emp_uf", "emp_imovel"],
   ["socios"],
   ["banco_nome", "banco_numero", "banco_agencia", "banco_conta", "banco_digito"],
   ["aceite_lgpd"],
@@ -34,7 +34,7 @@ export default function CadastroBdmgPage() {
         email: "", telefone: "", renda: 0,
         cep: "", logradouro: "", numero: "", complemento: "",
         bairro: "", cidade: "", uf: "",
-        imovel_tipo: "Não possui", imovel_valor: null, veiculo_placas: [],
+        possui_imovel: "nao", imovel_valor: null, possui_veiculo: "nao", veiculo_placas: [],
       }],
       aceite_lgpd: false,
     },
@@ -63,6 +63,12 @@ export default function CadastroBdmgPage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
+  async function handleFinalSubmit() {
+    const valid = await form.trigger(STEP_FIELDS[3] as any);
+    if (!valid) return;
+    await handleSubmit(form.getValues());
+  }
+
   async function handleSubmit(data: PropostaFormData) {
     setIsSubmitting(true);
     setSubmitError(null);
@@ -73,9 +79,8 @@ export default function CadastroBdmgPage() {
         id_proposta: id,
         timestamp_envio: new Date().toISOString(),
         produto: "BDMG Capital de Giro",
-        coluna_kanban: "novo",
+        coluna_kanban: "novo_negocio",
         status_repasse: "pendente",
-        checklist_garantias: DEFAULT_GARANTIAS,
       };
 
       const appsScriptUrl = process.env.NEXT_PUBLIC_APPS_SCRIPT_URL;
@@ -115,10 +120,10 @@ export default function CadastroBdmgPage() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-[var(--color-text)]">
+        <h1 className="text-xl font-bold" style={{ color: "#234469" }}>
           Proposta de Capital de Giro — BDMG
         </h1>
-        <p className="text-[var(--color-text-muted)] mt-1">
+        <p className="text-[var(--color-text-muted)] mt-1 text-sm">
           Preencha os dados abaixo para iniciar sua análise de crédito
         </p>
       </div>
@@ -152,11 +157,11 @@ export default function CadastroBdmgPage() {
           )}
 
           {currentStep < 4 ? (
-            <Button type="button" onClick={handleNext}>
+            <Button type="button" variant="accent" onClick={handleNext}>
               Próximo <ChevronRight className="w-4 h-4" />
             </Button>
           ) : (
-            <Button type="submit" loading={isSubmitting} disabled={isSubmitting}>
+            <Button type="button" variant="accent" loading={isSubmitting} disabled={isSubmitting} onClick={handleFinalSubmit}>
               <Send className="w-4 h-4" /> Enviar Proposta
             </Button>
           )}

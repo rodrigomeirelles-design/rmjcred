@@ -13,10 +13,10 @@ export default function Step3Banco({ form }: Step3Props) {
   const { register, formState: { errors } } = form;
 
   return (
-    <div className="card-base space-y-6">
+    <div className="card-form space-y-6">
       <div className="flex items-center gap-3 pb-4 border-b border-[var(--color-border)]">
-        <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-          <Landmark className="w-5 h-5 text-[var(--color-brand-primary)]" />
+        <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: "rgb(35 68 105 / 0.1)" }}>
+          <Landmark className="w-5 h-5" style={{ color: "#234469" }} />
         </div>
         <div>
           <h2 className="text-lg font-semibold text-[var(--color-text)]">Conta para Liberação do Crédito</h2>

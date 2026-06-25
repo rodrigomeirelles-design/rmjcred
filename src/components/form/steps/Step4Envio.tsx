@@ -3,49 +3,69 @@
 import { UseFormReturn } from "react-hook-form";
 import { PropostaFormData } from "@/types";
 import Textarea from "@/components/ui/Textarea";
-import { CheckCircle2, FileText, FileCheck, MapPin, CreditCard, Building2 } from "lucide-react";
+import { CheckCircle2, FileText, FileCheck, MapPin, CreditCard, Building2, Receipt } from "lucide-react";
 
 interface Step4Props {
   form: UseFormReturn<PropostaFormData>;
   isSubmitting: boolean;
 }
 
-const DOCUMENTOS = [
+const DOCUMENTOS_COMUNS = [
   { icon: FileText, text: "IRPF dos últimos 2 anos de todos os sócios" },
-  { icon: FileCheck, text: "Extrato Simples Nacional PGDAS-D" },
   { icon: MapPin, text: "Comprovantes de endereço (empresa e sócios)" },
   { icon: CreditCard, text: "RG e CPF de todos os sócios" },
   { icon: Building2, text: "Cartão CNPJ atualizado" },
 ];
 
+const DOCUMENTOS_SIMPLES = [
+  { icon: FileCheck, text: "Extrato Simples Nacional — PGDAS-D dos últimos 12 meses" },
+];
+
+const DOCUMENTOS_LUCRO = [
+  { icon: FileCheck, text: "EFDs referentes aos meses de faturamento (modelo por CST)" },
+  { icon: Receipt, text: "Recibos de entrega das EFDs referentes aos meses de faturamento" },
+  { icon: Receipt, text: "Guias de pagamento do PIS e COFINS dos meses de faturamento (emitidas no Portal e-CAC)" },
+];
+
 export default function Step4Envio({ form, isSubmitting }: Step4Props) {
-  const { register, formState: { errors } } = form;
+  const { register, watch, formState: { errors } } = form;
+  const regime = watch("emp_regime_tributario");
+
+  const isLucro = regime === "Lucro Presumido" || regime === "Lucro Real";
+  const docsFiscais = isLucro ? DOCUMENTOS_LUCRO : DOCUMENTOS_SIMPLES;
 
   return (
     <div className="space-y-6">
-      <div className="card-base">
+      <div className="card-form">
         <h2 className="text-lg font-semibold text-[var(--color-text)] mb-5 pb-3 border-b border-[var(--color-border)]">
           Observações Finais
         </h2>
         <Textarea
           label="Observações (opcional)"
-          hint="Espaço para informações adicionais sobre o faturamento ou particularidades da operação de crédito"
+          hint="Espaço para informações adicionais sobre particularidades da operação de crédito"
           rows={4}
           placeholder="Ex: A empresa possui sazonalidade no faturamento, sendo o mês de dezembro o de maior receita..."
           {...register("obs_finais")}
         />
       </div>
 
-      <div className="card-base">
-        <h2 className="text-lg font-semibold text-[var(--color-text)] mb-4 pb-3 border-b border-[var(--color-border)]">
+      <div className="card-form">
+        <h2 className="text-lg font-semibold text-[var(--color-text)] mb-1 pb-3 border-b border-[var(--color-border)]">
           Documentos Necessários
         </h2>
+        {regime && (
+          <div className="mb-4 mt-3 inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: "rgb(35 68 105 / 0.08)", color: "#234469" }}>
+            Regime: {regime}
+          </div>
+        )}
         <p className="text-sm text-[var(--color-text-muted)] mb-4">
           Após o envio desta ficha, você receberá as instruções para enviar os documentos abaixo
           via WhatsApp ou e-mail.
         </p>
-        <ul className="space-y-3">
-          {DOCUMENTOS.map(({ icon: Icon, text }) => (
+
+        <p className="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wide mb-2">Documentos pessoais e cadastrais</p>
+        <ul className="space-y-3 mb-5">
+          {DOCUMENTOS_COMUNS.map(({ icon: Icon, text }) => (
             <li key={text} className="flex items-start gap-3">
               <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
                 <Icon className="w-4 h-4 text-[var(--color-brand-primary)]" />
@@ -54,9 +74,24 @@ export default function Step4Envio({ form, isSubmitting }: Step4Props) {
             </li>
           ))}
         </ul>
+
+        <p className="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wide mb-2">
+          Documentos fiscais
+          {isLucro && <span className="ml-2 text-amber-600 normal-case font-medium">(Lucro Real / Presumido)</span>}
+        </p>
+        <ul className="space-y-3">
+          {docsFiscais.map(({ icon: Icon, text }) => (
+            <li key={text} className="flex items-start gap-3">
+              <div className="w-8 h-8 bg-amber-50 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                <Icon className="w-4 h-4 text-amber-600" />
+              </div>
+              <span className="text-sm text-[var(--color-text)] pt-1.5">{text}</span>
+            </li>
+          ))}
+        </ul>
       </div>
 
-      <div className="card-base border-[var(--color-brand-primary)]/30">
+      <div className="card-form border-[var(--color-brand-primary)]/30">
         <div className="flex items-start gap-3">
           <input
             type="checkbox"

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Proposta, KANBAN_COLUMNS } from "@/types";
+import { Proposta, KANBAN_COLUMNS, COMISSAO_PERCENTUAL } from "@/types";
 import KanbanBoard from "@/components/admin/KanbanBoard";
 import { formatMoney } from "@/lib/utils";
 import { Search, Download } from "lucide-react";
@@ -12,14 +12,16 @@ interface Props {
 
 function exportCSV(propostas: Proposta[]) {
   const headers = [
-    "ID", "Data", "Empresa", "CNPJ", "Faturamento", "Representante",
-    "E-mail", "Telefone", "Coluna Kanban", "Status Repasse",
-    "Follow-up", "Motivo Perda",
+    "ID", "Data", "Empresa", "CNPJ", "Valor Crédito", "Comissão (1,35%)", "Representante",
+    "E-mail", "Telefone", "Etapa", "Status Repasse",
+    "Data Liberação", "Follow-up", "Motivo Perda",
   ];
   const rows = propostas.map((p) => [
     p.id_proposta, p.timestamp_envio?.split("T")[0] ?? "", p.emp_razao, p.emp_cnpj,
-    p.emp_faturamento, p.emp_repr_nome, p.emp_email, p.emp_telefone,
-    p.coluna_kanban, p.status_repasse, p.followup_data ?? "", p.motivo_perda ?? "",
+    p.valor_solicitado ?? "", (p.valor_solicitado ?? 0) * COMISSAO_PERCENTUAL || "",
+    p.emp_repr_nome, p.emp_email, p.emp_telefone,
+    p.coluna_kanban, p.status_repasse,
+    p.data_liberacao ?? "", p.followup_data ?? "", p.motivo_perda ?? "",
   ]);
   const csv = [headers, ...rows].map((r) => r.map((c) => `"${c}"`).join(",")).join("\n");
   const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
@@ -35,6 +37,7 @@ export default function AdminPropostasClient({ initialPropostas }: Props) {
   const [busca, setBusca] = useState("");
   const [filtroPeriodo, setFiltroPeriodo] = useState("todos");
   const [filtroStatus, setFiltroStatus] = useState("todos");
+  const [filtroTipo, setFiltroTipo] = useState<"todos" | "PJ" | "PF">("todos");
 
   const today = new Date();
   const startOfWeek = new Date(today);
@@ -54,17 +57,18 @@ export default function AdminPropostasClient({ initialPropostas }: Props) {
         if (filtroPeriodo === "mes" && created < startOfMonth) return false;
       }
       if (filtroStatus !== "todos" && p.coluna_kanban !== filtroStatus) return false;
+      if (filtroTipo !== "todos" && (p.tipo_pessoa || "PJ") !== filtroTipo) return false;
       return true;
     });
-  }, [initialPropostas, busca, filtroPeriodo, filtroStatus, today, startOfWeek, startOfMonth]);
+  }, [initialPropostas, busca, filtroPeriodo, filtroStatus, filtroTipo, today, startOfWeek, startOfMonth]);
 
-  const totalFaturamento = filtered.reduce((s, p) => s + (p.emp_faturamento || 0), 0);
+  const totalCredito = filtered.reduce((s, p) => s + (p.valor_solicitado || 0), 0);
   const totalPendente = filtered
     .filter((p) => p.status_repasse === "pendente")
-    .reduce((s, p) => s + (p.comissao_esperada || 0), 0);
+    .reduce((s, p) => s + (p.valor_solicitado || 0) * COMISSAO_PERCENTUAL, 0);
   const totalRecebido = filtered
     .filter((p) => p.status_repasse === "recebido")
-    .reduce((s, p) => s + (p.comissao_esperada || 0), 0);
+    .reduce((s, p) => s + (p.valor_solicitado || 0) * COMISSAO_PERCENTUAL, 0);
 
   async function handleUpdate(id: string, fields: Partial<Proposta>) {
     await fetch(`/api/propostas/${id}`, {
@@ -111,6 +115,18 @@ export default function AdminPropostasClient({ initialPropostas }: Props) {
             ))}
           </select>
 
+          <div className="flex rounded-lg border border-[var(--color-border)] overflow-hidden text-sm font-medium">
+            {(["todos", "PJ", "PF"] as const).map((t) => (
+              <button
+                key={t}
+                onClick={() => setFiltroTipo(t)}
+                className={`px-3 py-1.5 transition-colors ${filtroTipo === t ? "bg-[var(--color-brand-primary)] text-white" : "bg-[var(--color-surface)] text-[var(--color-text-muted)] hover:bg-[var(--color-surface-subtle)]"}`}
+              >
+                {t === "todos" ? "Todos" : t}
+              </button>
+            ))}
+          </div>
+
           <button
             onClick={() => exportCSV(filtered)}
             className="flex items-center gap-2 px-3 py-1.5 bg-[var(--color-surface-subtle)] border border-[var(--color-border)] rounded-lg text-sm font-medium text-[var(--color-text)] hover:bg-[var(--color-border)] transition-colors"
@@ -125,10 +141,12 @@ export default function AdminPropostasClient({ initialPropostas }: Props) {
             <strong className="text-[var(--color-text)]">{filtered.length}</strong>{" "}
             proposta{filtered.length !== 1 ? "s" : ""}
           </span>
-          <span className="text-[var(--color-text-muted)]">
-            Faturamento total:{" "}
-            <strong className="font-money text-green-600">{formatMoney(totalFaturamento)}</strong>
-          </span>
+          {totalCredito > 0 && (
+            <span className="text-[var(--color-text-muted)]">
+              Volume de crédito:{" "}
+              <strong className="font-money text-green-600">{formatMoney(totalCredito)}</strong>
+            </span>
+          )}
           {totalPendente > 0 && (
             <span className="text-[var(--color-text-muted)]">
               Comissão pendente:{" "}

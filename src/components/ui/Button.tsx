@@ -4,19 +4,20 @@ import { ButtonHTMLAttributes, forwardRef } from "react";
 import { cn } from "@/lib/utils";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "outline" | "ghost" | "danger";
+  variant?: "primary" | "accent" | "outline" | "ghost" | "danger";
   size?: "sm" | "md" | "lg";
   loading?: boolean;
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ variant = "primary", size = "md", loading, children, className, disabled, ...props }, ref) => {
-    const base = "inline-flex items-center justify-center gap-2 font-semibold rounded-lg transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed";
+    const base = "inline-flex items-center justify-center gap-2 font-bold rounded-lg transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed tracking-wide";
     const variants = {
-      primary: "bg-[var(--color-brand-primary)] text-white hover:bg-[var(--color-brand-primary-dark)] active:scale-[0.98]",
-      outline: "bg-transparent text-[var(--color-brand-primary)] border border-[var(--color-brand-primary)] hover:bg-[var(--color-brand-primary)]/5",
-      ghost: "bg-transparent text-[var(--color-text-muted)] hover:bg-[var(--color-surface-subtle)]",
-      danger: "bg-red-600 text-white hover:bg-red-700 active:scale-[0.98]",
+      primary: "bg-[var(--color-brand-primary)] text-white hover:bg-[var(--color-brand-primary-dark)] active:scale-[0.98] shadow-sm hover:shadow-md",
+      accent:  "bg-[var(--color-brand-accent)] text-white hover:bg-[var(--color-brand-accent-dark)] active:scale-[0.98] shadow-sm hover:shadow-[0_4px_14px_rgb(238_102_27/0.35)]",
+      outline: "bg-transparent text-[var(--color-brand-primary)] border-[1.5px] border-[var(--color-brand-primary)] hover:bg-[var(--color-brand-primary)]/6",
+      ghost:   "bg-transparent text-[var(--color-text-muted)] hover:bg-[var(--color-surface-subtle)]",
+      danger:  "bg-red-600 text-white hover:bg-red-700 active:scale-[0.98]",
     };
     const sizes = {
       sm: "px-3 py-1.5 text-xs",

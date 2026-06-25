@@ -1,5 +1,5 @@
 import { google } from "googleapis";
-import { Proposta, GarantiaItem, KanbanColumn, StatusRepasse } from "@/types";
+import { Proposta, KanbanColumn, StatusRepasse } from "@/types";
 
 const SHEET_ID = process.env.GOOGLE_SHEETS_ID!;
 const SHEET_NAME = "Propostas";
@@ -16,9 +16,9 @@ function getAuth() {
 
 export const SHEET_HEADERS = [
   "id_proposta","timestamp_envio","produto","coluna_kanban","status_repasse",
-  "motivo_perda","data_recusa","followup_data","checklist_garantias",
-  "valor_solicitado","valor_aprovado","comissao_esperada",
-  "emp_razao","emp_fantasia","emp_cnpj","emp_funcionarios","emp_faturamento",
+  "motivo_perda","data_recusa","followup_data","data_liberacao",
+  "valor_solicitado",
+  "emp_razao","emp_fantasia","emp_cnpj","emp_funcionarios",
   "emp_repr_nome","emp_repr_cpf","emp_email","emp_telefone",
   "emp_cep","emp_logradouro","emp_numero","emp_complemento",
   "emp_bairro","emp_cidade","emp_uf",
@@ -40,17 +40,23 @@ export const SHEET_HEADERS = [
     `conjuge${i+1}_imovel_tipo`,`conjuge${i+1}_imovel_valor`,
     `conjuge${i+1}_veiculo_placas`,`conjuge${i+1}_renda`,`conjuge${i+1}_incluir_renda`,
   ]).flat(),
+  // Novas colunas adicionadas no FINAL para não deslocar dados existentes
+  "emp_regime_tributario",
+  ...Array.from({ length: 5 }, (_, i) => [
+    `socio${i+1}_imovel_residencial`,
+    `socio${i+1}_reside_imovel_proprio`,
+    `socio${i+1}_imovel_residencial_valor`,
+  ]).flat(),
 ];
 
 function propostaToRow(p: Proposta): string[] {
   const base = [
     p.id_proposta, p.timestamp_envio, p.produto, p.coluna_kanban,
     p.status_repasse, p.motivo_perda ?? "", p.data_recusa ?? "",
-    p.followup_data ?? "", JSON.stringify(p.checklist_garantias),
-    String(p.valor_solicitado ?? ""), String(p.valor_aprovado ?? ""),
-    String(p.comissao_esperada ?? ""),
+    p.followup_data ?? "", p.data_liberacao ?? "",
+    String(p.valor_solicitado ?? ""),
     p.emp_razao, p.emp_fantasia ?? "", p.emp_cnpj,
-    String(p.emp_funcionarios), String(p.emp_faturamento),
+    String(p.emp_funcionarios),
     p.emp_repr_nome, p.emp_repr_cpf, p.emp_email, p.emp_telefone,
     p.emp_cep, p.emp_logradouro, p.emp_numero, p.emp_complemento ?? "",
     p.emp_bairro, p.emp_cidade, p.emp_uf,
@@ -82,9 +88,21 @@ function propostaToRow(p: Proposta): string[] {
         base.push(...Array(11).fill(""));
       }
     } else {
-      base.push(...Array(34).fill(""));
+      base.push(...Array(33).fill(""));
     }
   }
+
+  // Novas colunas no final — não alteram posição das colunas existentes
+  base.push(p.emp_regime_tributario ?? "");
+  for (let i = 0; i < 5; i++) {
+    const s = p.socios[i];
+    base.push(
+      s?.imovel_residencial ?? "",
+      s?.reside_imovel_proprio ?? "",
+      String(s?.imovel_residencial_valor ?? ""),
+    );
+  }
+
   return base;
 }
 
@@ -99,17 +117,12 @@ function rowToProposta(headers: string[], row: string[]): Proposta {
     motivo_perda: get("motivo_perda") || undefined,
     data_recusa: get("data_recusa") || undefined,
     followup_data: get("followup_data") || undefined,
-    checklist_garantias: (() => {
-      try { return JSON.parse(get("checklist_garantias")); } catch { return []; }
-    })() as GarantiaItem[],
+    data_liberacao: get("data_liberacao") || undefined,
     valor_solicitado: parseFloat(get("valor_solicitado")) || undefined,
-    valor_aprovado: parseFloat(get("valor_aprovado")) || undefined,
-    comissao_esperada: parseFloat(get("comissao_esperada")) || undefined,
     emp_razao: get("emp_razao"),
     emp_fantasia: get("emp_fantasia") || undefined,
     emp_cnpj: get("emp_cnpj"),
     emp_funcionarios: parseInt(get("emp_funcionarios")) || 0,
-    emp_faturamento: parseFloat(get("emp_faturamento")) || 0,
     emp_repr_nome: get("emp_repr_nome"),
     emp_repr_cpf: get("emp_repr_cpf"),
     emp_email: get("emp_email"),
@@ -124,6 +137,7 @@ function rowToProposta(headers: string[], row: string[]): Proposta {
     emp_imovel: get("emp_imovel"),
     emp_imovel_tipo: get("emp_imovel_tipo") || undefined,
     emp_imovel_valor: parseFloat(get("emp_imovel_valor")) || undefined,
+    emp_regime_tributario: get("emp_regime_tributario") || undefined,
     banco_nome: get("banco_nome"),
     banco_numero: get("banco_numero"),
     banco_agencia: get("banco_agencia"),
@@ -157,6 +171,9 @@ function rowToProposta(headers: string[], row: string[]): Proposta {
         possui_imovel: (get(`socio${i+1}_imovel_tipo`) || "nao") as "sim" | "nao",
         imovel_tipo: get(`socio${i+1}_imovel_tipo`),
         imovel_valor: parseFloat(get(`socio${i+1}_imovel_valor`)) || null,
+        imovel_residencial: (get(`socio${i+1}_imovel_residencial`) || undefined) as "sim" | "nao" | undefined,
+        reside_imovel_proprio: (get(`socio${i+1}_reside_imovel_proprio`) || undefined) as "sim" | "nao" | undefined,
+        imovel_residencial_valor: parseFloat(get(`socio${i+1}_imovel_residencial_valor`)) || null,
         possui_veiculo: get(`socio${i+1}_veiculo_placas`) ? "sim" : "nao",
         veiculo_placas: get(`socio${i+1}_veiculo_placas`).split(";").filter(Boolean),
         conjuge: conjugeNome ? {
@@ -215,16 +232,32 @@ async function ensurePropostasSheet(sheets: any): Promise<void> {
     return;
   }
 
-  const check = await sheets.spreadsheets.values.get({
+  const headerRes = await sheets.spreadsheets.values.get({
     spreadsheetId: SHEET_ID,
-    range: `${SHEET_NAME}!A1:A1`,
+    range: `${SHEET_NAME}!1:1`,
   });
-  if (!check.data.values) {
+  const existingHeaders = (headerRes.data.values?.[0] as string[] | undefined) ?? [];
+
+  if (existingHeaders.length === 0) {
     await sheets.spreadsheets.values.update({
       spreadsheetId: SHEET_ID,
       range: `${SHEET_NAME}!A1`,
       valueInputOption: "RAW",
       requestBody: { values: [SHEET_HEADERS] },
+    });
+    return;
+  }
+
+  // Adiciona colunas novas que não existem no header atual (append-only, sem shift)
+  const existingSet = new Set(existingHeaders);
+  const missingHeaders = SHEET_HEADERS.filter((h) => !existingSet.has(h));
+  if (missingHeaders.length > 0) {
+    const startCol = colIndexToLetter(existingHeaders.length);
+    await sheets.spreadsheets.values.update({
+      spreadsheetId: SHEET_ID,
+      range: `${SHEET_NAME}!${startCol}1`,
+      valueInputOption: "RAW",
+      requestBody: { values: [missingHeaders] },
     });
   }
 }
@@ -243,7 +276,7 @@ export async function appendProposta(proposta: Proposta): Promise<void> {
 
 export async function updatePropostaField(
   id: string,
-  fields: Partial<Pick<Proposta, "coluna_kanban" | "status_repasse" | "motivo_perda" | "data_recusa" | "followup_data" | "checklist_garantias" | "valor_solicitado" | "valor_aprovado" | "comissao_esperada">>
+  fields: Record<string, string | number | null | undefined>
 ): Promise<void> {
   const auth = getAuth();
   const sheets = google.sheets({ version: "v4", auth });
@@ -267,10 +300,41 @@ export async function updatePropostaField(
       range: cellRef,
       valueInputOption: "RAW",
       requestBody: {
-        values: [[key === "checklist_garantias" ? JSON.stringify(value) : String(value ?? "")]],
+        values: [[String(value ?? "")]],
       },
     });
   }
+}
+
+export async function deletePropostaRow(id: string): Promise<void> {
+  const auth = getAuth();
+  const sheets = google.sheets({ version: "v4", auth });
+  const res = await sheets.spreadsheets.values.get({
+    spreadsheetId: SHEET_ID,
+    range: `${SHEET_NAME}!A:A`,
+  });
+  const rows = res.data.values ?? [];
+  const rowIndex = rows.findIndex((r, i) => i > 0 && r[0] === id);
+  if (rowIndex === -1) return;
+
+  const meta = await sheets.spreadsheets.get({ spreadsheetId: SHEET_ID });
+  const sheetId = meta.data.sheets?.find((s: any) => s.properties?.title === SHEET_NAME)?.properties?.sheetId ?? 0;
+
+  await sheets.spreadsheets.batchUpdate({
+    spreadsheetId: SHEET_ID,
+    requestBody: {
+      requests: [{
+        deleteDimension: {
+          range: {
+            sheetId,
+            dimension: "ROWS",
+            startIndex: rowIndex,
+            endIndex: rowIndex + 1,
+          },
+        },
+      }],
+    },
+  });
 }
 
 function colIndexToLetter(index: number): string {

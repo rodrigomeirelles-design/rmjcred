@@ -1,31 +1,14 @@
 export type KanbanColumn =
-  | "novo"
+  | "novo_negocio"
   | "em_analise"
-  | "aguardando_consulta_compartilha_receita"
-  | "aguardando_documentacao"
-  | "aguardando_declaracao_autorizacao"
-  | "aguardando_regularizacao"
-  | "aguardando_aprovacao_comite"
-  | "aprovada_sob_novas_condicoes"
-  | "aprovada"
-  | "aguardando_assinatura"
-  | "aguardando_liberacao"
-  | "nao_aprovada";
+  | "em_aprovacao"
+  | "formalizacao"
+  | "credito_liberado"
+  | "nao_aprovado"
+  | "leads_perdidos";
 
 export type StatusRepasse = "pendente" | "recebido";
-
-export interface GarantiaItem {
-  item: string;
-  validado: boolean;
-}
-
-export const DEFAULT_GARANTIAS: GarantiaItem[] = [
-  { item: "Imóvel", validado: false },
-  { item: "Recebíveis", validado: false },
-  { item: "Aval dos sócios", validado: false },
-  { item: "Veículos", validado: false },
-  { item: "Equipamentos", validado: false },
-];
+export type TipoPessoa = "PJ" | "PF";
 
 export interface ConjugeDados {
   nome: string;
@@ -34,10 +17,12 @@ export interface ConjugeDados {
   nascimento: string;
   telefone: string;
   email: string;
-  imovel_tipo: string;
-  imovel_valor: number | null;
+  imovel_tipo?: string;
+  imovel_valor?: number | null;
+  possui_imovel: "sim" | "nao";
+  possui_veiculo: "sim" | "nao";
   veiculo_placas: string[];
-  renda: number | null;
+  renda?: number | null;
   incluir_renda: "sim" | "nao";
 }
 
@@ -61,8 +46,13 @@ export interface SocioDados {
   bairro: string;
   cidade: string;
   uf: string;
-  imovel_tipo: string;
-  imovel_valor: number | null;
+  possui_imovel: "sim" | "nao";
+  imovel_tipo?: string;
+  imovel_valor?: number | null;
+  imovel_residencial?: "sim" | "nao";
+  imovel_residencial_valor?: number | null;
+  reside_imovel_proprio?: "sim" | "nao";
+  possui_veiculo: "sim" | "nao";
   veiculo_placas: string[];
   conjuge?: ConjugeDados;
 }
@@ -72,7 +62,6 @@ export interface PropostaFormData {
   emp_fantasia?: string;
   emp_cnpj: string;
   emp_funcionarios: number;
-  emp_faturamento: number;
   emp_repr_nome: string;
   emp_repr_cpf: string;
   emp_email: string;
@@ -87,6 +76,7 @@ export interface PropostaFormData {
   emp_imovel: "sim" | "nao";
   emp_imovel_tipo?: string;
   emp_imovel_valor?: number;
+  emp_regime_tributario?: string;
   socios: SocioDados[];
   banco_nome: string;
   banco_numero: string;
@@ -101,20 +91,18 @@ export interface Proposta {
   id_proposta: string;
   timestamp_envio: string;
   produto: string;
+  tipo_pessoa?: TipoPessoa;
   coluna_kanban: KanbanColumn;
   status_repasse: StatusRepasse;
   motivo_perda?: string;
   data_recusa?: string;
   followup_data?: string;
-  checklist_garantias: GarantiaItem[];
+  data_liberacao?: string;
   valor_solicitado?: number;
-  valor_aprovado?: number;
-  comissao_esperada?: number;
   emp_razao: string;
   emp_fantasia?: string;
   emp_cnpj: string;
   emp_funcionarios: number;
-  emp_faturamento: number;
   emp_repr_nome: string;
   emp_repr_cpf: string;
   emp_email: string;
@@ -129,6 +117,7 @@ export interface Proposta {
   emp_imovel: string;
   emp_imovel_tipo?: string;
   emp_imovel_valor?: number;
+  emp_regime_tributario?: string;
   banco_nome: string;
   banco_numero: string;
   banco_agencia: string;
@@ -138,19 +127,16 @@ export interface Proposta {
   socios: SocioDados[];
 }
 
+export const COMISSAO_PERCENTUAL = 0.0135;
+
 export const KANBAN_COLUMNS: { id: KanbanColumn; label: string; fase: number }[] = [
-  { id: "novo", label: "Novo", fase: 0 },
-  { id: "em_analise", label: "Em análise", fase: 1 },
-  { id: "aguardando_consulta_compartilha_receita", label: "Ag. Consulta Receita", fase: 1 },
-  { id: "aguardando_documentacao", label: "Ag. Documentação", fase: 2 },
-  { id: "aguardando_declaracao_autorizacao", label: "Ag. Declaração", fase: 2 },
-  { id: "aguardando_regularizacao", label: "Ag. Regularização", fase: 2 },
-  { id: "aguardando_aprovacao_comite", label: "Ag. Comitê", fase: 3 },
-  { id: "aprovada_sob_novas_condicoes", label: "Aprovada c/ Condições", fase: 3 },
-  { id: "aprovada", label: "Aprovada", fase: 4 },
-  { id: "aguardando_assinatura", label: "Ag. Assinatura", fase: 4 },
-  { id: "aguardando_liberacao", label: "Ag. Liberação", fase: 4 },
-  { id: "nao_aprovada", label: "Não Aprovada", fase: 5 },
+  { id: "novo_negocio",    label: "Novo Negócio",     fase: 0 },
+  { id: "em_analise",      label: "Em Análise",        fase: 1 },
+  { id: "em_aprovacao",    label: "Em Aprovação",      fase: 2 },
+  { id: "formalizacao",    label: "Formalização",      fase: 3 },
+  { id: "credito_liberado", label: "Crédito Liberado", fase: 4 },
+  { id: "nao_aprovado",    label: "Não Aprovado",      fase: 5 },
+  { id: "leads_perdidos",  label: "Leads Perdidos",    fase: 6 },
 ];
 
 export const UF_LIST = [

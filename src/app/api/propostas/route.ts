@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { appendProposta, getPropostas } from "@/lib/sheets";
+import { sendPropostaNotification } from "@/lib/email";
 import { Proposta } from "@/types";
 
 export async function GET() {
@@ -83,6 +84,7 @@ export async function POST(req: NextRequest) {
     }
 
     await appendProposta(body);
+    sendPropostaNotification(body).catch((err) => console.error("Email notification failed:", err));
     return NextResponse.json({ success: true, id: body.id_proposta });
   } catch (error) {
     console.error("POST /api/propostas error:", error);

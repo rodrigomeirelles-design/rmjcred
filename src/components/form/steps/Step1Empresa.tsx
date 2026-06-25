@@ -4,13 +4,20 @@ import { UseFormReturn, Controller } from "react-hook-form";
 import { PropostaFormData, UF_LIST } from "@/types";
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
-import { maskCNPJ, maskCPF, maskPhone, maskCEP, buscarCEP } from "@/lib/utils";
+import { maskCNPJ, maskCPF, maskPhone, maskCEP, maskMoney, parseMoney, buscarCEP } from "@/lib/utils";
 
 interface Step1Props {
   form: UseFormReturn<PropostaFormData>;
 }
 
 const UF_OPTIONS = UF_LIST.map((uf) => ({ value: uf, label: uf }));
+
+const REGIME_TRIBUTARIO_OPTIONS = [
+  { value: "Simples Nacional", label: "Simples Nacional" },
+  { value: "Lucro Presumido", label: "Lucro Presumido" },
+  { value: "Lucro Real", label: "Lucro Real" },
+  { value: "MEI", label: "MEI" },
+];
 
 const IMOVEL_TIPO_OPTIONS = [
   { value: "IPTU", label: "IPTU" },
@@ -36,7 +43,7 @@ export default function Step1Empresa({ form }: Step1Props) {
 
   return (
     <div className="space-y-6">
-      <div className="card-base">
+      <div className="card-form">
         <h2 className="text-lg font-semibold text-[var(--color-text)] mb-5 pb-3 border-b border-[var(--color-border)]">
           Identificação da Empresa
         </h2>
@@ -88,24 +95,29 @@ export default function Step1Empresa({ form }: Step1Props) {
               valueAsNumber: true,
             })}
           />
-          <Input
-            label="Faturamento Médio Mensal (R$)"
-            required
-            placeholder="R$ 0,00"
-            hint="Média dos últimos 12 meses pelo Simples Nacional"
-            error={errors.emp_faturamento?.message}
-            {...register("emp_faturamento", {
-              required: "Obrigatório",
-              validate: (v) => Number(v) > 0 || "Informe o faturamento",
-            })}
-            onFocus={(e) => {
-              if (e.target.value === "0") e.target.value = "";
-            }}
-          />
+          <div className="sm:col-span-2">
+            <Controller
+              name="emp_regime_tributario"
+              control={control}
+              rules={{ required: "Regime tributário é obrigatório" }}
+              render={({ field }) => (
+                <Select
+                  label="Regime Tributário"
+                  required
+                  placeholder="Selecione o regime tributário"
+                  options={REGIME_TRIBUTARIO_OPTIONS}
+                  error={errors.emp_regime_tributario?.message}
+                  value={field.value || ""}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                />
+              )}
+            />
+          </div>
         </div>
       </div>
 
-      <div className="card-base">
+      <div className="card-form">
         <h2 className="text-lg font-semibold text-[var(--color-text)] mb-5 pb-3 border-b border-[var(--color-border)]">
           Representante Legal
         </h2>
@@ -172,7 +184,7 @@ export default function Step1Empresa({ form }: Step1Props) {
         </div>
       </div>
 
-      <div className="card-base">
+      <div className="card-form">
         <h2 className="text-lg font-semibold text-[var(--color-text)] mb-5 pb-3 border-b border-[var(--color-border)]">
           Endereço da Empresa
         </h2>
@@ -246,7 +258,7 @@ export default function Step1Empresa({ form }: Step1Props) {
         </div>
       </div>
 
-      <div className="card-base">
+      <div className="card-form">
         <h2 className="text-lg font-semibold text-[var(--color-text)] mb-5 pb-3 border-b border-[var(--color-border)]">
           Patrimônio da Empresa
         </h2>
@@ -298,18 +310,21 @@ export default function Step1Empresa({ form }: Step1Props) {
                 )}
               />
               {imovelTipo && imovelTipo !== "Não possui" && (
-                <Input
-                  label="Valor Estimado do Imóvel (R$)"
-                  required
-                  placeholder="R$ 0,00"
-                  type="number"
-                  min={1}
-                  error={errors.emp_imovel_valor?.message}
-                  {...register("emp_imovel_valor", {
-                    required: "Informe o valor estimado",
-                    min: { value: 1, message: "Valor deve ser maior que zero" },
-                    valueAsNumber: true,
-                  })}
+                <Controller
+                  name="emp_imovel_valor"
+                  control={control}
+                  rules={{ required: "Informe o valor estimado", validate: (v) => Number(v) > 0 || "Valor deve ser maior que zero" }}
+                  render={({ field }) => (
+                    <Input
+                      label="Valor Estimado do Imóvel (R$)"
+                      required
+                      placeholder="R$ 0,00"
+                      error={errors.emp_imovel_valor?.message}
+                      value={field.value ? maskMoney(String(Math.round(Number(field.value) * 100))) : ""}
+                      onChange={(e) => field.onChange(parseMoney(e.target.value))}
+                      onBlur={field.onBlur}
+                    />
+                  )}
                 />
               )}
             </div>

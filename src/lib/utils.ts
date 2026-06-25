@@ -81,12 +81,12 @@ export function parseMoney(value: string): number {
   return parseFloat(value.replace(/\D/g, "")) / 100 || 0;
 }
 
-export function formatMoney(value: number): string {
-  return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+export function formatMoney(value: number | null | undefined): string {
+  return (value ?? 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
 
-export function formatCNPJ(value: string): string {
-  return maskCNPJ(value);
+export function formatCNPJ(value: string | null | undefined): string {
+  return maskCNPJ(value || "");
 }
 
 export function formatDate(iso: string): string {

@@ -1,8 +1,17 @@
-export default function EmpresasPage() {
-  return (
-    <div className="p-8 text-center text-[var(--color-text-muted)]">
-      <p className="text-lg font-medium">Módulo Empresas — em breve</p>
-      <p className="text-sm mt-1">Esta seção será implementada em próxima versão do CRM.</p>
-    </div>
-  );
+import { getPropostas } from "@/lib/sheets";
+import EmpresasClient from "./EmpresasClient";
+import { requireAuth } from "@/lib/serverAuth";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+export default async function EmpresasPage() {
+  await requireAuth();
+  let propostas: Awaited<ReturnType<typeof getPropostas>> = [];
+  try {
+    propostas = await getPropostas();
+  } catch (error) {
+    console.error("Erro ao carregar empresas:", error);
+  }
+  return <EmpresasClient initialPropostas={propostas} />;
 }

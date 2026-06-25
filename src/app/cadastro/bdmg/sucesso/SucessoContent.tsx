@@ -50,7 +50,7 @@ export default function SucessoContent() {
         <h2 className="font-semibold text-[var(--color-text)] mb-3">Envie os documentos pelos canais abaixo:</h2>
         <div className="flex flex-col sm:flex-row gap-3">
           <a
-            href="https://api.whatsapp.com/send?phone=5535999999999&text=Olá,%20enviei%20a%20ficha%20de%20crédito%20BDMG%20e%20gostaria%20de%20enviar%20os%20documentos.%20ID:%20${id}"
+            href={`https://api.whatsapp.com/send?phone=5535991084513&text=Ol%C3%A1%2C%20enviei%20a%20ficha%20de%20cr%C3%A9dito%20BDMG%20e%20gostaria%20de%20enviar%20os%20documentos.%20ID%3A%20${encodeURIComponent(id)}`}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 px-4 py-3 bg-green-500 text-white rounded-lg text-sm font-medium hover:bg-green-600 transition-colors"

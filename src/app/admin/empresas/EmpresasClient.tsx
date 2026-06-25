@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { Proposta, KANBAN_COLUMNS, type KanbanColumn, COMISSAO_PERCENTUAL } from "@/types";
 import { formatMoney, formatDate, formatCNPJ, addDays } from "@/lib/utils";
 import {
@@ -107,7 +108,8 @@ function FichaCadastro({ proposta }: { proposta: Proposta }) {
   const kLabel = KANBAN_LABEL[proposta.coluna_kanban] || proposta.coluna_kanban;
 
   return (
-    <div className="hidden print:block ficha-cadastro" style={S.page}>
+    <div className="ficha-cadastro" aria-hidden="true" style={{ position: "fixed", left: "-9999px", top: 0, width: "794px", pointerEvents: "none", zIndex: -9999 }}>
+    <div style={S.page}>
       {/* Cabeçalho */}
       <div style={S.header}>
         <div style={S.headerLeft}>
@@ -246,6 +248,7 @@ function FichaCadastro({ proposta }: { proposta: Proposta }) {
       <div style={S.footer}>
         RMJ Soluções de Crédito · Capital de Giro BDMG · Emitido em {hoje} · Documento Confidencial
       </div>
+    </div>
     </div>
   );
 }
@@ -509,112 +512,6 @@ function EmpresaDrawer({ proposta, saving, onClose, onMove, onPrint }: {
   );
 }
 
-// ─── Modal Editar ───────────────────────────────────────────────────────────
-
-function EditModal({ proposta, onSave, onClose }: {
-  proposta: Proposta;
-  onSave: (id: string, fields: Record<string, string | number | null>) => Promise<void>;
-  onClose: () => void;
-}) {
-  const [form, setForm] = useState({
-    emp_razao: proposta.emp_razao || "",
-    emp_cnpj: proposta.emp_cnpj || "",
-    emp_fantasia: proposta.emp_fantasia || "",
-    emp_repr_nome: proposta.emp_repr_nome || "",
-    emp_email: proposta.emp_email || "",
-    emp_telefone: proposta.emp_telefone || "",
-    valor_solicitado: proposta.valor_solicitado != null ? String(proposta.valor_solicitado) : "",
-    obs_finais: proposta.obs_finais || "",
-  });
-  const [saving, setSaving] = useState(false);
-
-  async function handleSave() {
-    setSaving(true);
-    const fields: Record<string, string | number | null> = {
-      emp_razao: form.emp_razao,
-      emp_cnpj: form.emp_cnpj,
-      emp_fantasia: form.emp_fantasia || null,
-      emp_repr_nome: form.emp_repr_nome,
-      emp_email: form.emp_email,
-      emp_telefone: form.emp_telefone,
-      obs_finais: form.obs_finais || null,
-    };
-    if (form.valor_solicitado) {
-      const v = parseFloat(form.valor_solicitado.replace(/\D/g, "")) / 100;
-      fields.valor_solicitado = isNaN(v) ? null : v;
-    }
-    await onSave(proposta.id_proposta, fields);
-    setSaving(false);
-    onClose();
-  }
-
-  function f(key: keyof typeof form) {
-    return { value: form[key], onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setForm((p) => ({ ...p, [key]: e.target.value })) };
-  }
-
-  return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-xl w-full max-w-lg shadow-xl max-h-[90vh] flex flex-col">
-        <div className="flex items-center justify-between p-5 border-b border-[var(--color-border)]">
-          <h2 className="font-semibold text-[var(--color-text)]">Editar proposta</h2>
-          <button onClick={onClose} className="p-1 hover:bg-[var(--color-surface-subtle)] rounded-lg">
-            <X className="w-4 h-4" />
-          </button>
-        </div>
-        <div className="p-5 space-y-3 overflow-y-auto flex-1">
-          <div className="grid grid-cols-2 gap-3">
-            <div className="col-span-2">
-              <label className="label-base">Razão Social</label>
-              <input className="input-base" {...f("emp_razao")} />
-            </div>
-            <div>
-              <label className="label-base">CNPJ</label>
-              <input className="input-base font-mono" {...f("emp_cnpj")} />
-            </div>
-            <div>
-              <label className="label-base">Nome Fantasia</label>
-              <input className="input-base" {...f("emp_fantasia")} />
-            </div>
-            <div>
-              <label className="label-base">Representante</label>
-              <input className="input-base" {...f("emp_repr_nome")} />
-            </div>
-            <div>
-              <label className="label-base">E-mail</label>
-              <input type="email" className="input-base" {...f("emp_email")} />
-            </div>
-            <div>
-              <label className="label-base">Telefone</label>
-              <input className="input-base" {...f("emp_telefone")} />
-            </div>
-            <div>
-              <label className="label-base">Valor do Crédito (R$)</label>
-              <input className="input-base font-mono" placeholder="0,00" {...f("valor_solicitado")} />
-            </div>
-            <div className="col-span-2">
-              <label className="label-base">Observações</label>
-              <textarea className="input-base min-h-[72px] resize-none" {...f("obs_finais")} />
-            </div>
-          </div>
-        </div>
-        <div className="flex gap-3 p-5 border-t border-[var(--color-border)]">
-          <button onClick={onClose} className="flex-1 px-4 py-2 border border-[var(--color-border)] rounded-lg text-sm font-medium text-[var(--color-text)] hover:bg-[var(--color-surface-subtle)] transition-colors">
-            Cancelar
-          </button>
-          <button
-            onClick={handleSave}
-            disabled={saving || !form.emp_razao.trim()}
-            className="flex-1 px-4 py-2 bg-[var(--color-brand-primary)] text-white rounded-lg text-sm font-semibold hover:bg-[var(--color-brand-primary-dark)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
-          >
-            {saving && <Loader2 className="w-4 h-4 animate-spin" />}
-            Salvar
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 // ─── Modal Excluir ───────────────────────────────────────────────────────────
 
 function DeleteModal({ empresa, onConfirm, onClose, deleting }: {
@@ -658,14 +555,25 @@ function DeleteModal({ empresa, onConfirm, onClose, deleting }: {
 // ─── Componente principal ───────────────────────────────────────────────────
 
 export default function EmpresasClient({ initialPropostas }: Props) {
+  const router = useRouter();
   const [propostas, setPropostas] = useState(initialPropostas);
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<Proposta | null>(null);
   const [saving, setSaving] = useState(false);
   const [pendingNaoAprovada, setPendingNaoAprovada] = useState<{ id: string } | null>(null);
-  const [editing, setEditing] = useState<Proposta | null>(null);
   const [deleting, setDeleting] = useState<Proposta | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  function handlePrint() {
+    const fichaEl = document.querySelector(".ficha-cadastro");
+    if (!fichaEl) return;
+    const w = window.open("", "_blank");
+    if (!w) { alert("Permita popups para imprimir."); return; }
+    w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><style>@page{size:A4;margin:15mm}*{box-sizing:border-box}body{margin:0;background:white}</style></head><body>${fichaEl.innerHTML}</body></html>`);
+    w.document.close();
+    w.focus();
+    setTimeout(() => { w.print(); w.close(); }, 500);
+  }
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
@@ -720,16 +628,6 @@ export default function EmpresasClient({ initialPropostas }: Props) {
     } finally {
       setSaving(false);
     }
-  }
-
-  async function handleSaveEdit(id: string, fields: Record<string, string | number | null>) {
-    await fetch(`/api/propostas/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(fields),
-    });
-    setPropostas((prev) => prev.map((p) => p.id_proposta === id ? { ...p, ...fields } as Proposta : p));
-    setSelected((prev) => prev?.id_proposta === id ? { ...prev, ...fields } as Proposta : prev);
   }
 
   async function handleDelete(id: string) {
@@ -851,7 +749,7 @@ export default function EmpresasClient({ initialPropostas }: Props) {
                             <Eye className="w-4 h-4" />
                           </button>
                           <button
-                            onClick={(e) => { e.stopPropagation(); setEditing(p); }}
+                            onClick={(e) => { e.stopPropagation(); router.push(`/admin/empresas/${p.id_proposta}/editar`); }}
                             className="p-1.5 rounded-lg text-[var(--color-text-muted)] hover:text-amber-600 hover:bg-amber-50 transition-colors"
                             title="Editar"
                           >
@@ -881,7 +779,7 @@ export default function EmpresasClient({ initialPropostas }: Props) {
           saving={saving}
           onClose={() => setSelected(null)}
           onMove={handleMove}
-          onPrint={() => window.print()}
+          onPrint={handlePrint}
         />
       )}
 
@@ -894,14 +792,6 @@ export default function EmpresasClient({ initialPropostas }: Props) {
       )}
 
       {selectedCurrent && <FichaCadastro proposta={selectedCurrent} />}
-
-      {editing && (
-        <EditModal
-          proposta={editing}
-          onSave={handleSaveEdit}
-          onClose={() => setEditing(null)}
-        />
-      )}
 
       {deleting && (
         <DeleteModal

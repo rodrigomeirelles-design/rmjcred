@@ -300,7 +300,7 @@ export async function updatePropostaField(
       range: cellRef,
       valueInputOption: "RAW",
       requestBody: {
-        values: [[String(value ?? "")]],
+        values: [[typeof value === "object" && value !== null ? JSON.stringify(value) : String(value ?? "")]],
       },
     });
   }

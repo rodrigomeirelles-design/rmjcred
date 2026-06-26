@@ -1,5 +1,6 @@
 import { google } from "googleapis";
 import { Proposta, KanbanColumn, StatusRepasse } from "@/types";
+import { PropostaImovel, KanbanColumnImovel } from "@/types/imovel";
 
 const SHEET_ID = process.env.GOOGLE_SHEETS_ID!;
 const SHEET_NAME = "Propostas";
@@ -47,6 +48,7 @@ export const SHEET_HEADERS = [
     `socio${i+1}_reside_imovel_proprio`,
     `socio${i+1}_imovel_residencial_valor`,
   ]).flat(),
+  "comissao_percentual",
 ];
 
 function propostaToRow(p: Proposta): string[] {
@@ -102,6 +104,7 @@ function propostaToRow(p: Proposta): string[] {
       String(s?.imovel_residencial_valor ?? ""),
     );
   }
+  base.push(String(p.comissao_percentual ?? ""));
 
   return base;
 }
@@ -112,6 +115,7 @@ function rowToProposta(headers: string[], row: string[]): Proposta {
     id_proposta: get("id_proposta"),
     timestamp_envio: get("timestamp_envio"),
     produto: get("produto"),
+    tipo_pessoa: (get("produto") === "BDMG Capital de Giro" ? "PJ" : "PF") as import("@/types").TipoPessoa,
     coluna_kanban: get("coluna_kanban") as KanbanColumn,
     status_repasse: (get("status_repasse") || "pendente") as StatusRepasse,
     motivo_perda: get("motivo_perda") || undefined,
@@ -144,6 +148,7 @@ function rowToProposta(headers: string[], row: string[]): Proposta {
     banco_conta: get("banco_conta"),
     banco_digito: get("banco_digito"),
     obs_finais: get("obs_finais") || undefined,
+    comissao_percentual: parseFloat(get("comissao_percentual")) || undefined,
     socios: Array.from({ length: 5 }, (_, i) => {
       const nome = get(`socio${i+1}_nome`);
       if (!nome) return null;
@@ -252,6 +257,25 @@ async function ensurePropostasSheet(sheets: any): Promise<void> {
   const existingSet = new Set(existingHeaders);
   const missingHeaders = SHEET_HEADERS.filter((h) => !existingSet.has(h));
   if (missingHeaders.length > 0) {
+    const meta = await sheets.spreadsheets.get({ spreadsheetId: SHEET_ID });
+    const sheetMeta = meta.data.sheets?.find((s: any) => s.properties?.title === SHEET_NAME);
+    const sheetId = sheetMeta?.properties?.sheetId ?? 0;
+    const currentColCount = sheetMeta?.properties?.gridProperties?.columnCount ?? existingHeaders.length;
+    const neededCols = existingHeaders.length + missingHeaders.length;
+    if (neededCols > currentColCount) {
+      await sheets.spreadsheets.batchUpdate({
+        spreadsheetId: SHEET_ID,
+        requestBody: {
+          requests: [{
+            appendDimension: {
+              sheetId,
+              dimension: "COLUMNS",
+              length: neededCols - currentColCount,
+            },
+          }],
+        },
+      });
+    }
     const startCol = colIndexToLetter(existingHeaders.length);
     await sheets.spreadsheets.values.update({
       spreadsheetId: SHEET_ID,
@@ -369,7 +393,7 @@ export async function getConfig(key: string): Promise<string | null> {
 export async function setConfig(key: string, value: string): Promise<void> {
   const auth = getAuth();
   const sheets = google.sheets({ version: "v4", auth });
-  
+
   try {
     await sheets.spreadsheets.values.get({
       spreadsheetId: SHEET_ID,
@@ -390,10 +414,10 @@ export async function setConfig(key: string, value: string): Promise<void> {
     spreadsheetId: SHEET_ID,
     range: "Config!A:B",
   });
-  
+
   const rows = res.data.values ?? [];
   const rowIndex = rows.findIndex(r => r[0] === key);
-  
+
   if (rowIndex === -1) {
     await sheets.spreadsheets.values.append({
       spreadsheetId: SHEET_ID,
@@ -407,6 +431,251 @@ export async function setConfig(key: string, value: string): Promise<void> {
       range: `Config!B${rowIndex + 1}`,
       valueInputOption: "RAW",
       requestBody: { values: [[value]] },
+    });
+  }
+}
+
+// ─── PropostasImovel sheet ────────────────────────────────────────────────────
+
+const SHEET_NAME_IMOVEL = "PropostasImovel";
+
+export const SHEET_HEADERS_IMOVEL = [
+  "id_proposta", "timestamp_envio", "produto", "coluna_kanban",
+  "nome", "cpf", "celular", "email", "nascimento", "sexo",
+  "nomeMae", "nomePai", "rgCnh", "orgaoEmissor", "estadoCivil",
+  "naturalidade", "nacionalidade",
+  "cep", "logradouro", "numero", "complemento", "bairro", "cidade", "uf",
+  "fonteRenda", "rendaMensal", "profissao", "banco", "agencia", "conta",
+  "temSegundoProponente",
+  "sp_nome", "sp_cpf", "sp_celular", "sp_email", "sp_nascimento", "sp_sexo",
+  "sp_nomeMae", "sp_nomePai", "sp_rgCnh", "sp_orgaoEmissor",
+  "sp_fonteRenda", "sp_rendaMensal", "sp_profissao",
+  "tipoImovel", "estadoConservacao", "valorImovel", "valorFinanciamento", "prazo", "ufImovel",
+  "usarFgts", "valorFgts",
+  "imovel_cep", "imovel_logradouro", "imovel_numero", "imovel_complemento",
+  "imovel_bairro", "imovel_cidade", "imovel_uf", "matriculaIptu", "situacaoImovel",
+  "regimeUniao",
+  "conjuge_nome", "conjuge_cpf", "conjuge_celular", "conjuge_email",
+  "conjuge_nascimento", "conjuge_sexo", "conjuge_profissao",
+  "conjuge_fonteRenda", "conjuge_rendaMensal",
+  "observacoes",
+];
+
+function propostaImovelToRow(p: PropostaImovel): string[] {
+  return SHEET_HEADERS_IMOVEL.map((key) => {
+    const val = (p as unknown as Record<string, unknown>)[key];
+    if (val === null || val === undefined) return "";
+    if (typeof val === "boolean") return val ? "sim" : "nao";
+    return String(val);
+  });
+}
+
+function rowToPropostaImovel(headers: string[], row: string[]): PropostaImovel {
+  const get = (key: string) => row[headers.indexOf(key)] ?? "";
+  return {
+    id_proposta: get("id_proposta"),
+    timestamp_envio: get("timestamp_envio"),
+    produto: get("produto") as PropostaImovel["produto"],
+    coluna_kanban: (get("coluna_kanban") || "novo_lead") as KanbanColumnImovel,
+    nome: get("nome"),
+    cpf: get("cpf"),
+    celular: get("celular"),
+    email: get("email"),
+    nascimento: get("nascimento"),
+    sexo: get("sexo") || undefined,
+    nomeMae: get("nomeMae"),
+    nomePai: get("nomePai") || undefined,
+    rgCnh: get("rgCnh"),
+    orgaoEmissor: get("orgaoEmissor") || undefined,
+    estadoCivil: get("estadoCivil"),
+    naturalidade: get("naturalidade") || undefined,
+    nacionalidade: get("nacionalidade") || undefined,
+    cep: get("cep"),
+    logradouro: get("logradouro"),
+    numero: get("numero"),
+    complemento: get("complemento") || undefined,
+    bairro: get("bairro"),
+    cidade: get("cidade"),
+    uf: get("uf"),
+    fonteRenda: get("fonteRenda"),
+    rendaMensal: parseFloat(get("rendaMensal")) || 0,
+    profissao: get("profissao") || undefined,
+    banco: get("banco"),
+    agencia: get("agencia") || undefined,
+    conta: get("conta") || undefined,
+    temSegundoProponente: get("temSegundoProponente") === "sim",
+    sp_nome: get("sp_nome") || undefined,
+    sp_cpf: get("sp_cpf") || undefined,
+    sp_celular: get("sp_celular") || undefined,
+    sp_email: get("sp_email") || undefined,
+    sp_nascimento: get("sp_nascimento") || undefined,
+    sp_sexo: get("sp_sexo") || undefined,
+    sp_nomeMae: get("sp_nomeMae") || undefined,
+    sp_nomePai: get("sp_nomePai") || undefined,
+    sp_rgCnh: get("sp_rgCnh") || undefined,
+    sp_orgaoEmissor: get("sp_orgaoEmissor") || undefined,
+    sp_fonteRenda: get("sp_fonteRenda") || undefined,
+    sp_rendaMensal: parseFloat(get("sp_rendaMensal")) || undefined,
+    sp_profissao: get("sp_profissao") || undefined,
+    tipoImovel: get("tipoImovel"),
+    estadoConservacao: get("estadoConservacao"),
+    valorImovel: parseFloat(get("valorImovel")) || 0,
+    valorFinanciamento: parseFloat(get("valorFinanciamento")) || 0,
+    prazo: get("prazo"),
+    ufImovel: get("ufImovel") || undefined,
+    usarFgts: (get("usarFgts") || undefined) as "sim" | "nao" | undefined,
+    valorFgts: parseFloat(get("valorFgts")) || undefined,
+    imovel_cep: get("imovel_cep") || undefined,
+    imovel_logradouro: get("imovel_logradouro") || undefined,
+    imovel_numero: get("imovel_numero") || undefined,
+    imovel_complemento: get("imovel_complemento") || undefined,
+    imovel_bairro: get("imovel_bairro") || undefined,
+    imovel_cidade: get("imovel_cidade") || undefined,
+    imovel_uf: get("imovel_uf") || undefined,
+    matriculaIptu: get("matriculaIptu") || undefined,
+    situacaoImovel: get("situacaoImovel") || undefined,
+    regimeUniao: get("regimeUniao") || undefined,
+    conjuge_nome: get("conjuge_nome") || undefined,
+    conjuge_cpf: get("conjuge_cpf") || undefined,
+    conjuge_celular: get("conjuge_celular") || undefined,
+    conjuge_email: get("conjuge_email") || undefined,
+    conjuge_nascimento: get("conjuge_nascimento") || undefined,
+    conjuge_sexo: get("conjuge_sexo") || undefined,
+    conjuge_profissao: get("conjuge_profissao") || undefined,
+    conjuge_fonteRenda: get("conjuge_fonteRenda") || undefined,
+    conjuge_rendaMensal: parseFloat(get("conjuge_rendaMensal")) || undefined,
+    observacoes: get("observacoes") || undefined,
+    aceite_lgpd: true,
+  };
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function ensureImovelSheet(sheets: any): Promise<void> {
+  const meta = await sheets.spreadsheets.get({ spreadsheetId: SHEET_ID });
+  const exists = meta.data.sheets?.some((s: any) => s.properties?.title === SHEET_NAME_IMOVEL);
+  if (!exists) {
+    await sheets.spreadsheets.batchUpdate({
+      spreadsheetId: SHEET_ID,
+      requestBody: { requests: [{ addSheet: { properties: { title: SHEET_NAME_IMOVEL } } }] },
+    });
+    await sheets.spreadsheets.values.update({
+      spreadsheetId: SHEET_ID,
+      range: `${SHEET_NAME_IMOVEL}!A1`,
+      valueInputOption: "RAW",
+      requestBody: { values: [SHEET_HEADERS_IMOVEL] },
+    });
+    return;
+  }
+
+  const headerRes = await sheets.spreadsheets.values.get({
+    spreadsheetId: SHEET_ID,
+    range: `${SHEET_NAME_IMOVEL}!1:1`,
+  });
+  const existingHeaders = (headerRes.data.values?.[0] as string[] | undefined) ?? [];
+  if (existingHeaders.length === 0) {
+    await sheets.spreadsheets.values.update({
+      spreadsheetId: SHEET_ID,
+      range: `${SHEET_NAME_IMOVEL}!A1`,
+      valueInputOption: "RAW",
+      requestBody: { values: [SHEET_HEADERS_IMOVEL] },
+    });
+    return;
+  }
+
+  const existingSet = new Set(existingHeaders);
+  const missingHeaders = SHEET_HEADERS_IMOVEL.filter((h) => !existingSet.has(h));
+  if (missingHeaders.length > 0) {
+    const startCol = colIndexToLetter(existingHeaders.length);
+    await sheets.spreadsheets.values.update({
+      spreadsheetId: SHEET_ID,
+      range: `${SHEET_NAME_IMOVEL}!${startCol}1`,
+      valueInputOption: "RAW",
+      requestBody: { values: [missingHeaders] },
+    });
+  }
+}
+
+export async function appendPropostaImovel(proposta: PropostaImovel): Promise<void> {
+  const auth = getAuth();
+  const sheets = google.sheets({ version: "v4", auth });
+  await ensureImovelSheet(sheets);
+  await sheets.spreadsheets.values.append({
+    spreadsheetId: SHEET_ID,
+    range: `${SHEET_NAME_IMOVEL}!A1`,
+    valueInputOption: "RAW",
+    requestBody: { values: [propostaImovelToRow(proposta)] },
+  });
+}
+
+export async function getPropostasImovel(): Promise<PropostaImovel[]> {
+  const auth = getAuth();
+  const sheets = google.sheets({ version: "v4", auth });
+  try {
+    const res = await sheets.spreadsheets.values.get({
+      spreadsheetId: SHEET_ID,
+      range: `${SHEET_NAME_IMOVEL}!A1:BZ`,
+    });
+    const rows = res.data.values ?? [];
+    if (rows.length < 2) return [];
+    const headers = rows[0] as string[];
+    return rows.slice(1).map((row) => rowToPropostaImovel(headers, row as string[]));
+  } catch (error: any) {
+    if (error.message?.includes("Unable to parse range")) return [];
+    throw error;
+  }
+}
+
+export async function deletePropostaImovelRow(id: string): Promise<void> {
+  const auth = getAuth();
+  const sheets = google.sheets({ version: "v4", auth });
+  const res = await sheets.spreadsheets.values.get({
+    spreadsheetId: SHEET_ID,
+    range: `${SHEET_NAME_IMOVEL}!A:A`,
+  });
+  const rows = res.data.values ?? [];
+  const rowIndex = rows.findIndex((r, i) => i > 0 && r[0] === id);
+  if (rowIndex === -1) return;
+
+  const meta = await sheets.spreadsheets.get({ spreadsheetId: SHEET_ID });
+  const sheetId = meta.data.sheets?.find((s: any) => s.properties?.title === SHEET_NAME_IMOVEL)?.properties?.sheetId;
+  if (sheetId == null) return;
+
+  await sheets.spreadsheets.batchUpdate({
+    spreadsheetId: SHEET_ID,
+    requestBody: {
+      requests: [{ deleteDimension: { range: { sheetId, dimension: "ROWS", startIndex: rowIndex, endIndex: rowIndex + 1 } } }],
+    },
+  });
+}
+
+export async function updatePropostaImovelField(
+  id: string,
+  fields: Record<string, string | number | boolean | null | undefined>
+): Promise<void> {
+  const auth = getAuth();
+  const sheets = google.sheets({ version: "v4", auth });
+  const res = await sheets.spreadsheets.values.get({
+    spreadsheetId: SHEET_ID,
+    range: `${SHEET_NAME_IMOVEL}!A1:BZ`,
+  });
+  const rows = res.data.values ?? [];
+  if (rows.length < 2) return;
+  const headers = rows[0] as string[];
+  const rowIndex = rows.findIndex((r, i) => i > 0 && r[0] === id);
+  if (rowIndex === -1) return;
+
+  for (const [key, value] of Object.entries(fields)) {
+    const colIndex = headers.indexOf(key);
+    if (colIndex === -1) continue;
+    const colLetter = colIndexToLetter(colIndex);
+    const cellRef = `${SHEET_NAME_IMOVEL}!${colLetter}${rowIndex + 1}`;
+    await sheets.spreadsheets.values.update({
+      spreadsheetId: SHEET_ID,
+      range: cellRef,
+      valueInputOption: "RAW",
+      requestBody: {
+        values: [[typeof value === "boolean" ? (value ? "sim" : "nao") : String(value ?? "")]],
+      },
     });
   }
 }

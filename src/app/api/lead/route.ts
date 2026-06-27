@@ -3,11 +3,21 @@ import { NextRequest, NextResponse } from 'next/server'
 const CRM_URL = "https://crm-rmj-mvp-rodrigo.netlify.app"
 
 const PRODUTO_MAP: Record<string, string> = {
-  "Capital de Giro BDMG": "BDMG Capital de Giro",
-  "Home Equity": "Home Equity (Crédito com Garantia de Imóvel)",
+  // Capital de Giro BDMG
+  "BDMG":                  "BDMG Capital de Giro",
+  "Capital de Giro BDMG":  "BDMG Capital de Giro",
+  // Imóvel
+  "Crédito Imobiliário":   "Financiamento Imobiliário",
+  "Home Equity":           "Home Equity (Crédito com Garantia de Imóvel)",
   "Financiamento Imobiliário": "Financiamento Imobiliário",
-  "Consórcio": "Consórcio",
-  "Crédito Veicular": "Crédito Veicular",
+  // Veículos
+  "Veículos":              "Financiamento de Veículos",
+  "Garantia de Veículo":   "Crédito com Garantia de Veículo",
+  "Financiamento de Veículos": "Financiamento de Veículos",
+  // Outros
+  "Consórcios":            "Consórcio",
+  "Consórcio":             "Consórcio",
+  "Outros":                "Outros Serviços",
 }
 
 export async function POST(req: NextRequest) {

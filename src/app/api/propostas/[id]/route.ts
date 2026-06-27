@@ -1,5 +1,5 @@
 ﻿import { NextRequest, NextResponse } from "next/server";
-import { updatePropostaField, deletePropostaRow } from "@/lib/sheets";
+import { updatePropostaField, deletePropostaRow, deletePropostaImovelRow } from "@/lib/sheets";
 
 export async function PATCH(
   req: NextRequest,
@@ -23,6 +23,7 @@ export async function DELETE(
   try {
     const { id } = await params;
     await deletePropostaRow(id);
+    await deletePropostaImovelRow(id).catch(() => {});
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("DELETE /api/propostas/[id] error:", error);

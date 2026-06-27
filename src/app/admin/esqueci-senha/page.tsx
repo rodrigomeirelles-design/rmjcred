@@ -10,7 +10,7 @@ type Step = "request" | "verify" | "reset" | "success";
 export default function EsqueciSenhaPage() {
   const router = useRouter();
   const [step, setStep] = useState<Step>("request");
-  const [email, setEmail] = useState("rodrigomeirelles@gmail.com");
+  const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [error, setError] = useState("");

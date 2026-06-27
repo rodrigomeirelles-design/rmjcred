@@ -1,30 +1,34 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import {
   DndContext, DragEndEvent, DragStartEvent,
   PointerSensor, useSensor, useSensors, DragOverlay, useDroppable,
 } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Proposta, type KanbanColumn, KANBAN_COLUMNS, COMISSAO_PERCENTUAL } from "@/types";
+import { Proposta, type KanbanColumn, KANBAN_COLUMNS, getComissaoRate } from "@/types";
+import { PropostaImovel } from "@/types/imovel";
 import { formatMoney, formatDate, formatCNPJ, addDays, maskMoney, parseMoney } from "@/lib/utils";
+import { buildPJSections, buildPFSections } from "@/lib/detailSchemas";
+import DetailPanel from "@/components/admin/DetailPanel";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import {
-  Building2, Calendar, Clock, CheckCircle2,
+  Calendar, Clock, CheckCircle2,
   FileText, X, Loader2, Pencil, Eye, ExternalLink,
 } from "lucide-react";
 
 interface KanbanBoardProps {
   propostas: Proposta[];
+  showComissoes?: boolean;
   onUpdate: (id: string, fields: Partial<Proposta>) => Promise<void>;
 }
 
-// ─── Helpers ────────────────────────────────────────────────────────────────
+// ─── Helpers ────────────────────────────────────────────────────────────────────────
 
-function calcComissao(valor?: number) {
-  return (valor ?? 0) * COMISSAO_PERCENTUAL;
+function calcComissao(p: Proposta) {
+  return (p.valor_solicitado ?? 0) * getComissaoRate(p);
 }
 
 function proxMes(dataISO: string): string {
@@ -32,41 +36,58 @@ function proxMes(dataISO: string): string {
   return new Date(d.getFullYear(), d.getMonth() + 1, 1).toISOString().split("T")[0];
 }
 
+/** Check if a date string (YYYY-MM-DD) is in a previous month relative to today */
+function isFromPreviousMonth(dateStr: string): boolean {
+  const d = new Date(dateStr + "T12:00:00");
+  const now = new Date();
+  return d.getFullYear() < now.getFullYear() || 
+    (d.getFullYear() === now.getFullYear() && d.getMonth() < now.getMonth());
+}
+
 // ─── Card visual ────────────────────────────────────────────────────────────
 
 function PropostaCard({ proposta, isDragging }: { proposta: Proposta; isDragging?: boolean }) {
-  const comissao = calcComissao(proposta.valor_solicitado);
+  const isPF = proposta.tipo_pessoa === "PF";
   const hasFollowup = !!proposta.followup_data;
+  const produtoBadgeLabel = isPF
+    ? (proposta.produto === "Crédito com Garantia de Imóvel" ? "Home Equity" : "Fin. Imobiliário")
+    : "BDMG CG";
 
   return (
     <div className={`bg-white border border-[var(--color-border)] rounded-xl p-3.5 space-y-2.5 cursor-grab active:cursor-grabbing shadow-sm hover:shadow-md transition-shadow ${isDragging ? "opacity-50" : ""}`}>
       <div className="flex items-start justify-between gap-2">
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-sm text-[var(--color-text)] truncate">{proposta.emp_razao || formatCNPJ(proposta.emp_cnpj)}</p>
-          <p className="text-xs text-[var(--color-text-muted)] font-mono">{formatCNPJ(proposta.emp_cnpj)}</p>
+          <p className="font-semibold text-xs sm:text-sm text-[var(--color-text)] line-clamp-2 leading-tight">
+            {proposta.emp_razao || (isPF ? proposta.emp_cnpj : formatCNPJ(proposta.emp_cnpj))}
+          </p>
+          <p className="text-[10px] sm:text-xs text-[var(--color-text-muted)] font-mono mt-0.5">
+            {isPF ? proposta.emp_cnpj : formatCNPJ(proposta.emp_cnpj)}
+          </p>
         </div>
-        <Badge variant="info" className="flex-shrink-0 text-[10px]">BDMG CG</Badge>
+        <Badge variant={isPF ? "warning" : "info"} className="flex-shrink-0 text-[10px]">
+          {produtoBadgeLabel}
+        </Badge>
       </div>
 
       {proposta.valor_solicitado != null && (
         <div className="flex items-center justify-between text-xs bg-[var(--color-surface-subtle)] rounded-lg px-2.5 py-1.5">
-          <span className="text-[var(--color-text-muted)]">Crédito</span>
+          <span className="text-[var(--color-text-muted)]">{isPF ? "Financiamento" : "Crédito"}</span>
           <span className="font-money font-semibold text-[var(--color-text)]">{formatMoney(proposta.valor_solicitado)}</span>
         </div>
       )}
 
       <div className="flex items-center gap-1.5 flex-wrap">
-        {proposta.status_repasse === "recebido" ? (
+        {proposta.coluna_kanban === "finalizados" && (
+          <Badge variant="success" className="text-[10px]">
+            <CheckCircle2 className="w-2.5 h-2.5 mr-0.5" /> Convertido
+          </Badge>
+        )}
+        {!isPF && proposta.status_repasse === "recebido" && (
           <Badge variant="success" className="text-[10px]">
             <CheckCircle2 className="w-2.5 h-2.5 mr-0.5" /> Comissão recebida
           </Badge>
-        ) : (
-          comissao > 0 && (
-            <Badge variant="default" className="text-[10px]">
-              Comissão: {formatMoney(comissao)}
-            </Badge>
-          )
         )}
+        {isPF && <Badge variant="default" className="text-[10px]">Pessoa Física</Badge>}
       </div>
 
       {hasFollowup && (
@@ -83,7 +104,6 @@ function PropostaCard({ proposta, isDragging }: { proposta: Proposta; isDragging
           <CheckCircle2 className="w-3 h-3 text-green-600 flex-shrink-0" />
           <span className="text-[10px] font-medium text-green-700">
             Liberado: {formatDate(proposta.data_liberacao)}
-            {" · "}Comissão: {formatDate(proxMes(proposta.data_liberacao))}
           </span>
         </div>
       )}
@@ -118,22 +138,25 @@ function SortableCard({ proposta, onCardClick }: { proposta: Proposta; onCardCli
 // ─── Kanban Column ───────────────────────────────────────────────────────────
 
 function KanbanColumnView({
-  column, propostas, onCardClick
+  column, propostas, onCardClick, showComissoes
 }: {
   column: typeof KANBAN_COLUMNS[number];
   propostas: Proposta[];
   onCardClick: (p: Proposta) => void;
+  showComissoes?: boolean;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: column.id });
-  const totalComissao = propostas.reduce((sum, p) => sum + calcComissao(p.valor_solicitado), 0);
+  const totalVolume = propostas.reduce((sum, p) => sum + (p.valor_solicitado ?? 0), 0);
+  const totalComissao = propostas.reduce((sum, p) => sum + calcComissao(p), 0);
   const faseColors: Record<number, string> = {
     0: "bg-slate-100 text-slate-600",
     1: "bg-blue-100 text-blue-700",
     2: "bg-amber-100 text-amber-700",
     3: "bg-purple-100 text-purple-700",
     4: "bg-green-100 text-green-700",
-    5: "bg-red-100 text-red-700",
-    6: "bg-zinc-100 text-zinc-500",
+    5: "bg-emerald-100 text-emerald-700",
+    6: "bg-red-100 text-red-700",
+    7: "bg-zinc-100 text-zinc-500",
   };
 
   return (
@@ -145,8 +168,15 @@ function KanbanColumnView({
             {propostas.length}
           </span>
         </div>
+        {totalVolume > 0 && (
+          <p className="font-money text-[11px] text-[var(--color-text-muted)] font-medium">
+            {showComissoes ? formatMoney(totalVolume) : "R$ •••••"}
+          </p>
+        )}
         {totalComissao > 0 && (
-          <p className="font-money text-[11px] text-green-600 font-medium">{formatMoney(totalComissao)}</p>
+          <p className="font-money text-[10px] text-green-600 font-medium">
+            {showComissoes ? `Com. ${formatMoney(totalComissao)}` : "Com. R$ •••••"}
+          </p>
         )}
       </div>
       <div
@@ -227,7 +257,7 @@ function CreditoLiberadoModal({ proposta, onConfirm, onClose }: {
   onClose: () => void;
 }) {
   const [data, setData] = useState(new Date().toISOString().split("T")[0]);
-  const comissao = calcComissao(proposta.valor_solicitado);
+  const comissao = calcComissao(proposta);
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
@@ -275,116 +305,47 @@ function CreditoLiberadoModal({ proposta, onConfirm, onClose }: {
 // ─── Consulta completa da proposta ──────────────────────────────────────────
 
 function PropostaFullView({ proposta, onClose }: { proposta: Proposta; onClose: () => void }) {
-  function Row({ label, value }: { label: string; value?: string | null }) {
-    if (!value) return null;
+  const isPF = proposta.tipo_pessoa === "PF";
+  const [pfData, setPfData] = useState<PropostaImovel | null>(null);
+  const [loadingPF, setLoadingPF] = useState(isPF);
+
+  useEffect(() => {
+    if (!isPF) return;
+    fetch(`/api/propostas-imovel/${proposta.id_proposta}`)
+      .then((r) => r.json())
+      .then((data) => { setPfData(data); setLoadingPF(false); })
+      .catch(() => setLoadingPF(false));
+  }, [isPF, proposta.id_proposta]);
+
+  if (isPF) {
+    const prodLabel = proposta.produto === "Crédito com Garantia de Imóvel" ? "Home Equity" : "Fin. Imobiliário";
+    if (loadingPF) {
+      return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <Loader2 className="w-8 h-8 animate-spin text-white" />
+        </div>
+      );
+    }
+    const etapaLabel = KANBAN_COLUMNS.find((c) => c.id === proposta.coluna_kanban)?.label;
     return (
-      <div className="flex gap-2 text-sm py-1.5 border-b border-[var(--color-border)] last:border-0">
-        <span className="text-[var(--color-text-muted)] w-40 flex-shrink-0 text-xs pt-0.5">{label}</span>
-        <span className="text-[var(--color-text)] font-medium flex-1 break-words">{value}</span>
-      </div>
+      <DetailPanel
+        title={proposta.emp_razao}
+        subtitle={proposta.emp_cnpj}
+        badge={<Badge variant="warning" className="text-[10px]">{prodLabel}</Badge>}
+        sections={pfData ? buildPFSections({ ...pfData, etapa_label: etapaLabel }) : []}
+        onClose={onClose}
+      />
     );
   }
-  function Section({ title, children }: { title: string; children: React.ReactNode }) {
-    return (
-      <section>
-        <h3 className="text-[10px] font-bold text-[var(--color-brand-primary)] uppercase tracking-widest mb-2 pb-1 border-b-2 border-[var(--color-brand-primary)]">{title}</h3>
-        <div>{children}</div>
-      </section>
-    );
-  }
-  const kLabel = KANBAN_COLUMNS.find((c) => c.id === proposta.coluna_kanban)?.label ?? proposta.coluna_kanban;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-stretch">
-      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
-      <div className="relative ml-auto bg-white w-full max-w-xl h-full overflow-y-auto shadow-2xl flex flex-col">
-        <div className="sticky top-0 bg-white border-b flex items-center justify-between px-5 py-4 z-10">
-          <div>
-            <p className="font-bold text-[var(--color-text)]">{proposta.emp_razao || formatCNPJ(proposta.emp_cnpj)}</p>
-            <p className="text-xs text-[var(--color-text-muted)] font-mono">{formatCNPJ(proposta.emp_cnpj)}</p>
-          </div>
-          <button onClick={onClose} className="p-1.5 hover:bg-[var(--color-surface-subtle)] rounded-lg">
-            <X className="w-4 h-4" />
-          </button>
-        </div>
-
-        <div className="flex-1 p-5 space-y-6">
-          <Section title="Status da Proposta">
-            <Row label="Etapa" value={kLabel} />
-            <Row label="Valor do Crédito" value={proposta.valor_solicitado != null ? formatMoney(proposta.valor_solicitado) : undefined} />
-            <Row label="Comissão (1,35%)" value={proposta.valor_solicitado != null ? formatMoney(calcComissao(proposta.valor_solicitado)) : undefined} />
-            <Row label="Repasse" value={proposta.status_repasse === "recebido" ? "Comissão recebida" : "Pendente"} />
-            <Row label="Data de Liberação" value={proposta.data_liberacao ? formatDate(proposta.data_liberacao) : undefined} />
-            <Row label="Processamento M+1" value={proposta.data_liberacao ? formatDate(proxMes(proposta.data_liberacao)) : undefined} />
-            <Row label="Follow-up" value={proposta.followup_data ? formatDate(proposta.followup_data) : undefined} />
-            <Row label="Motivo de Recusa" value={proposta.motivo_perda} />
-          </Section>
-
-          <Section title="Dados da Empresa">
-            <Row label="Razão Social" value={proposta.emp_razao} />
-            <Row label="Nome Fantasia" value={proposta.emp_fantasia} />
-            <Row label="CNPJ" value={formatCNPJ(proposta.emp_cnpj)} />
-            <Row label="Nº Funcionários" value={String(proposta.emp_funcionarios || "")} />
-          </Section>
-
-          <Section title="Representante Legal">
-            <Row label="Nome" value={proposta.emp_repr_nome} />
-            <Row label="CPF" value={proposta.emp_repr_cpf} />
-            <Row label="E-mail" value={proposta.emp_email} />
-            <Row label="Telefone" value={proposta.emp_telefone} />
-          </Section>
-
-          <Section title="Endereço">
-            <Row label="Logradouro" value={`${proposta.emp_logradouro}, ${proposta.emp_numero}`} />
-            <Row label="Complemento" value={proposta.emp_complemento} />
-            <Row label="Bairro" value={proposta.emp_bairro} />
-            <Row label="Cidade / UF" value={`${proposta.emp_cidade} / ${proposta.emp_uf}`} />
-            <Row label="CEP" value={proposta.emp_cep} />
-          </Section>
-
-          {proposta.socios?.map((s, i) => (
-            <Section key={i} title={`Sócio ${i + 1} — ${s.nome}`}>
-              <Row label="CPF" value={s.cpf} />
-              <Row label="RG" value={s.rg} />
-              <Row label="Nascimento" value={formatDate(s.nascimento)} />
-              <Row label="Estado Civil" value={s.estado_civil} />
-              {s.regime && <Row label="Regime" value={s.regime} />}
-              <Row label="Participação" value={`${s.participacao}%`} />
-              <Row label="Profissão" value={s.profissao} />
-              <Row label="E-mail" value={s.email} />
-              <Row label="Telefone" value={s.telefone} />
-              <Row label="Renda Mensal" value={formatMoney(s.renda)} />
-              <Row label="Endereço" value={`${s.logradouro}, ${s.numero} — ${s.cidade}/${s.uf}`} />
-              {s.imovel_tipo && <Row label="Imóvel (comprov.)" value={s.imovel_tipo} />}
-              {s.imovel_valor != null && <Row label="Imóvel (valor)" value={formatMoney(s.imovel_valor)} />}
-              {(s.veiculo_placas?.length ?? 0) > 0 && <Row label="Veículos" value={s.veiculo_placas.join(", ")} />}
-              {s.conjuge && (
-                <>
-                  <div className="mt-3 mb-1 text-[10px] font-bold text-purple-600 uppercase tracking-widest">Cônjuge — {s.conjuge.nome}</div>
-                  <Row label="CPF" value={s.conjuge.cpf} />
-                  <Row label="Nascimento" value={formatDate(s.conjuge.nascimento)} />
-                  <Row label="Telefone" value={s.conjuge.telefone} />
-                  <Row label="E-mail" value={s.conjuge.email} />
-                  {s.conjuge.incluir_renda === "sim" && s.conjuge.renda != null && <Row label="Renda" value={formatMoney(s.conjuge.renda)} />}
-                </>
-              )}
-            </Section>
-          ))}
-
-          <Section title="Dados Bancários">
-            <Row label="Banco" value={`${proposta.banco_nome} — ${proposta.banco_numero}`} />
-            <Row label="Agência" value={proposta.banco_agencia} />
-            <Row label="Conta" value={`${proposta.banco_conta}-${proposta.banco_digito}`} />
-          </Section>
-
-          {proposta.obs_finais && (
-            <Section title="Observações">
-              <p className="text-sm text-[var(--color-text)] bg-[var(--color-surface-subtle)] rounded-lg p-3">{proposta.obs_finais}</p>
-            </Section>
-          )}
-        </div>
-      </div>
-    </div>
+    <DetailPanel
+      title={proposta.emp_razao || formatCNPJ(proposta.emp_cnpj)}
+      subtitle={formatCNPJ(proposta.emp_cnpj)}
+      badge={<Badge variant="info" className="text-[10px]">BDMG CG</Badge>}
+      sections={buildPJSections(proposta)}
+      onClose={onClose}
+    />
   );
 }
 
@@ -397,6 +358,7 @@ function PropostaDetailDrawer({ proposta, onClose, onUpdate, onConsultar, onMove
   onConsultar: () => void;
   onMove: (id: string, to: KanbanColumn) => void;
 }) {
+  const isPF = proposta.tipo_pessoa === "PF";
   const [saving, setSaving] = useState(false);
   const [editingCredito, setEditingCredito] = useState(false);
   const [creditoInput, setCreditoInput] = useState(
@@ -427,7 +389,9 @@ function PropostaDetailDrawer({ proposta, onClose, onUpdate, onConsultar, onMove
         <div className="sticky top-0 bg-white border-b flex items-center justify-between px-5 py-4 z-10">
           <div className="min-w-0 flex-1">
             <p className="font-semibold text-[var(--color-text)] truncate">{proposta.emp_razao || formatCNPJ(proposta.emp_cnpj)}</p>
-            <p className="text-xs text-[var(--color-text-muted)] font-mono">{formatCNPJ(proposta.emp_cnpj)}</p>
+            <p className="text-xs text-[var(--color-text-muted)] font-mono">
+              {isPF ? proposta.emp_cnpj : formatCNPJ(proposta.emp_cnpj)}
+            </p>
           </div>
           <div className="flex items-center gap-1.5 flex-shrink-0 ml-2">
             {saving && <Loader2 className="w-4 h-4 animate-spin text-[var(--color-text-muted)]" />}
@@ -583,7 +547,7 @@ function PropostaDetailDrawer({ proposta, onClose, onUpdate, onConsultar, onMove
 
 // ─── Board principal ─────────────────────────────────────────────────────────
 
-export default function KanbanBoard({ propostas: initialPropostas, onUpdate }: KanbanBoardProps) {
+export default function KanbanBoard({ propostas: initialPropostas, showComissoes, onUpdate }: KanbanBoardProps) {
   const [propostas, setPropostas] = useState(initialPropostas);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [pendingNaoAprovado, setPendingNaoAprovado] = useState<{ id: string } | null>(null);
@@ -591,6 +555,39 @@ export default function KanbanBoard({ propostas: initialPropostas, onUpdate }: K
   const [selectedProposta, setSelectedProposta] = useState<Proposta | null>(null);
   const [consultandoProposta, setConsultandoProposta] = useState<Proposta | null>(null);
   const [updating, setUpdating] = useState<string | null>(null);
+
+  // Auto-move: Crédito Liberado → Finalizados (M+1) and auto-recebido (day 25)
+  useEffect(() => {
+    const now = new Date();
+    const today = now.getDate();
+
+    setPropostas((prev) => {
+      const updates: { id: string; fields: Partial<Proposta> }[] = [];
+      const next = prev.map((p) => {
+        // Auto-move to Finalizados if data_liberacao is from a previous month
+        if (p.coluna_kanban === "credito_liberado" && p.data_liberacao && isFromPreviousMonth(p.data_liberacao)) {
+          const fields: Partial<Proposta> = { coluna_kanban: "finalizados" };
+          updates.push({ id: p.id_proposta, fields });
+          return { ...p, ...fields };
+        }
+        // Auto-mark as recebido on day >= 25 for proposals in Finalizados
+        if (p.coluna_kanban === "finalizados" && p.status_repasse === "pendente" && p.data_liberacao && isFromPreviousMonth(p.data_liberacao) && today >= 25) {
+          const fields: Partial<Proposta> = { status_repasse: "recebido" };
+          updates.push({ id: p.id_proposta, fields });
+          return { ...p, ...fields };
+        }
+        return p;
+      });
+
+      // Persist changes in background
+      if (updates.length > 0) {
+        Promise.all(updates.map((u) => onUpdate(u.id, u.fields))).catch(console.error);
+      }
+
+      return updates.length > 0 ? next : prev;
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
 
@@ -671,6 +668,7 @@ export default function KanbanBoard({ propostas: initialPropostas, onUpdate }: K
               key={col.id}
               column={col}
               propostas={propostasByColumn(col.id)}
+              showComissoes={showComissoes}
               onCardClick={setSelectedProposta}
             />
           ))}

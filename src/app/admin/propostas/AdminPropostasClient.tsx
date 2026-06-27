@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Proposta, KANBAN_COLUMNS, COMISSAO_PERCENTUAL } from "@/types";
+import { useRouter } from "next/navigation";
+import { Proposta, KANBAN_COLUMNS, getComissaoRate } from "@/types";
 import KanbanBoard from "@/components/admin/KanbanBoard";
+import NovoLeadModal from "@/components/admin/NovoLeadModal";
 import { formatMoney } from "@/lib/utils";
-import { Search, Download } from "lucide-react";
+import { Search, Download, Plus, Eye, EyeOff } from "lucide-react";
 
 interface Props {
   initialPropostas: Proposta[];
@@ -18,7 +20,7 @@ function exportCSV(propostas: Proposta[]) {
   ];
   const rows = propostas.map((p) => [
     p.id_proposta, p.timestamp_envio?.split("T")[0] ?? "", p.emp_razao, p.emp_cnpj,
-    p.valor_solicitado ?? "", (p.valor_solicitado ?? 0) * COMISSAO_PERCENTUAL || "",
+    p.valor_solicitado ?? "", (p.valor_solicitado ?? 0) * getComissaoRate(p) || "",
     p.emp_repr_nome, p.emp_email, p.emp_telefone,
     p.coluna_kanban, p.status_repasse,
     p.data_liberacao ?? "", p.followup_data ?? "", p.motivo_perda ?? "",
@@ -34,10 +36,13 @@ function exportCSV(propostas: Proposta[]) {
 }
 
 export default function AdminPropostasClient({ initialPropostas }: Props) {
+  const router = useRouter();
   const [busca, setBusca] = useState("");
   const [filtroPeriodo, setFiltroPeriodo] = useState("todos");
   const [filtroStatus, setFiltroStatus] = useState("todos");
   const [filtroTipo, setFiltroTipo] = useState<"todos" | "PJ" | "PF">("todos");
+  const [showNovoLead, setShowNovoLead] = useState(false);
+  const [showComissoes, setShowComissoes] = useState(false);
 
   const today = new Date();
   const startOfWeek = new Date(today);
@@ -62,13 +67,19 @@ export default function AdminPropostasClient({ initialPropostas }: Props) {
     });
   }, [initialPropostas, busca, filtroPeriodo, filtroStatus, filtroTipo, today, startOfWeek, startOfMonth]);
 
-  const totalCredito = filtered.reduce((s, p) => s + (p.valor_solicitado || 0), 0);
+  // Comissão pendente = only proposals in credito_liberado with data_liberacao in current month
+  const currentMonth = today.getMonth();
+  const currentYear = today.getFullYear();
   const totalPendente = filtered
-    .filter((p) => p.status_repasse === "pendente")
-    .reduce((s, p) => s + (p.valor_solicitado || 0) * COMISSAO_PERCENTUAL, 0);
+    .filter((p) => p.coluna_kanban === "credito_liberado" && p.data_liberacao)
+    .filter((p) => {
+      const d = new Date(p.data_liberacao! + "T12:00:00");
+      return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+    })
+    .reduce((s, p) => s + (p.valor_solicitado || 0) * getComissaoRate(p), 0);
   const totalRecebido = filtered
     .filter((p) => p.status_repasse === "recebido")
-    .reduce((s, p) => s + (p.valor_solicitado || 0) * COMISSAO_PERCENTUAL, 0);
+    .reduce((s, p) => s + (p.valor_solicitado || 0) * getComissaoRate(p), 0);
 
   async function handleUpdate(id: string, fields: Partial<Proposta>) {
     await fetch(`/api/propostas/${id}`, {
@@ -80,23 +91,48 @@ export default function AdminPropostasClient({ initialPropostas }: Props) {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="bg-[var(--color-surface)] border-b border-[var(--color-border)] px-4 py-3 flex-shrink-0">
-        <div className="flex items-center gap-3 flex-wrap">
-          <div className="flex items-center gap-2 bg-[var(--color-surface-subtle)] border border-[var(--color-border)] rounded-lg px-3 py-1.5 flex-1 min-w-48">
-            <Search className="w-4 h-4 text-[var(--color-text-muted)]" />
+      <div className="bg-[var(--color-surface)] border-b border-[var(--color-border)] px-3 sm:px-4 py-3 flex-shrink-0">
+        {/* Row 1: Search + action buttons */}
+        <div className="flex items-center gap-2">
+          {/* Search */}
+          <div className="flex items-center gap-2 bg-[var(--color-surface-subtle)] border border-[var(--color-border)] rounded-xl px-3 py-2 flex-1 min-w-0">
+            <Search className="w-4 h-4 text-[var(--color-text-muted)] flex-shrink-0" />
             <input
               type="text"
-              placeholder="Pesquisar por empresa ou CNPJ..."
+              placeholder="Pesquisar..."
               value={busca}
               onChange={(e) => setBusca(e.target.value)}
               className="bg-transparent text-sm outline-none w-full text-[var(--color-text)] placeholder:text-[var(--color-text-muted)]"
             />
           </div>
 
+          {/* Action buttons */}
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <button
+              onClick={() => exportCSV(filtered)}
+              className="hidden sm:flex items-center gap-1.5 px-3 py-2 bg-[var(--color-surface-subtle)] border border-[var(--color-border)] rounded-xl text-sm font-medium text-[var(--color-text)] hover:bg-[var(--color-border)] transition-colors"
+            >
+              <Download className="w-4 h-4" />
+              <span className="hidden md:block">Exportar</span>
+            </button>
+
+            <button
+              onClick={() => setShowNovoLead(true)}
+              className="flex items-center gap-1.5 px-3 py-2 bg-[var(--color-brand-primary)] text-white rounded-xl text-sm font-medium hover:bg-[var(--color-brand-primary-dark)] transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              <span className="hidden sm:block">Novo Lead</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Row 2: Filters */}
+        <div className="flex items-center gap-2 mt-2 flex-wrap">
+
           <select
             value={filtroPeriodo}
             onChange={(e) => setFiltroPeriodo(e.target.value)}
-            className="input-base w-auto text-sm py-1.5"
+            className="input-base w-auto text-xs py-1.5 min-w-0"
           >
             <option value="todos">Todos os períodos</option>
             <option value="hoje">Hoje</option>
@@ -107,7 +143,7 @@ export default function AdminPropostasClient({ initialPropostas }: Props) {
           <select
             value={filtroStatus}
             onChange={(e) => setFiltroStatus(e.target.value)}
-            className="input-base w-auto text-sm py-1.5"
+            className="input-base w-auto text-xs py-1.5 min-w-0"
           >
             <option value="todos">Todos os status</option>
             {KANBAN_COLUMNS.map((col) => (
@@ -115,56 +151,64 @@ export default function AdminPropostasClient({ initialPropostas }: Props) {
             ))}
           </select>
 
-          <div className="flex rounded-lg border border-[var(--color-border)] overflow-hidden text-sm font-medium">
+          <div className="flex rounded-xl border border-[var(--color-border)] overflow-hidden text-xs font-medium">
             {(["todos", "PJ", "PF"] as const).map((t) => (
               <button
                 key={t}
                 onClick={() => setFiltroTipo(t)}
-                className={`px-3 py-1.5 transition-colors ${filtroTipo === t ? "bg-[var(--color-brand-primary)] text-white" : "bg-[var(--color-surface)] text-[var(--color-text-muted)] hover:bg-[var(--color-surface-subtle)]"}`}
+                className={`px-2.5 py-1.5 transition-colors ${filtroTipo === t ? "bg-[var(--color-brand-primary)] text-white" : "bg-[var(--color-surface)] text-[var(--color-text-muted)] hover:bg-[var(--color-surface-subtle)]"}`}
               >
                 {t === "todos" ? "Todos" : t}
               </button>
             ))}
           </div>
-
-          <button
-            onClick={() => exportCSV(filtered)}
-            className="flex items-center gap-2 px-3 py-1.5 bg-[var(--color-surface-subtle)] border border-[var(--color-border)] rounded-lg text-sm font-medium text-[var(--color-text)] hover:bg-[var(--color-border)] transition-colors"
-          >
-            <Download className="w-4 h-4" />
-            Exportar CSV
-          </button>
         </div>
 
-        <div className="flex gap-4 mt-3 text-xs flex-wrap">
+        {/* Row 3: Stats */}
+        <div className="flex gap-3 mt-2 text-xs flex-wrap items-center">
           <span className="text-[var(--color-text-muted)]">
             <strong className="text-[var(--color-text)]">{filtered.length}</strong>{" "}
             proposta{filtered.length !== 1 ? "s" : ""}
           </span>
-          {totalCredito > 0 && (
-            <span className="text-[var(--color-text-muted)]">
-              Volume de crédito:{" "}
-              <strong className="font-money text-green-600">{formatMoney(totalCredito)}</strong>
-            </span>
-          )}
           {totalPendente > 0 && (
             <span className="text-[var(--color-text-muted)]">
-              Comissão pendente:{" "}
-              <strong className="font-money text-amber-600">{formatMoney(totalPendente)}</strong>
+              Comissão pendente (M+1):{" "}
+              <strong className="font-money text-amber-600">
+                {showComissoes ? formatMoney(totalPendente) : "R$ •••••"}
+              </strong>
             </span>
           )}
           {totalRecebido > 0 && (
             <span className="text-[var(--color-text-muted)]">
               Comissão recebida:{" "}
-              <strong className="font-money text-green-600">{formatMoney(totalRecebido)}</strong>
+              <strong className="font-money text-green-600">
+                {showComissoes ? formatMoney(totalRecebido) : "R$ •••••"}
+              </strong>
             </span>
           )}
+          <button 
+            onClick={() => setShowComissoes(!showComissoes)} 
+            className="ml-auto flex items-center gap-1.5 px-2 py-1 bg-[var(--color-surface-subtle)] hover:bg-[var(--color-border)] rounded-md text-[var(--color-text-muted)] transition-colors"
+          >
+            {showComissoes ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+            {showComissoes ? "Ocultar Valores" : "Mostrar Valores"}
+          </button>
         </div>
       </div>
 
       <div className="flex-1 overflow-hidden">
-        <KanbanBoard propostas={filtered} onUpdate={handleUpdate} />
+        <KanbanBoard propostas={filtered} onUpdate={handleUpdate} showComissoes={showComissoes} />
       </div>
+
+      {showNovoLead && (
+        <NovoLeadModal
+          onClose={() => setShowNovoLead(false)}
+          onSuccess={() => {
+            setShowNovoLead(false);
+            router.refresh();
+          }}
+        />
+      )}
     </div>
   );
 }

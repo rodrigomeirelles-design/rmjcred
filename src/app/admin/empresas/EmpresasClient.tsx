@@ -333,6 +333,7 @@ const FASE_COLOR: Record<KanbanColumn, string> = {
   em_aprovacao:     "bg-amber-100 text-amber-700",
   formalizacao:     "bg-purple-100 text-purple-700",
   credito_liberado: "bg-green-100 text-green-700",
+  finalizados:      "bg-emerald-100 text-emerald-700",
   nao_aprovado:     "bg-red-100 text-red-700",
   leads_perdidos:   "bg-zinc-100 text-zinc-500",
 };
@@ -652,22 +653,22 @@ export default function EmpresasClient({ initialPropostas }: Props) {
     <>
       <div className="print:hidden flex flex-col h-full">
         {/* Toolbar */}
-        <div className="px-6 py-4 border-b border-[var(--color-border)] flex items-center justify-between gap-4 flex-shrink-0 flex-wrap bg-[var(--color-surface)]">
+        <div className="px-3 sm:px-6 py-3 sm:py-4 border-b border-[var(--color-border)] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 flex-shrink-0 bg-[var(--color-surface)]">
           <div>
-            <h1 className="text-lg font-bold text-[var(--color-text)]">Pessoa Jurídica</h1>
-            <p className="text-sm text-[var(--color-text-muted)]">
+            <h1 className="text-base sm:text-lg font-bold text-[var(--color-text)]">Pessoa Jurídica</h1>
+            <p className="text-xs sm:text-sm text-[var(--color-text-muted)]">
               {filtered.length} empresa{filtered.length !== 1 ? "s" : ""}
               {totalCredito > 0 && (
-                <span> · Volume de crédito: <span className="font-money font-semibold text-green-600">{formatMoney(totalCredito)}</span></span>
+                <span className="hidden sm:inline"> · Volume: <span className="font-money font-semibold text-green-600">{formatMoney(totalCredito)}</span></span>
               )}
             </p>
           </div>
-          <div className="relative w-80">
+          <div className="relative w-full sm:w-80">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" />
             <input
               type="text"
               placeholder="Nome, CNPJ ou representante..."
-              className="input-base pl-9 text-sm w-full"
+              className="input-base pl-9 text-sm w-full rounded-xl"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />

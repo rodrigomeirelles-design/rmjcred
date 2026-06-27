@@ -5,7 +5,8 @@ export type KanbanColumn =
   | "formalizacao"
   | "credito_liberado"
   | "nao_aprovado"
-  | "leads_perdidos";
+  | "leads_perdidos"
+  | "finalizados";
 
 export type StatusRepasse = "pendente" | "recebido";
 export type TipoPessoa = "PJ" | "PF";
@@ -99,6 +100,7 @@ export interface Proposta {
   followup_data?: string;
   data_liberacao?: string;
   valor_solicitado?: number;
+  comissao_percentual?: number;
   emp_razao: string;
   emp_fantasia?: string;
   emp_cnpj: string;
@@ -128,15 +130,28 @@ export interface Proposta {
 }
 
 export const COMISSAO_PERCENTUAL = 0.0135;
+export const COMISSAO_FIN_IMOB = 0.01;
+export const COMISSAO_HOME_EQUITY = 0.03;
+
+/** Returns the effective commission rate for a proposal */
+export function getComissaoRate(p: Proposta): number {
+  if (p.comissao_percentual != null) return p.comissao_percentual;
+  if (p.tipo_pessoa === "PF") {
+    if (p.produto === "Crédito com Garantia de Imóvel") return COMISSAO_HOME_EQUITY;
+    return COMISSAO_FIN_IMOB;
+  }
+  return COMISSAO_PERCENTUAL;
+}
 
 export const KANBAN_COLUMNS: { id: KanbanColumn; label: string; fase: number }[] = [
-  { id: "novo_negocio",    label: "Novo Negócio",     fase: 0 },
-  { id: "em_analise",      label: "Em Análise",        fase: 1 },
-  { id: "em_aprovacao",    label: "Em Aprovação",      fase: 2 },
-  { id: "formalizacao",    label: "Formalização",      fase: 3 },
+  { id: "novo_negocio",     label: "Novo Negócio",     fase: 0 },
+  { id: "em_analise",       label: "Em Análise",       fase: 1 },
+  { id: "em_aprovacao",     label: "Em Aprovação",     fase: 2 },
+  { id: "formalizacao",     label: "Formalização",     fase: 3 },
   { id: "credito_liberado", label: "Crédito Liberado", fase: 4 },
-  { id: "nao_aprovado",    label: "Não Aprovado",      fase: 5 },
-  { id: "leads_perdidos",  label: "Leads Perdidos",    fase: 6 },
+  { id: "finalizados",      label: "Finalizados",      fase: 5 },
+  { id: "nao_aprovado",     label: "Não Aprovado",     fase: 6 },
+  { id: "leads_perdidos",   label: "Leads Perdidos",   fase: 7 },
 ];
 
 export const UF_LIST = [

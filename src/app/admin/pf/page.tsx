@@ -1,15 +1,26 @@
-import { User } from "lucide-react";
+import { getPropostasImovel, getPropostas } from "@/lib/sheets";
+import { KANBAN_COLUMNS } from "@/types";
+import AdminPFClient from "./AdminPFClient";
 
-export default function PessoaFisicaPage() {
-  return (
-    <div className="flex flex-col items-center justify-center h-full p-12 text-center">
-      <div className="w-16 h-16 rounded-2xl bg-[var(--color-surface-subtle)] flex items-center justify-center mb-5">
-        <User className="w-8 h-8 text-[var(--color-text-muted)]" />
-      </div>
-      <h1 className="text-xl font-bold text-[var(--color-text)] mb-2">Pessoa Física</h1>
-      <p className="text-[var(--color-text-muted)] text-sm max-w-xs">
-        Módulo em desenvolvimento. Em breve você poderá gerenciar propostas de crédito para pessoas físicas aqui.
-      </p>
-    </div>
+export const dynamic = "force-dynamic";
+
+export default async function PessoaFisicaPage() {
+  const [propostasImovel, todasPropostas] = await Promise.all([
+    getPropostasImovel(),
+    getPropostas(),
+  ]);
+
+  const stageMap = new Map(
+    todasPropostas
+      .filter((p) => p.tipo_pessoa === "PF")
+      .map((p) => [p.id_proposta, p.coluna_kanban])
   );
+
+  const enriched = propostasImovel.map((p) => ({
+    ...p,
+    etapa_kanban: stageMap.get(p.id_proposta) ?? "novo_negocio",
+    etapa_label: KANBAN_COLUMNS.find((c) => c.id === (stageMap.get(p.id_proposta) ?? "novo_negocio"))?.label ?? "Novo Negócio",
+  }));
+
+  return <AdminPFClient initialPropostas={enriched} />;
 }

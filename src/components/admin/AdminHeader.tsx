@@ -1,15 +1,21 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { User, LogOut } from "lucide-react";
+import { User, LogOut, Menu, ChevronRight } from "lucide-react";
 
 const BREADCRUMBS: Record<string, string> = {
   "/admin/propostas": "Propostas",
   "/admin/empresas": "Empresas",
+  "/admin/pf": "Pessoa Física",
+  "/admin/comissoes": "Comissões",
   "/admin/configuracoes": "Configurações",
 };
 
-export default function AdminHeader() {
+interface AdminHeaderProps {
+  onMenuClick?: () => void;
+}
+
+export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -24,26 +30,55 @@ export default function AdminHeader() {
   };
 
   return (
-    <header className="h-14 bg-[var(--color-surface)] border-b border-[var(--color-border)] flex items-center justify-between px-6 flex-shrink-0">
-      <div className="flex items-center gap-2 text-sm">
-        <span className="text-[var(--color-text-muted)] font-medium">CRM RMJ</span>
-        <span className="text-[var(--color-border-strong)]">/</span>
-        <span className="text-[var(--color-text)] font-semibold">{page}</span>
+    <header
+      className="h-14 flex items-center justify-between px-4 flex-shrink-0 sticky top-0 z-30"
+      style={{
+        background: "rgba(242, 246, 251, 0.85)",
+        backdropFilter: "blur(16px) saturate(180%)",
+        WebkitBackdropFilter: "blur(16px) saturate(180%)",
+        borderBottom: "1px solid rgba(216, 226, 238, 0.7)",
+      }}
+    >
+      {/* Left: hamburger (mobile) + breadcrumb */}
+      <div className="flex items-center gap-2 min-w-0">
+        {/* Hamburger — mobile only */}
+        <button
+          onClick={onMenuClick}
+          className="md:hidden flex items-center justify-center w-9 h-9 rounded-xl text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-subtle)] transition-colors flex-shrink-0"
+          aria-label="Abrir menu"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+
+        {/* Breadcrumb */}
+        <div className="flex items-center gap-1.5 text-sm min-w-0">
+          <span className="text-[var(--color-text-muted)] font-medium hidden sm:block flex-shrink-0">CRM RMJ</span>
+          <ChevronRight className="w-3.5 h-3.5 text-[var(--color-border-strong)] hidden sm:block flex-shrink-0" />
+          <span className="text-[var(--color-text)] font-semibold truncate">{page}</span>
+        </div>
       </div>
-      <div className="flex items-center gap-3">
+
+      {/* Right: user + logout */}
+      <div className="flex items-center gap-2 flex-shrink-0">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: "#234469" }}>
+          <div
+            className="w-8 h-8 rounded-full flex items-center justify-center shadow-sm"
+            style={{ background: "linear-gradient(135deg, #234469, #1a3356)" }}
+          >
             <User className="w-4 h-4 text-white" />
           </div>
           <span className="text-sm text-[var(--color-text)] font-semibold hidden sm:block">Admin</span>
         </div>
+
+        <div className="w-px h-5 bg-[var(--color-border)] hidden sm:block" />
+
         <button
           onClick={handleLogout}
-          className="text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-subtle)] p-2 rounded-lg transition-colors flex items-center gap-1.5"
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-subtle)] transition-colors text-sm font-medium"
           title="Sair"
         >
           <LogOut className="w-4 h-4" />
-          <span className="text-sm font-medium hidden sm:block">Sair</span>
+          <span className="hidden sm:block">Sair</span>
         </button>
       </div>
     </header>

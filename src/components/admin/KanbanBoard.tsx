@@ -16,12 +16,13 @@ import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import {
   Calendar, Clock, CheckCircle2,
-  FileText, X, Loader2, Pencil, Eye, ExternalLink,
+  FileText, X, Loader2, Pencil, Eye, ExternalLink, Plus
 } from "lucide-react";
 
 interface KanbanBoardProps {
   propostas: Proposta[];
   showComissoes?: boolean;
+  filtroStatus?: string;
   onUpdate: (id: string, fields: Partial<Proposta>) => Promise<void>;
 }
 
@@ -424,7 +425,7 @@ function PropostaDetailDrawer({ proposta, onClose, onUpdate, onConsultar, onMove
       : ""
   );
   const [editingObs, setEditingObs] = useState(false);
-  const [obsInput, setObsInput] = useState(proposta.obs_finais || "");
+  const [novoObs, setNovoObs] = useState("");
   const [produto, setProduto] = useState(proposta.produto || "");
 
   const PRODUTOS = [
@@ -462,10 +463,19 @@ function PropostaDetailDrawer({ proposta, onClose, onUpdate, onConsultar, onMove
   }
 
   async function saveObs() {
+    if (!novoObs.trim()) {
+      setEditingObs(false);
+      return;
+    }
     setSaving(true);
-    await onUpdate(proposta.id_proposta, { obs_finais: obsInput || undefined });
+    const now = new Date();
+    const ts = `[${now.toLocaleDateString("pt-BR")} ${now.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}]`;
+    const finalStr = `${ts} ${novoObs.trim()}\n\n${proposta.obs_finais || ""}`.trim();
+    
+    await onUpdate(proposta.id_proposta, { obs_finais: finalStr });
     setSaving(false);
     setEditingObs(false);
+    setNovoObs("");
   }
 
   return (
@@ -633,38 +643,37 @@ function PropostaDetailDrawer({ proposta, onClose, onUpdate, onConsultar, onMove
               <h3 className="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wide">Observações</h3>
               {!editingObs && (
                 <button
-                  onClick={() => { setObsInput(proposta.obs_finais || ""); setEditingObs(true); }}
-                  className="p-1 hover:bg-[var(--color-surface-subtle)] rounded text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
+                  onClick={() => { setNovoObs(""); setEditingObs(true); }}
+                  className="p-1 hover:bg-[var(--color-surface-subtle)] rounded text-[var(--color-text-muted)] hover:text-[var(--color-text)] flex items-center gap-1 text-xs"
                 >
-                  <Pencil className="w-3.5 h-3.5" />
+                  <Plus className="w-3.5 h-3.5" /> Adicionar
                 </button>
               )}
             </div>
-            {editingObs ? (
-              <div className="space-y-2">
+            {editingObs && (
+              <div className="space-y-2 mb-3">
                 <textarea
                   className="input-base min-h-[80px] resize-none text-sm w-full"
-                  placeholder="Anotações sobre esta proposta..."
-                  value={obsInput}
-                  onChange={(e) => setObsInput(e.target.value)}
+                  placeholder="Escreva uma nova observação..."
+                  value={novoObs}
+                  onChange={(e) => setNovoObs(e.target.value)}
                   autoFocus
                 />
                 <div className="flex gap-2">
                   <button onClick={() => setEditingObs(false)} className="flex-1 py-1.5 text-xs border border-[var(--color-border)] rounded-lg hover:bg-[var(--color-surface-subtle)]">
                     Cancelar
                   </button>
-                  <button onClick={saveObs} className="flex-1 py-1.5 text-xs bg-[var(--color-brand-primary)] text-white rounded-lg hover:bg-[var(--color-brand-primary-dark)]">
-                    Salvar
+                  <button onClick={saveObs} disabled={saving} className="flex-1 py-1.5 text-xs bg-[var(--color-brand-primary)] text-white rounded-lg hover:bg-[var(--color-brand-primary-dark)]">
+                    {saving ? "Salvando..." : "Salvar"}
                   </button>
                 </div>
               </div>
-            ) : (
-              <p className="text-sm text-[var(--color-text)] leading-relaxed">
-                {proposta.obs_finais
-                  ? proposta.obs_finais
-                  : <span className="text-[var(--color-text-muted)] italic">Nenhuma observação</span>}
-              </p>
             )}
+            <div className="text-sm text-[var(--color-text)] leading-relaxed whitespace-pre-wrap">
+              {proposta.obs_finais
+                ? proposta.obs_finais
+                : <span className="text-[var(--color-text-muted)] italic">Nenhuma observação</span>}
+            </div>
           </section>
 
           {/* Sócios */}
@@ -690,7 +699,7 @@ function PropostaDetailDrawer({ proposta, onClose, onUpdate, onConsultar, onMove
 
 // ─── Board principal ─────────────────────────────────────────────────────────
 
-export default function KanbanBoard({ propostas: initialPropostas, showComissoes, onUpdate }: KanbanBoardProps) {
+export default function KanbanBoard({ propostas: initialPropostas, showComissoes, filtroStatus, onUpdate }: KanbanBoardProps) {
   const [propostas, setPropostas] = useState(initialPropostas);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [pendingNaoAprovado, setPendingNaoAprovado] = useState<{ id: string } | null>(null);
@@ -802,11 +811,15 @@ export default function KanbanBoard({ propostas: initialPropostas, showComissoes
     ? (propostas.find((p) => p.id_proposta === selectedProposta.id_proposta) ?? selectedProposta)
     : null;
 
+  const columnsToRender = filtroStatus && filtroStatus !== "todos" 
+    ? KANBAN_COLUMNS.filter(c => c.id === filtroStatus)
+    : KANBAN_COLUMNS;
+
   return (
     <>
       <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-        <div className="flex gap-4 p-4 overflow-x-auto h-full pb-4">
-          {KANBAN_COLUMNS.map((col) => (
+        <div className="h-full flex overflow-x-auto p-4 gap-4 bg-[var(--color-surface)]">
+          {columnsToRender.map((col) => (
             <KanbanColumnView
               key={col.id}
               column={col}

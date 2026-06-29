@@ -11,6 +11,14 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "RMJ Soluções de Crédito",
   description: "Sistema de CRM para gestão de propostas de crédito — RMJ Soluções de Crédito",
+  icons: {
+    apple: "/apple-touch-icon.png",
+  },
+  appleWebApp: {
+    title: "RMJ CRM",
+    statusBarStyle: "black-translucent",
+    capable: true,
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

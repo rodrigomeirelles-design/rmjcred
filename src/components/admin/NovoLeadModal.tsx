@@ -15,6 +15,9 @@ type TipoPessoa = "PJ" | "PF";
 const PRODUTO_PF_OPTIONS = [
   { value: "Financiamento Imobiliário", label: "Financiamento Imobiliário" },
   { value: "Crédito com Garantia de Imóvel", label: "Home Equity (Crédito com Garantia de Imóvel)" },
+  { value: "Financiamento de Veículos", label: "Financiamento de Veículos" },
+  { value: "Crédito com Garantia de Veículo", label: "Garantia de Veículo" },
+  { value: "Consórcio", label: "Consórcio" },
 ];
 
 export default function NovoLeadModal({ onClose, onSuccess }: Props) {
@@ -114,7 +117,7 @@ export default function NovoLeadModal({ onClose, onSuccess }: Props) {
                 onClick={() => { setTipo(t); setError(""); }}
                 className={`px-5 py-2 transition-colors ${tipo === t ? "bg-[var(--color-brand-primary)] text-white" : "bg-white text-[var(--color-text-muted)] hover:bg-[var(--color-surface-subtle)]"}`}
               >
-                {t === "PJ" ? "Pessoa Jurídica — BDMG" : "Pessoa Física — Imóvel"}
+                {t === "PJ" ? "Pessoa Jurídica — BDMG" : "Pessoa Física"}
               </button>
             ))}
           </div>

@@ -2,13 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Kanban, Building2, User, DollarSign, Settings, HelpCircle, X } from "lucide-react";
+import { Kanban, Building2, User, DollarSign, Settings, HelpCircle, X, Calendar, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
+  { href: "/admin/painel", icon: Calendar, label: "Meu Painel" },
   { href: "/admin/propostas", icon: Kanban, label: "Propostas" },
   { href: "/admin/empresas", icon: Building2, label: "Pessoa Jurídica" },
   { href: "/admin/pf", icon: User, label: "Pessoa Física" },
+  { href: "/admin/contatos", icon: Users, label: "Contatos" },
   { href: "/admin/comissoes", icon: DollarSign, label: "Comissões" },
   { href: "/admin/configuracoes", icon: Settings, label: "Configurações" },
 ];
@@ -59,10 +61,9 @@ export default function AdminSidebar({ isOpen = false, onClose }: AdminSidebarPr
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div
-                  className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md"
-                  style={{ background: "linear-gradient(135deg, #ee661b, #f2814a)" }}
+                  className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden"
                 >
-                  <span className="text-white font-bold text-xs tracking-wide">RMJ</span>
+                  <img src="/logo.png" alt="RMJ Logo" className="w-full h-full object-contain" />
                 </div>
                 <div>
                   <p className="text-white font-bold text-sm leading-tight tracking-wide">CRM RMJ</p>

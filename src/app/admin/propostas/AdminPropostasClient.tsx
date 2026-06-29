@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Proposta, KANBAN_COLUMNS, getComissaoRate } from "@/types";
 import KanbanBoard from "@/components/admin/KanbanBoard";
@@ -37,6 +37,12 @@ function exportCSV(propostas: Proposta[]) {
 
 export default function AdminPropostasClient({ initialPropostas }: Props) {
   const router = useRouter();
+  const [propostas, setPropostas] = useState<Proposta[]>(initialPropostas);
+  
+  useEffect(() => {
+    setPropostas(initialPropostas);
+  }, [initialPropostas]);
+
   const [busca, setBusca] = useState("");
   const [filtroPeriodo, setFiltroPeriodo] = useState("todos");
   const [filtroStatus, setFiltroStatus] = useState("todos");
@@ -50,7 +56,7 @@ export default function AdminPropostasClient({ initialPropostas }: Props) {
   const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
 
   const filtered = useMemo(() => {
-    return initialPropostas.filter((p) => {
+    return propostas.filter((p) => {
       if (busca) {
         const q = busca.toLowerCase();
         if (!p.emp_razao.toLowerCase().includes(q) && !p.emp_cnpj.includes(busca.replace(/\D/g, ""))) return false;
@@ -65,7 +71,7 @@ export default function AdminPropostasClient({ initialPropostas }: Props) {
       if (filtroTipo !== "todos" && (p.tipo_pessoa || "PJ") !== filtroTipo) return false;
       return true;
     });
-  }, [initialPropostas, busca, filtroPeriodo, filtroStatus, filtroTipo, today, startOfWeek, startOfMonth]);
+  }, [propostas, busca, filtroPeriodo, filtroStatus, filtroTipo, today, startOfWeek, startOfMonth]);
 
   // Comissão pendente = only proposals in credito_liberado with data_liberacao in current month
   const currentMonth = today.getMonth();
@@ -82,11 +88,24 @@ export default function AdminPropostasClient({ initialPropostas }: Props) {
     .reduce((s, p) => s + (p.valor_solicitado || 0) * getComissaoRate(p), 0);
 
   async function handleUpdate(id: string, fields: Partial<Proposta>) {
+    setPropostas((prev) => prev.map((p) => (p.id_proposta === id ? { ...p, ...fields } : p)));
     await fetch(`/api/propostas/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(fields),
     });
+  }
+
+  async function fetchPropostas() {
+    try {
+      const res = await fetch("/api/propostas");
+      if (res.ok) {
+        const data = await res.json();
+        setPropostas(data);
+      }
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   return (
@@ -197,7 +216,7 @@ export default function AdminPropostasClient({ initialPropostas }: Props) {
       </div>
 
       <div className="flex-1 overflow-hidden">
-        <KanbanBoard propostas={filtered} onUpdate={handleUpdate} showComissoes={showComissoes} />
+        <KanbanBoard propostas={filtered} onUpdate={handleUpdate} showComissoes={showComissoes} filtroStatus={filtroStatus} />
       </div>
 
       {showNovoLead && (
@@ -205,6 +224,7 @@ export default function AdminPropostasClient({ initialPropostas }: Props) {
           onClose={() => setShowNovoLead(false)}
           onSuccess={() => {
             setShowNovoLead(false);
+            fetchPropostas();
             router.refresh();
           }}
         />

@@ -1,12 +1,13 @@
 "use client";
 
-import { UseFormReturn } from "react-hook-form";
+import { UseFormReturn, useWatch } from "react-hook-form";
 import { PropostaVeiculoFormData, TEMPO_RESIDENCIA_OPTIONS } from "@/types/veiculo";
 import { ESTADO_CIVIL_OPTIONS } from "@/types/imovel";
 import { UF_LIST } from "@/types";
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
 import { maskCPF, maskPhone, maskCEP, buscarCEP } from "@/lib/utils";
+import { Heart } from "lucide-react";
 
 interface Props {
   form: UseFormReturn<PropostaVeiculoFormData>;
@@ -14,8 +15,28 @@ interface Props {
 
 const UF_OPTIONS = UF_LIST.map((uf) => ({ value: uf, label: uf }));
 
+// CPF validation — Módulo 11
+function validarCPF(cpf: string): boolean {
+  const digits = cpf.replace(/\D/g, "");
+  if (digits.length !== 11) return false;
+  if (/^(\d)\1{10}$/.test(digits)) return false;
+  let sum = 0;
+  for (let i = 0; i < 9; i++) sum += parseInt(digits[i]) * (10 - i);
+  let check = (sum * 10) % 11;
+  if (check === 10 || check === 11) check = 0;
+  if (check !== parseInt(digits[9])) return false;
+  sum = 0;
+  for (let i = 0; i < 10; i++) sum += parseInt(digits[i]) * (11 - i);
+  check = (sum * 10) % 11;
+  if (check === 10 || check === 11) check = 0;
+  return check === parseInt(digits[10]);
+}
+
 export default function StepPessoalVeiculo({ form }: Props) {
-  const { register, setValue, getValues, formState: { errors } } = form;
+  const { register, setValue, getValues, control, formState: { errors } } = form;
+
+  const estadoCivil = useWatch({ control, name: "estado_civil" });
+  const isCasado = estadoCivil === "casado";
 
   async function handleCEPBlur(value: string) {
     const result = await buscarCEP(value);
@@ -51,6 +72,7 @@ export default function StepPessoalVeiculo({ form }: Props) {
             error={errors.cpf?.message}
             {...register("cpf", {
               required: "CPF é obrigatório",
+              validate: (v) => validarCPF(v) || "CPF inválido",
               onChange: (e) => { e.target.value = maskCPF(e.target.value); },
             })}
           />
@@ -77,6 +99,65 @@ export default function StepPessoalVeiculo({ form }: Props) {
         </div>
       </div>
 
+      {/* Dados do Cônjuge — aparece apenas quando Casado */}
+      {isCasado && (
+        <div
+          className="card-form"
+          style={{ borderColor: "rgb(35 68 105 / 0.25)", background: "rgb(35 68 105 / 0.03)" }}
+        >
+          <div className="flex items-center gap-2 mb-5 pb-3 border-b border-[var(--color-border)]">
+            <Heart className="w-4 h-4" style={{ color: "#234469" }} />
+            <h2 className="text-lg font-semibold text-[var(--color-text)]">Dados do Cônjuge</h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="sm:col-span-2">
+              <Input
+                label="Nome Completo do Cônjuge"
+                required
+                error={errors.conjugeNome?.message}
+                {...register("conjugeNome", { required: isCasado ? "Nome do cônjuge é obrigatório" : false })}
+              />
+            </div>
+            <Input
+              label="CPF do Cônjuge"
+              required
+              inputMode="numeric"
+              placeholder="000.000.000-00"
+              error={errors.conjugeCpf?.message}
+              {...register("conjugeCpf", {
+                required: isCasado ? "CPF do cônjuge é obrigatório" : false,
+                validate: (v) => !v || validarCPF(v) || "CPF inválido",
+                onChange: (e) => { e.target.value = maskCPF(e.target.value); },
+              })}
+            />
+            <Input
+              label="Data de Nascimento do Cônjuge"
+              type="date"
+              required
+              error={errors.conjugeNascimento?.message}
+              {...register("conjugeNascimento", { required: isCasado ? "Data de nascimento é obrigatória" : false })}
+            />
+            <Input
+              label="Celular do Cônjuge"
+              inputMode="tel"
+              placeholder="(00) 00000-0000"
+              error={errors.conjugeCelular?.message}
+              {...register("conjugeCelular", {
+                onChange: (e) => { e.target.value = maskPhone(e.target.value); },
+              })}
+            />
+            <Input
+              label="E-mail do Cônjuge"
+              type="email"
+              error={errors.conjugeEmail?.message}
+              {...register("conjugeEmail", {
+                pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "E-mail inválido" },
+              })}
+            />
+          </div>
+        </div>
+      )}
+
       {/* Documentos */}
       <div className="card-form">
         <h2 className="text-lg font-semibold text-[var(--color-text)] mb-5 pb-3 border-b border-[var(--color-border)]">
@@ -94,11 +175,6 @@ export default function StepPessoalVeiculo({ form }: Props) {
             label="Órgão Emissor"
             placeholder="Ex: SSP/MG"
             {...register("rg_orgao_emissor")}
-          />
-          <Input
-            label="Data de Emissão do RG"
-            type="date"
-            {...register("rg_data_emissao")}
           />
           <Input
             label="Nome da Mãe"

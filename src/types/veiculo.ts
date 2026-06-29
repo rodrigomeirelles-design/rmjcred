@@ -80,6 +80,12 @@ export interface PropostaVeiculoFormData {
   veiculo_tem_divida?: "sim" | "nao";
   veiculo_saldo_devedor?: number;
 
+  conjugeNome?: string;
+  conjugeCpf?: string;
+  conjugeNascimento?: string;
+  conjugeCelular?: string;
+  conjugeEmail?: string;
+  conjugeRenda?: number;
   observacoes?: string;
   aceite_lgpd: boolean;
 }
@@ -103,8 +109,6 @@ export const PARCELAS_VEICULO_OPTIONS = [
   { value: "36", label: "36 meses (3 anos)" },
   { value: "48", label: "48 meses (4 anos)" },
   { value: "60", label: "60 meses (5 anos)" },
-  { value: "72", label: "72 meses (6 anos)" },
-  { value: "84", label: "84 meses (7 anos)" },
 ];
 
 export const BANCO_VEICULO_OPTIONS = [

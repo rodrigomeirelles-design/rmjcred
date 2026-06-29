@@ -39,6 +39,8 @@ const DEFAULT_VALUES: PropostaVeiculoFormData = {
   veiculo_placa: "", veiculo_valor_fipe: 0,
   valor_veiculo: 0, valor_entrada: 0, valor_financiamento: 0, parcelas: "",
   veiculo_tem_divida: "nao", veiculo_saldo_devedor: 0,
+  conjugeNome: "", conjugeCpf: "", conjugeNascimento: "",
+  conjugeCelular: "", conjugeEmail: "", conjugeRenda: 0,
   observacoes: "", aceite_lgpd: false,
 };
 

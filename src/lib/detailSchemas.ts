@@ -288,3 +288,148 @@ export function buildPJSections(p: Proposta): DetailSection[] {
 
   return sections;
 }
+
+// ─── VEÍCULO (Financiamento e Garantia) ─────────────────────────────────────
+
+import type { PropostaVeiculo } from "@/types/veiculo";
+
+export function buildVeiculoSections(p: PropostaVeiculo & { etapa_label?: string }): DetailSection[] {
+  const sections: DetailSection[] = [];
+
+  // Status
+  sections.push({
+    title: "Status da Proposta",
+    rows: [
+      { label: "Etapa", value: p.etapa_label },
+      { label: "Produto", value: p.produto },
+      { label: "Enviado em", value: p.timestamp_envio ? formatDate(p.timestamp_envio.split("T")[0]) : undefined },
+    ],
+  });
+
+  // Identificação pessoal
+  sections.push({
+    title: "Identificação Pessoal",
+    rows: [
+      { label: "Nome", value: p.nome },
+      { label: "CPF", value: p.cpf },
+      { label: "RG", value: p.rg },
+      { label: "Órgão Emissor", value: p.rg_orgao_emissor },
+      { label: "Nascimento", value: p.nascimento },
+      { label: "Estado Civil", value: p.estado_civil },
+      { label: "Nacionalidade", value: p.nacionalidade },
+      { label: "Nome da Mãe", value: p.nome_mae },
+    ],
+  });
+
+  // Cônjuge (apenas se preenchido)
+  if (p.conjugeNome) {
+    sections.push({
+      title: "Cônjuge",
+      rows: [
+        { label: "Nome", value: p.conjugeNome },
+        { label: "CPF", value: p.conjugeCpf },
+        { label: "Nascimento", value: p.conjugeNascimento },
+        { label: "Celular", value: p.conjugeCelular },
+        { label: "E-mail", value: p.conjugeEmail },
+      ],
+    });
+  }
+
+  // Contato
+  sections.push({
+    title: "Contato",
+    rows: [
+      { label: "Celular / WhatsApp", value: p.celular },
+      { label: "Telefone Fixo", value: p.telefone },
+      { label: "E-mail", value: p.email },
+    ],
+  });
+
+  // Endereço
+  sections.push({
+    title: "Endereço",
+    rows: [
+      { label: "CEP", value: p.cep },
+      { label: "Logradouro", value: endereco(p.logradouro, p.numero, p.complemento) },
+      { label: "Bairro", value: p.bairro },
+      { label: "Cidade / UF", value: cidadeUf(p.cidade, p.uf) },
+      { label: "Tempo de residência", value: p.tempo_residencia },
+    ],
+  });
+
+  // Profissão e Renda
+  const profRows: DetailRow[] = [
+    { label: "Situação Profissional", value: p.situacao_profissional },
+    { label: "Renda Mensal", value: money(p.renda_mensal), mono: true },
+  ];
+  if (p.situacao_profissional === "assalariado") {
+    profRows.push(
+      { label: "Empresa", value: p.empresa },
+      { label: "CNPJ da Empresa", value: p.empresa_cnpj },
+      { label: "Cargo", value: p.cargo },
+      { label: "Data de Admissão", value: p.data_admissao },
+    );
+  } else if (p.situacao_profissional === "autonomo") {
+    profRows.push(
+      { label: "Atividade", value: p.autonomo_atividade },
+      { label: "Tempo de Atividade", value: p.autonomo_tempo },
+    );
+  }
+  sections.push({ title: "Profissão e Renda", rows: profRows });
+
+  // Dados do Veículo
+  sections.push({
+    title: "Dados do Veículo",
+    rows: [
+      { label: "Tipo", value: p.veiculo_tipo === "novo" ? "Veículo Novo" : "Veículo Usado" },
+      { label: "Categoria", value: p.veiculo_categoria },
+      { label: "Marca", value: p.veiculo_marca },
+      { label: "Modelo", value: p.veiculo_modelo },
+      { label: "Ano / Versão", value: p.veiculo_ano_fabricacao },
+      { label: "Placa", value: p.veiculo_placa },
+      { label: "Valor FIPE", value: money(p.veiculo_valor_fipe), mono: true },
+    ],
+  });
+
+  // Financiamento
+  sections.push({
+    title: "Dados do Financiamento",
+    rows: [
+      { label: "Valor do Veículo", value: money(p.valor_veiculo), mono: true },
+      { label: "Entrada", value: money(p.valor_entrada), mono: true },
+      { label: "Valor a Financiar", value: money(p.valor_financiamento), mono: true },
+      { label: "Parcelas", value: p.parcelas ? `${p.parcelas} meses` : undefined },
+    ],
+  });
+
+  // Situação do veículo (Garantia)
+  if (p.veiculo_tem_divida !== undefined) {
+    sections.push({
+      title: "Situação do Veículo (Garantia)",
+      rows: [
+        { label: "Situação", value: p.veiculo_tem_divida === "sim" ? "Com financiamento ativo" : "Veículo quitado" },
+        ...(p.veiculo_tem_divida === "sim"
+          ? [{ label: "Saldo Devedor Aprox.", value: money(p.veiculo_saldo_devedor), mono: true }]
+          : []),
+      ],
+    });
+  }
+
+  // Dados Bancários
+  sections.push({
+    title: "Dados Bancários",
+    rows: [
+      { label: "Banco", value: p.banco },
+      { label: "Agência", value: p.banco_agencia },
+      { label: "Conta", value: p.banco_conta },
+      { label: "Tipo de Conta", value: p.banco_tipo_conta },
+    ],
+  });
+
+  if (p.observacoes) {
+    sections.push({ title: "Observações", rows: [{ label: "", value: p.observacoes }] });
+  }
+
+  return sections;
+}
+

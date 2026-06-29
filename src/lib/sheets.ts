@@ -917,3 +917,23 @@ export async function updatePropostaVeiculoField(
     });
   }
 }
+
+export async function getPropostaVeiculoById(id: string): Promise<PropostaVeiculo | null> {
+  const auth   = getAuth();
+  const sheets = google.sheets({ version: "v4", auth });
+  try {
+    const res = await sheets.spreadsheets.values.get({
+      spreadsheetId: SHEET_ID,
+      range: `${SHEET_NAME_VEICULO}!A1:BZ`,
+    });
+    const rows = res.data.values ?? [];
+    if (rows.length < 2) return null;
+    const headers = rows[0] as string[];
+    const row = rows.find((r, i) => i > 0 && r[0] === id);
+    if (!row) return null;
+    return rowToPropostaVeiculo(headers, row as string[]);
+  } catch {
+    return null;
+  }
+}
+

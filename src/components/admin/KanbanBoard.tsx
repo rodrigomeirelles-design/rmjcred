@@ -10,7 +10,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { Proposta, type KanbanColumn, KANBAN_COLUMNS, getComissaoRate } from "@/types";
 import { PropostaImovel } from "@/types/imovel";
 import { formatMoney, formatDate, formatCNPJ, addDays, maskMoney, parseMoney } from "@/lib/utils";
-import { buildPJSections, buildPFSections } from "@/lib/detailSchemas";
+import { buildPJSections, buildPFSections, buildVeiculoSections } from "@/lib/detailSchemas";
 import DetailPanel from "@/components/admin/DetailPanel";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
@@ -44,14 +44,39 @@ function isFromPreviousMonth(dateStr: string): boolean {
     (d.getFullYear() === now.getFullYear() && d.getMonth() < now.getMonth());
 }
 
+// ─── Helpers de produto ─────────────────────────────────────────────────────
+
+function getProdutoBadge(proposta: Proposta): { label: string; variant: "info" | "warning" | "success" | "danger" | "default" } {
+  const p = proposta.produto || "";
+  if (p.includes("BDMG") || p.includes("Capital de Giro"))
+    return { label: "BDMG CG",         variant: "info" };
+  if (p.includes("Home Equity") || (p.includes("Garantia") && p.includes("Imóvel")))
+    return { label: "Home Equity",      variant: "warning" };
+  if (p.includes("Imobiliário") || p.includes("Financiamento Imobili"))
+    return { label: "Fin. Imobiliário", variant: "warning" };
+  if (p.includes("Garantia de Veículo") || p.includes("Garantia de Veículos"))
+    return { label: "Gar. Veículo",     variant: "success" };
+  if (p.includes("Veículo") || p.includes("Veículos"))
+    return { label: "Fin. Veículos",    variant: "success" };
+  if (p.includes("Consórcio"))
+    return { label: "Consórcio",        variant: "default" };
+  return { label: p.slice(0, 14) || "Lead", variant: "default" };
+}
+
+function getLabelCreditoCard(proposta: Proposta): string {
+  const p = proposta.produto || "";
+  if (p.includes("Veículo")) return "Veículo";
+  if (p.includes("Consórcio")) return "Consórcio";
+  if (p.includes("Imobiliário") || p.includes("Home Equity") || p.includes("Imóvel")) return "Financiamento";
+  return "Crédito";
+}
+
 // ─── Card visual ────────────────────────────────────────────────────────────
 
 function PropostaCard({ proposta, isDragging }: { proposta: Proposta; isDragging?: boolean }) {
   const isPF = proposta.tipo_pessoa === "PF";
   const hasFollowup = !!proposta.followup_data;
-  const produtoBadgeLabel = isPF
-    ? (proposta.produto === "Crédito com Garantia de Imóvel" ? "Home Equity" : "Fin. Imobiliário")
-    : "BDMG CG";
+  const { label: produtoBadgeLabel, variant: produtoBadgeVariant } = getProdutoBadge(proposta);
 
   return (
     <div className={`bg-white border border-[var(--color-border)] rounded-xl p-3.5 space-y-2.5 cursor-grab active:cursor-grabbing shadow-sm hover:shadow-md transition-shadow ${isDragging ? "opacity-50" : ""}`}>
@@ -64,14 +89,14 @@ function PropostaCard({ proposta, isDragging }: { proposta: Proposta; isDragging
             {isPF ? proposta.emp_cnpj : formatCNPJ(proposta.emp_cnpj)}
           </p>
         </div>
-        <Badge variant={isPF ? "warning" : "info"} className="flex-shrink-0 text-[10px]">
+        <Badge variant={produtoBadgeVariant} className="flex-shrink-0 text-[10px]">
           {produtoBadgeLabel}
         </Badge>
       </div>
 
       {proposta.valor_solicitado != null && (
         <div className="flex items-center justify-between text-xs bg-[var(--color-surface-subtle)] rounded-lg px-2.5 py-1.5">
-          <span className="text-[var(--color-text-muted)]">{isPF ? "Financiamento" : "Crédito"}</span>
+          <span className="text-[var(--color-text-muted)]">{getLabelCreditoCard(proposta)}</span>
           <span className="font-money font-semibold text-[var(--color-text)]">{formatMoney(proposta.valor_solicitado)}</span>
         </div>
       )}
@@ -305,20 +330,27 @@ function CreditoLiberadoModal({ proposta, onConfirm, onClose }: {
 // ─── Consulta completa da proposta ──────────────────────────────────────────
 
 function PropostaFullView({ proposta, onClose }: { proposta: Proposta; onClose: () => void }) {
-  const isPF = proposta.tipo_pessoa === "PF";
-  const [pfData, setPfData] = useState<PropostaImovel | null>(null);
+  const isBDMG = proposta.produto?.includes("BDMG") || proposta.produto?.includes("Capital de Giro");
+  const isVeiculo = proposta.produto?.includes("Veículo") || proposta.produto?.includes("Veículos");
+  const isImovel = proposta.produto?.includes("Imobiliário") || proposta.produto?.includes("Home Equity") || proposta.produto?.includes("Imóvel");
+  const isPF = isVeiculo || isImovel || (!isBDMG && proposta.tipo_pessoa === "PF");
+
+  const [pfData, setPfData] = useState<any>(null);
   const [loadingPF, setLoadingPF] = useState(isPF);
 
   useEffect(() => {
     if (!isPF) return;
-    fetch(`/api/propostas-imovel/${proposta.id_proposta}`)
+    const endpoint = isVeiculo 
+      ? `/api/propostas-veiculo/${proposta.id_proposta}` 
+      : `/api/propostas-imovel/${proposta.id_proposta}`;
+    fetch(endpoint)
       .then((r) => r.json())
       .then((data) => { setPfData(data); setLoadingPF(false); })
       .catch(() => setLoadingPF(false));
-  }, [isPF, proposta.id_proposta]);
+  }, [isPF, isVeiculo, proposta.id_proposta]);
 
   if (isPF) {
-    const prodLabel = proposta.produto === "Crédito com Garantia de Imóvel" ? "Home Equity" : "Fin. Imobiliário";
+    const { label: prodLabel, variant: prodVariant } = getProdutoBadge(proposta);
     if (loadingPF) {
       return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
@@ -327,22 +359,43 @@ function PropostaFullView({ proposta, onClose }: { proposta: Proposta; onClose: 
       );
     }
     const etapaLabel = KANBAN_COLUMNS.find((c) => c.id === proposta.coluna_kanban)?.label;
+
+    const sections = pfData
+      ? (isVeiculo 
+          ? buildVeiculoSections({ ...pfData, etapa_label: etapaLabel }) 
+          : buildPFSections({ ...pfData, etapa_label: etapaLabel }))
+      : [
+          {
+            title: "Dados do Lead",
+            rows: [
+              { label: "Nome", value: proposta.emp_razao },
+              { label: "Contato", value: proposta.emp_cnpj },
+              { label: "E-mail", value: proposta.emp_email },
+              { label: "Telefone", value: proposta.emp_telefone },
+              { label: "Produto", value: proposta.produto },
+              { label: "Etapa", value: etapaLabel },
+              ...(proposta.obs_finais ? [{ label: "Observações", value: proposta.obs_finais }] : []),
+            ],
+          },
+        ];
+
     return (
       <DetailPanel
         title={proposta.emp_razao}
         subtitle={proposta.emp_cnpj}
-        badge={<Badge variant="warning" className="text-[10px]">{prodLabel}</Badge>}
-        sections={pfData ? buildPFSections({ ...pfData, etapa_label: etapaLabel }) : []}
+        badge={<Badge variant={prodVariant} className="text-[10px]">{prodLabel}</Badge>}
+        sections={sections}
         onClose={onClose}
       />
     );
   }
 
+  const { label: prodLabel, variant: prodVariant } = getProdutoBadge(proposta);
   return (
     <DetailPanel
       title={proposta.emp_razao || formatCNPJ(proposta.emp_cnpj)}
       subtitle={formatCNPJ(proposta.emp_cnpj)}
-      badge={<Badge variant="info" className="text-[10px]">BDMG CG</Badge>}
+      badge={<Badge variant={prodVariant} className="text-[10px]">{prodLabel}</Badge>}
       sections={buildPJSections(proposta)}
       onClose={onClose}
     />
@@ -364,8 +417,32 @@ function PropostaDetailDrawer({ proposta, onClose, onUpdate, onConsultar, onMove
   const [creditoInput, setCreditoInput] = useState(
     proposta.valor_solicitado ? maskMoney(String(Math.round(proposta.valor_solicitado * 100))) : ""
   );
+  const [editingComissao, setEditingComissao] = useState(false);
+  const [comissaoInput, setComissaoInput] = useState(
+    proposta.comissao_percentual != null && proposta.comissao_percentual > 0 
+      ? String(proposta.comissao_percentual * 100).replace(".", ",") 
+      : ""
+  );
   const [editingObs, setEditingObs] = useState(false);
   const [obsInput, setObsInput] = useState(proposta.obs_finais || "");
+  const [produto, setProduto] = useState(proposta.produto || "");
+
+  const PRODUTOS = [
+    "BDMG Capital de Giro",
+    "Financiamento Imobiliário",
+    "Home Equity (Crédito com Garantia de Imóvel)",
+    "Financiamento de Veículos",
+    "Crédito com Garantia de Veículo",
+    "Consórcio",
+    "Outros Serviços",
+  ];
+
+  async function saveProduto(novoProduto: string) {
+    setProduto(novoProduto);
+    setSaving(true);
+    await onUpdate(proposta.id_proposta, { produto: novoProduto });
+    setSaving(false);
+  }
 
   async function saveCredito() {
     const valor = parseMoney(creditoInput);
@@ -373,6 +450,15 @@ function PropostaDetailDrawer({ proposta, onClose, onUpdate, onConsultar, onMove
     await onUpdate(proposta.id_proposta, { valor_solicitado: valor || undefined });
     setSaving(false);
     setEditingCredito(false);
+  }
+
+  async function saveComissao() {
+    const valStr = comissaoInput.replace(",", ".");
+    const valor = parseFloat(valStr);
+    setSaving(true);
+    await onUpdate(proposta.id_proposta, { comissao_percentual: isNaN(valor) ? undefined : valor / 100 });
+    setSaving(false);
+    setEditingComissao(false);
   }
 
   async function saveObs() {
@@ -413,6 +499,21 @@ function PropostaDetailDrawer({ proposta, onClose, onUpdate, onConsultar, onMove
             </div>
             <ExternalLink className="w-3.5 h-3.5 opacity-70" />
           </button>
+
+          {/* Produto / Serviço */}
+          <section className="border border-[var(--color-border)] rounded-xl p-4 space-y-2">
+            <h3 className="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wide">Produto / Serviço</h3>
+            <select
+              value={produto}
+              onChange={(e) => saveProduto(e.target.value)}
+              disabled={saving}
+              className="input-base w-full text-sm"
+            >
+              {PRODUTOS.map((p) => (
+                <option key={p} value={p}>{p}</option>
+              ))}
+            </select>
+          </section>
 
           {/* Etapa no Kanban */}
           <section className="border border-[var(--color-border)] rounded-xl p-4 space-y-2">
@@ -464,6 +565,48 @@ function PropostaDetailDrawer({ proposta, onClose, onUpdate, onConsultar, onMove
             ) : (
               <p className={`font-money text-2xl font-bold ${proposta.valor_solicitado ? "text-[var(--color-text)]" : "text-[var(--color-text-muted)]"}`}>
                 {proposta.valor_solicitado ? formatMoney(proposta.valor_solicitado) : "—"}
+              </p>
+            )}
+          </section>
+
+          {/* Comissão Percentual */}
+          <section className="border border-[var(--color-border)] rounded-xl p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <h3 className="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wide">Taxa de Comissão (%)</h3>
+              {!editingComissao && (
+                <button
+                  onClick={() => setEditingComissao(true)}
+                  className="p-1 hover:bg-[var(--color-surface-subtle)] rounded text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
+                >
+                  <Pencil className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+            {editingComissao ? (
+              <div className="space-y-2">
+                <input
+                  type="text"
+                  className="input-base text-lg font-semibold"
+                  placeholder="Ex: 1,5"
+                  value={comissaoInput}
+                  onChange={(e) => setComissaoInput(e.target.value.replace(/[^0-9,.]/g, ""))}
+                  autoFocus
+                />
+                <div className="flex gap-2">
+                  <button onClick={() => setEditingComissao(false)} className="flex-1 py-1.5 text-xs border border-[var(--color-border)] rounded-lg hover:bg-[var(--color-surface-subtle)]">
+                    Cancelar
+                  </button>
+                  <button onClick={saveComissao} className="flex-1 py-1.5 text-xs bg-[var(--color-brand-primary)] text-white rounded-lg hover:bg-[var(--color-brand-primary-dark)]">
+                    Salvar
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <p className="text-lg font-semibold text-[var(--color-text)]">
+                {proposta.comissao_percentual != null && proposta.comissao_percentual > 0 
+                  ? `${(proposta.comissao_percentual * 100).toLocaleString("pt-BR", { maximumFractionDigits: 2 })}%`
+                  : <span className="text-[var(--color-text-muted)] italic text-sm">Automático ({getComissaoRate(proposta) > 0 ? (getComissaoRate(proposta) * 100).toLocaleString("pt-BR", { maximumFractionDigits: 2 }) + "%" : "Não definida"})</span>
+                }
               </p>
             )}
           </section>

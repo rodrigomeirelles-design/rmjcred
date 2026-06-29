@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
       const pj: Proposta = {
         id_proposta: id,
         timestamp_envio: timestamp,
-        produto: "BDMG Capital de Giro",
+        produto: body.produto || "BDMG Capital de Giro",
         tipo_pessoa: "PJ",
         coluna_kanban: "novo_negocio",
         status_repasse: "pendente",

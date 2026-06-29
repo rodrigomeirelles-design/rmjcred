@@ -135,11 +135,10 @@ export const COMISSAO_HOME_EQUITY = 0.03;
 
 /** Returns the effective commission rate for a proposal */
 export function getComissaoRate(p: Proposta): number {
-  if (p.comissao_percentual != null) return p.comissao_percentual;
-  if (p.tipo_pessoa === "PF") {
-    if (p.produto === "Crédito com Garantia de Imóvel") return COMISSAO_HOME_EQUITY;
-    return COMISSAO_FIN_IMOB;
-  }
+  if (p.comissao_percentual != null && p.comissao_percentual > 0) return p.comissao_percentual;
+  if (p.produto?.includes("Veículo") || p.produto?.includes("Veículos")) return 0;
+  if (p.produto === "Crédito com Garantia de Imóvel" || p.produto?.includes("Home Equity")) return COMISSAO_HOME_EQUITY;
+  if (p.produto === "Financiamento Imobiliário" || p.produto?.includes("Imóvel")) return COMISSAO_FIN_IMOB;
   return COMISSAO_PERCENTUAL;
 }
 

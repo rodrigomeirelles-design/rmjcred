@@ -1,9 +1,9 @@
 import { cn } from "@/lib/utils";
 
 const STEPS = [
-  { number: 1, label: "Dados Pessoais" },
-  { number: 2, label: "Profissão e Renda" },
-  { number: 3, label: "Veículo" },
+  { number: 1, label: "Veículo" },
+  { number: 2, label: "Dados Pessoais" },
+  { number: 3, label: "Profissão e Renda" },
   { number: 4, label: "Envio" },
 ];
 

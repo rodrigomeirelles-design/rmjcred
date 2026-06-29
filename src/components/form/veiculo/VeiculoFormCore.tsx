@@ -15,9 +15,9 @@ interface Props {
 }
 
 const STEP_FIELDS: (keyof PropostaVeiculoFormData)[][] = [
+  ["veiculo_tipo", "veiculo_categoria", "veiculo_marca", "veiculo_modelo", "veiculo_ano_fabricacao", "valor_veiculo", "valor_financiamento", "parcelas"],
   ["nome", "cpf", "rg", "nascimento", "estado_civil", "nome_mae", "celular", "email", "cep", "logradouro", "numero", "bairro", "cidade", "uf"],
   ["situacao_profissional", "renda_mensal", "banco"],
-  ["veiculo_tipo", "veiculo_categoria", "veiculo_marca", "veiculo_modelo", "veiculo_ano_fabricacao", "valor_veiculo", "valor_financiamento", "parcelas"],
   ["aceite_lgpd"],
 ];
 
@@ -62,6 +62,13 @@ export default function VeiculoFormCore({ produto }: Props) {
     let fields = [...baseFields];
 
     if (currentStep === 2) {
+      const isCasado = form.getValues("estado_civil")?.includes("Casado");
+      if (isCasado) {
+        fields = [...fields, "conjugeNome", "conjugeCpf", "conjugeNascimento", "conjugeCelular", "conjugeEmail"];
+      }
+    }
+
+    if (currentStep === 3) {
       const prof = form.getValues("situacao_profissional");
       if (prof === "assalariado") {
         fields = [...fields, "empresa", "cargo", "data_admissao"];
@@ -132,9 +139,9 @@ export default function VeiculoFormCore({ produto }: Props) {
       <StepperVeiculo currentStep={currentStep} />
 
       <form onSubmit={(e) => e.preventDefault()}>
-        {currentStep === 1 && <StepPessoalVeiculo form={form} />}
-        {currentStep === 2 && <StepProfissionalVeiculo form={form} />}
-        {currentStep === 3 && <StepVeiculoFinanciamento form={form} isGarantia={isGarantia} />}
+        {currentStep === 1 && <StepVeiculoFinanciamento form={form} isGarantia={isGarantia} />}
+        {currentStep === 2 && <StepPessoalVeiculo form={form} />}
+        {currentStep === 3 && <StepProfissionalVeiculo form={form} />}
         {currentStep === 4 && (
           <StepEnvioVeiculo form={form} isSubmitting={isSubmitting} produto={produto} />
         )}

@@ -36,7 +36,7 @@ export default function StepPessoalVeiculo({ form }: Props) {
   const { register, setValue, getValues, control, formState: { errors } } = form;
 
   const estadoCivil = useWatch({ control, name: "estado_civil" });
-  const isCasado = estadoCivil === "casado";
+  const isCasado = estadoCivil?.includes("Casado");
 
   async function handleCEPBlur(value: string) {
     const result = await buscarCEP(value);

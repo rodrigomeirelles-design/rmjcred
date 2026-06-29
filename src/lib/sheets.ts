@@ -1,6 +1,7 @@
 import { google } from "googleapis";
 import { Proposta, KanbanColumn, StatusRepasse } from "@/types";
 import { PropostaImovel, KanbanColumnImovel } from "@/types/imovel";
+import { PropostaVeiculo } from "@/types/veiculo";
 
 const SHEET_ID = process.env.GOOGLE_SHEETS_ID!;
 const SHEET_NAME = "Propostas";
@@ -669,6 +670,243 @@ export async function updatePropostaImovelField(
     if (colIndex === -1) continue;
     const colLetter = colIndexToLetter(colIndex);
     const cellRef = `${SHEET_NAME_IMOVEL}!${colLetter}${rowIndex + 1}`;
+    await sheets.spreadsheets.values.update({
+      spreadsheetId: SHEET_ID,
+      range: cellRef,
+      valueInputOption: "RAW",
+      requestBody: {
+        values: [[typeof value === "boolean" ? (value ? "sim" : "nao") : String(value ?? "")]],
+      },
+    });
+  }
+}
+
+// ─── PropostasVeiculo sheet ───────────────────────────────────────────────────
+
+const SHEET_NAME_VEICULO = "PropostasVeiculo";
+
+export const SHEET_HEADERS_VEICULO = [
+  "id_proposta", "timestamp_envio", "produto", "coluna_kanban",
+  "nome", "cpf", "rg", "rg_orgao_emissor", "rg_data_emissao",
+  "nascimento", "estado_civil", "nacionalidade", "nome_mae",
+  "celular", "telefone", "email",
+  "cep", "logradouro", "numero", "complemento", "bairro", "cidade", "uf", "tempo_residencia",
+  "situacao_profissional",
+  "empresa", "empresa_cnpj", "cargo", "data_admissao",
+  "autonomo_empresa", "autonomo_cnpj", "autonomo_atividade", "autonomo_tempo",
+  "renda_mensal", "outras_rendas", "outras_rendas_valor",
+  "banco", "banco_agencia", "banco_conta", "banco_tipo_conta",
+  "veiculo_tipo", "veiculo_categoria", "veiculo_marca", "veiculo_modelo",
+  "veiculo_ano_fabricacao", "veiculo_placa", "veiculo_valor_fipe",
+  "valor_veiculo", "valor_entrada", "valor_financiamento", "parcelas",
+  "veiculo_tem_divida", "veiculo_saldo_devedor",
+  "observacoes",
+];
+
+function propostaVeiculoToRow(p: PropostaVeiculo): string[] {
+  return SHEET_HEADERS_VEICULO.map((key) => {
+    const val = (p as unknown as Record<string, unknown>)[key];
+    if (val === null || val === undefined) return "";
+    if (typeof val === "boolean") return val ? "sim" : "nao";
+    return String(val);
+  });
+}
+
+function rowToPropostaVeiculo(headers: string[], row: string[]): PropostaVeiculo {
+  const get = (key: string) => row[headers.indexOf(key)] ?? "";
+  return {
+    id_proposta:    get("id_proposta"),
+    timestamp_envio: get("timestamp_envio"),
+    produto:        get("produto") as PropostaVeiculo["produto"],
+    coluna_kanban:  (get("coluna_kanban") || "novo_lead") as PropostaVeiculo["coluna_kanban"],
+    nome:           get("nome"),
+    cpf:            get("cpf"),
+    rg:             get("rg"),
+    rg_orgao_emissor: get("rg_orgao_emissor") || undefined,
+    rg_data_emissao:  get("rg_data_emissao")  || undefined,
+    nascimento:     get("nascimento"),
+    estado_civil:   get("estado_civil"),
+    nacionalidade:  get("nacionalidade") || undefined,
+    nome_mae:       get("nome_mae"),
+    celular:        get("celular"),
+    telefone:       get("telefone") || undefined,
+    email:          get("email"),
+    cep:            get("cep"),
+    logradouro:     get("logradouro"),
+    numero:         get("numero"),
+    complemento:    get("complemento") || undefined,
+    bairro:         get("bairro"),
+    cidade:         get("cidade"),
+    uf:             get("uf"),
+    tempo_residencia: get("tempo_residencia") || undefined,
+    situacao_profissional: (get("situacao_profissional") || "assalariado") as PropostaVeiculo["situacao_profissional"],
+    empresa:        get("empresa") || undefined,
+    empresa_cnpj:   get("empresa_cnpj") || undefined,
+    cargo:          get("cargo") || undefined,
+    data_admissao:  get("data_admissao") || undefined,
+    autonomo_empresa:   get("autonomo_empresa")   || undefined,
+    autonomo_cnpj:      get("autonomo_cnpj")      || undefined,
+    autonomo_atividade: get("autonomo_atividade") || undefined,
+    autonomo_tempo:     get("autonomo_tempo")     || undefined,
+    renda_mensal:    parseFloat(get("renda_mensal")) || 0,
+    outras_rendas:   get("outras_rendas")  || undefined,
+    outras_rendas_valor: parseFloat(get("outras_rendas_valor")) || undefined,
+    banco:           get("banco"),
+    banco_agencia:   get("banco_agencia") || undefined,
+    banco_conta:     get("banco_conta")   || undefined,
+    banco_tipo_conta: (get("banco_tipo_conta") || undefined) as PropostaVeiculo["banco_tipo_conta"],
+    veiculo_tipo:       (get("veiculo_tipo") || "novo") as "novo" | "usado",
+    veiculo_categoria:  (get("veiculo_categoria") || "carros") as PropostaVeiculo["veiculo_categoria"],
+    veiculo_marca:      get("veiculo_marca"),
+    veiculo_modelo:     get("veiculo_modelo"),
+    veiculo_ano_fabricacao: get("veiculo_ano_fabricacao"),
+    veiculo_placa:      get("veiculo_placa") || undefined,
+    veiculo_valor_fipe: parseFloat(get("veiculo_valor_fipe")) || undefined,
+    valor_veiculo:      parseFloat(get("valor_veiculo"))      || 0,
+    valor_entrada:      parseFloat(get("valor_entrada"))      || undefined,
+    valor_financiamento: parseFloat(get("valor_financiamento")) || 0,
+    parcelas:       get("parcelas"),
+    veiculo_tem_divida:    (get("veiculo_tem_divida") || undefined) as "sim" | "nao" | undefined,
+    veiculo_saldo_devedor: parseFloat(get("veiculo_saldo_devedor")) || undefined,
+    observacoes:    get("observacoes") || undefined,
+    aceite_lgpd:    true,
+  };
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function ensureVeiculoSheet(sheets: any): Promise<void> {
+  const meta = await sheets.spreadsheets.get({ spreadsheetId: SHEET_ID });
+  const exists = meta.data.sheets?.some((s: any) => s.properties?.title === SHEET_NAME_VEICULO);
+  if (!exists) {
+    await sheets.spreadsheets.batchUpdate({
+      spreadsheetId: SHEET_ID,
+      requestBody: { requests: [{ addSheet: { properties: { title: SHEET_NAME_VEICULO } } }] },
+    });
+    await sheets.spreadsheets.values.update({
+      spreadsheetId: SHEET_ID,
+      range: `${SHEET_NAME_VEICULO}!A1`,
+      valueInputOption: "RAW",
+      requestBody: { values: [SHEET_HEADERS_VEICULO] },
+    });
+    return;
+  }
+
+  const headerRes = await sheets.spreadsheets.values.get({
+    spreadsheetId: SHEET_ID,
+    range: `${SHEET_NAME_VEICULO}!1:1`,
+  });
+  const existingHeaders = (headerRes.data.values?.[0] as string[] | undefined) ?? [];
+  if (existingHeaders.length === 0) {
+    await sheets.spreadsheets.values.update({
+      spreadsheetId: SHEET_ID,
+      range: `${SHEET_NAME_VEICULO}!A1`,
+      valueInputOption: "RAW",
+      requestBody: { values: [SHEET_HEADERS_VEICULO] },
+    });
+    return;
+  }
+
+  const existingSet = new Set(existingHeaders);
+  const missingHeaders = SHEET_HEADERS_VEICULO.filter((h) => !existingSet.has(h));
+  if (missingHeaders.length > 0) {
+    const sheetMeta = meta.data.sheets?.find((s: any) => s.properties?.title === SHEET_NAME_VEICULO);
+    const sheetId = sheetMeta?.properties?.sheetId ?? 0;
+    const currentColCount = sheetMeta?.properties?.gridProperties?.columnCount ?? existingHeaders.length;
+    const neededCols = existingHeaders.length + missingHeaders.length;
+    if (neededCols > currentColCount) {
+      await sheets.spreadsheets.batchUpdate({
+        spreadsheetId: SHEET_ID,
+        requestBody: {
+          requests: [{
+            appendDimension: { sheetId, dimension: "COLUMNS", length: neededCols - currentColCount },
+          }],
+        },
+      });
+    }
+    const startCol = colIndexToLetter(existingHeaders.length);
+    await sheets.spreadsheets.values.update({
+      spreadsheetId: SHEET_ID,
+      range: `${SHEET_NAME_VEICULO}!${startCol}1`,
+      valueInputOption: "RAW",
+      requestBody: { values: [missingHeaders] },
+    });
+  }
+}
+
+export async function appendPropostaVeiculo(proposta: PropostaVeiculo): Promise<void> {
+  const auth   = getAuth();
+  const sheets = google.sheets({ version: "v4", auth });
+  await ensureVeiculoSheet(sheets);
+  await sheets.spreadsheets.values.append({
+    spreadsheetId: SHEET_ID,
+    range: `${SHEET_NAME_VEICULO}!A1`,
+    valueInputOption: "RAW",
+    requestBody: { values: [propostaVeiculoToRow(proposta)] },
+  });
+}
+
+export async function getPropostasVeiculo(): Promise<PropostaVeiculo[]> {
+  const auth   = getAuth();
+  const sheets = google.sheets({ version: "v4", auth });
+  try {
+    const res = await sheets.spreadsheets.values.get({
+      spreadsheetId: SHEET_ID,
+      range: `${SHEET_NAME_VEICULO}!A1:BZ`,
+    });
+    const rows = res.data.values ?? [];
+    if (rows.length < 2) return [];
+    const headers = rows[0] as string[];
+    return rows.slice(1).map((row) => rowToPropostaVeiculo(headers, row as string[]));
+  } catch (error: any) {
+    if (error.message?.includes("Unable to parse range")) return [];
+    throw error;
+  }
+}
+
+export async function deletePropostaVeiculoRow(id: string): Promise<void> {
+  const auth   = getAuth();
+  const sheets = google.sheets({ version: "v4", auth });
+  const res = await sheets.spreadsheets.values.get({
+    spreadsheetId: SHEET_ID,
+    range: `${SHEET_NAME_VEICULO}!A:A`,
+  });
+  const rows = res.data.values ?? [];
+  const rowIndex = rows.findIndex((r, i) => i > 0 && r[0] === id);
+  if (rowIndex === -1) return;
+
+  const meta    = await sheets.spreadsheets.get({ spreadsheetId: SHEET_ID });
+  const sheetId = meta.data.sheets?.find((s: any) => s.properties?.title === SHEET_NAME_VEICULO)?.properties?.sheetId;
+  if (sheetId == null) return;
+
+  await sheets.spreadsheets.batchUpdate({
+    spreadsheetId: SHEET_ID,
+    requestBody: {
+      requests: [{ deleteDimension: { range: { sheetId, dimension: "ROWS", startIndex: rowIndex, endIndex: rowIndex + 1 } } }],
+    },
+  });
+}
+
+export async function updatePropostaVeiculoField(
+  id: string,
+  fields: Record<string, string | number | boolean | null | undefined>
+): Promise<void> {
+  const auth   = getAuth();
+  const sheets = google.sheets({ version: "v4", auth });
+  const res = await sheets.spreadsheets.values.get({
+    spreadsheetId: SHEET_ID,
+    range: `${SHEET_NAME_VEICULO}!A1:BZ`,
+  });
+  const rows = res.data.values ?? [];
+  if (rows.length < 2) return;
+  const headers  = rows[0] as string[];
+  const rowIndex = rows.findIndex((r, i) => i > 0 && r[0] === id);
+  if (rowIndex === -1) return;
+
+  for (const [key, value] of Object.entries(fields)) {
+    const colIndex = headers.indexOf(key);
+    if (colIndex === -1) continue;
+    const colLetter = colIndexToLetter(colIndex);
+    const cellRef   = `${SHEET_NAME_VEICULO}!${colLetter}${rowIndex + 1}`;
     await sheets.spreadsheets.values.update({
       spreadsheetId: SHEET_ID,
       range: cellRef,

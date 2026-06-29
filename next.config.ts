@@ -17,6 +17,8 @@ const nextConfig: NextConfig = {
         { source: "/api/propostas/:path*", destination: `${CRM}/api/propostas/:path*` },
         { source: "/api/propostas-imovel", destination: `${CRM}/api/propostas-imovel` },
         { source: "/api/propostas-imovel/:path*", destination: `${CRM}/api/propostas-imovel/:path*` },
+        { source: "/api/propostas-veiculo", destination: `${CRM}/api/propostas-veiculo` },
+        { source: "/api/propostas-veiculo/:path*", destination: `${CRM}/api/propostas-veiculo/:path*` },
       ],
     };
   },

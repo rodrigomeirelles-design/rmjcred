@@ -53,11 +53,14 @@ export async function POST(req: NextRequest) {
       ? parseCurrency(body.valorVeiculo)
       : parseCurrency(body.valor)
 
+    const isBDMG = produto.includes("BDMG") || produto.includes("Capital de Giro")
+    const tipo_pessoa = isBDMG ? "PJ" : "PF"
+
     const payload: Record<string, unknown> = {
-      tipo_pessoa: "PJ",
+      tipo_pessoa,
       produto,
       emp_razao: body.empresa || body.nome || "",
-      emp_cnpj: (body.cnpj || "").replace(/\D/g, ""),
+      emp_cnpj: (body.cnpj || body.cpf || "").replace(/\D/g, ""),
       emp_repr_nome: body.nome || "",
       emp_email: body.email || "",
       emp_telefone: (body.telefone || "").replace(/\D/g, ""),

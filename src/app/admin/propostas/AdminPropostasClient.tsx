@@ -50,13 +50,13 @@ export default function AdminPropostasClient({ initialPropostas }: Props) {
         
         if (now >= archiveDate) {
           propostasParaAjuste = propostasParaAjuste.map(x => 
-            x.id_proposta === p.id_proposta ? { ...x, coluna_kanban: "finalizados" } : x
+            x.id_proposta === p.id_proposta ? { ...x, coluna_kanban: "finalizados", data_finalizado: new Date().toISOString() } : x
           );
           
           fetch(`/api/propostas/${p.id_proposta}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ coluna_kanban: "finalizados" }),
+            body: JSON.stringify({ coluna_kanban: "finalizados", data_finalizado: new Date().toISOString() }),
           }).catch(console.error);
         }
       }
@@ -93,8 +93,9 @@ export default function AdminPropostasClient({ initialPropostas }: Props) {
       if (filtroTipo !== "todos" && (p.tipo_pessoa || "PJ") !== filtroTipo) return false;
 
       // Nova regra: Ocultar leads "finalizados" há mais de 90 dias do Kanban
+      // Conta a partir do dia em que foi movido para Finalizados (data_finalizado)
       if (p.coluna_kanban === "finalizados") {
-        const referenceDate = p.data_liberacao || p.timestamp_envio;
+        const referenceDate = p.data_finalizado || p.data_liberacao || p.timestamp_envio;
         if (referenceDate) {
           const limitDate = new Date(referenceDate);
           limitDate.setDate(limitDate.getDate() + 90);

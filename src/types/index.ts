@@ -99,6 +99,7 @@ export interface Proposta {
   data_recusa?: string;
   followup_data?: string;
   data_liberacao?: string;
+  data_finalizado?: string;
   valor_solicitado?: number;
   comissao_percentual?: number;
   emp_razao: string;

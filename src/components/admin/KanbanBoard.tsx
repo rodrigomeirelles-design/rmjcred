@@ -783,7 +783,12 @@ export default function KanbanBoard({ propostas: initialPropostas, showComissoes
       return;
     }
 
-    moveCard(activeId, targetColumn);
+    let extraParams: Partial<Proposta> = {};
+    if (targetColumn === "finalizados") {
+      extraParams = { data_finalizado: new Date().toISOString() };
+    }
+
+    moveCard(activeId, targetColumn, extraParams);
   }
 
   async function moveCard(id: string, to: KanbanColumn, extra?: Partial<Proposta>) {

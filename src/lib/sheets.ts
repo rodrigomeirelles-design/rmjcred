@@ -50,6 +50,7 @@ export const SHEET_HEADERS = [
     `socio${i+1}_imovel_residencial_valor`,
   ]).flat(),
   "comissao_percentual",
+  "data_finalizado",
 ];
 
 function propostaToRow(p: Proposta): string[] {
@@ -106,6 +107,7 @@ function propostaToRow(p: Proposta): string[] {
     );
   }
   base.push(String(p.comissao_percentual ?? ""));
+  base.push(p.data_finalizado ?? "");
 
   return base;
 }
@@ -123,6 +125,7 @@ function rowToProposta(headers: string[], row: string[]): Proposta {
     data_recusa: get("data_recusa") || undefined,
     followup_data: get("followup_data") || undefined,
     data_liberacao: get("data_liberacao") || undefined,
+    data_finalizado: get("data_finalizado") || undefined,
     valor_solicitado: parseFloat(get("valor_solicitado")) || undefined,
     emp_razao: get("emp_razao"),
     emp_fantasia: get("emp_fantasia") || undefined,

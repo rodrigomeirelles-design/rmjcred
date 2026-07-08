@@ -91,6 +91,17 @@ export default function AdminPropostasClient({ initialPropostas }: Props) {
       }
       if (filtroStatus !== "todos" && p.coluna_kanban !== filtroStatus) return false;
       if (filtroTipo !== "todos" && (p.tipo_pessoa || "PJ") !== filtroTipo) return false;
+
+      // Nova regra: Ocultar leads "finalizados" há mais de 90 dias do Kanban
+      if (p.coluna_kanban === "finalizados") {
+        const referenceDate = p.data_liberacao || p.timestamp_envio;
+        if (referenceDate) {
+          const limitDate = new Date(referenceDate);
+          limitDate.setDate(limitDate.getDate() + 90);
+          if (today > limitDate) return false;
+        }
+      }
+
       return true;
     });
   }, [propostas, busca, filtroPeriodo, filtroStatus, filtroTipo, today, startOfWeek, startOfMonth]);

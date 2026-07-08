@@ -40,7 +40,29 @@ export default function AdminPropostasClient({ initialPropostas }: Props) {
   const [propostas, setPropostas] = useState<Proposta[]>(initialPropostas);
   
   useEffect(() => {
-    setPropostas(initialPropostas);
+    let propostasParaAjuste = [...initialPropostas];
+    const now = new Date();
+
+    initialPropostas.forEach((p) => {
+      if (p.coluna_kanban === "credito_liberado" && p.data_liberacao) {
+        const libDate = new Date(p.data_liberacao + "T12:00:00");
+        const archiveDate = new Date(libDate.getFullYear(), libDate.getMonth() + 1, 20, 0, 0, 0);
+        
+        if (now >= archiveDate) {
+          propostasParaAjuste = propostasParaAjuste.map(x => 
+            x.id_proposta === p.id_proposta ? { ...x, coluna_kanban: "finalizados" } : x
+          );
+          
+          fetch(`/api/propostas/${p.id_proposta}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ coluna_kanban: "finalizados" }),
+          }).catch(console.error);
+        }
+      }
+    });
+
+    setPropostas(propostasParaAjuste);
   }, [initialPropostas]);
 
   const [busca, setBusca] = useState("");

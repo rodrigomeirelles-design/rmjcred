@@ -178,7 +178,7 @@ export default function EmpresasClient() {
                       >
                         {emp.razao_social}
                         {emp.fonte && (
-                          <span className={`crm-badge ${emp.fonte === 'Empresa' || emp.fonte === 'BDMG' ? 'crm-badge-green' : 'crm-badge-amber'}`} style={{ fontSize: "0.65rem", padding: "0.2rem 0.4rem" }}>
+                          <span className={`crm-badge ${emp.fonte === 'Empresa' ? 'crm-badge-green' : 'crm-badge-amber'}`} style={{ fontSize: "0.65rem", padding: "0.2rem 0.4rem" }}>
                             {emp.fonte}
                           </span>
                         )}

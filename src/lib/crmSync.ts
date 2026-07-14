@@ -41,7 +41,7 @@ export async function syncGoogleSheetsToCrm(): Promise<void> {
     
     const sheets = google.sheets({ version: "v4", auth });
     
-    const ranges = ["Empresas!A:Z", "LeadsRapidos!A:Z", "DadosBancarios!A:Z", "Socios!A:Z", "FinanciamentoImobiliario!A:Z"];
+    const ranges = ["Empresas!A:Z", "LeadsRapidos!A:Z", "DadosBancarios!A:Z", "Socios!A:Z"];
     const res = await sheets.spreadsheets.values.batchGet({
       spreadsheetId: sheetId,
       ranges: ranges,
@@ -64,7 +64,6 @@ export async function syncGoogleSheetsToCrm(): Promise<void> {
     const leads = parseSheet(valueRanges[1]);
     const bancos = parseSheet(valueRanges[2]);
     const socios = parseSheet(valueRanges[3]);
-    const imobiliario = parseSheet(valueRanges[4]);
 
     // Run inside a database transaction
     const transaction = db.transaction(() => {

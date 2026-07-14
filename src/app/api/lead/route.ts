@@ -1,73 +1,51 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { saveLeadToCrm } from '@/lib/crmDbHelper'
 
-const GAS_URL = process.env.GAS_WEB_APP_URL || process.env.NEXT_PUBLIC_GAS_URL || "https://script.google.com/macros/s/AKfycbyYKZf1JbQBUk5y8GcW86BgsIqyoRZypl849czqJWuhSfGLdzGdMOURO6sw9RlUE7fZ/exec";
+const CRM_URL = "https://crm-rmj-mvp-rodrigo.netlify.app"
+
+const PRODUTO_MAP: Record<string, string> = {
+  "Capital de Giro BDMG": "BDMG Capital de Giro",
+  "Home Equity": "Home Equity (Crédito com Garantia de Imóvel)",
+  "Financiamento Imobiliário": "Financiamento Imobiliário",
+  "Consórcio": "Consórcio",
+  "Crédito Veicular": "Crédito Veicular",
+}
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
 
-    // Salva o lead no banco de dados local SQLite (CRM) para aparecer no painel Clientes
-    saveLeadToCrm({
-      nome: body.nome || '',
-      email: body.email || '',
-      telefone: body.telefone || '',
-      empresa: body.empresa || '',
-      cnpj: body.cnpj || '',
-      servico: body.servico || '',
-      valor: body.valor || '',
-    });
+    const servico = body.servico || "Capital de Giro BDMG"
+    const produto = PRODUTO_MAP[servico] || servico
 
-    // Envia os dados para o Google Apps Script no formato esperado
-    const gasPayload = {
-      formType: 'lead',
-      data: {
-        nome: body.nome || '',
-        email: body.email || '',
-        telefone: body.telefone || '',
-        empresa: body.empresa || '',
-        cnpj: body.cnpj || '',
-        servico: body.servico || '',
-        valor: body.valor || '',
-        marcaModelo: body.marcaModelo || '',
-        anoVeiculo: body.anoVeiculo || '',
-        valorVeiculo: body.valorVeiculo || '',
-        entradaVeiculo: body.entradaVeiculo || '',
-      },
+    const payload = {
+      tipo_pessoa: "PJ",
+      produto,
+      emp_razao: body.empresa || body.nome || "",
+      emp_cnpj: (body.cnpj || "").replace(/\D/g, ""),
+      emp_repr_nome: body.nome || "",
+      emp_email: body.email || "",
+      emp_telefone: (body.telefone || "").replace(/\D/g, ""),
+      valor_solicitado: body.valor
+        ? parseFloat(String(body.valor).replace(/[^\d,\.]/g, "").replace(",", ".")) || undefined
+        : undefined,
     }
 
-    const gasResponse = await fetch(GAS_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      redirect: 'follow',
-      body: JSON.stringify(gasPayload),
+    const crmRes = await fetch(`${CRM_URL}/api/leads`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
     })
 
-    // Lê a resposta como texto primeiro (GAS pode retornar HTML em caso de erro)
-    const responseText = await gasResponse.text()
+    const crmData = await crmRes.json()
 
-    let gasData = {}
-    try {
-      gasData = JSON.parse(responseText)
-    } catch {
-      // GAS retornou algo que não é JSON — logar mas não falhar
-      console.warn('GAS response não é JSON:', responseText.substring(0, 200))
+    if (!crmData.success) {
+      console.error("CRM retornou erro:", crmData)
+      return NextResponse.json({ success: false, message: "Erro ao registrar lead no CRM" }, { status: 500 })
     }
 
-    if (!gasResponse.ok) {
-      console.error('GAS retornou erro HTTP:', gasResponse.status, responseText.substring(0, 300))
-      return NextResponse.json(
-        { success: false, message: 'Erro ao enviar para o CRM' },
-        { status: 500 }
-      )
-    }
-
-    return NextResponse.json({ success: true, message: 'Lead processado com sucesso' })
-  } catch (error) {
-    console.error('Erro na rota /api/lead:', error)
-    return NextResponse.json(
-      { success: false, message: error.message || 'Erro interno' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: true, message: "Lead registrado com sucesso", id: crmData.id })
+  } catch (error: any) {
+    console.error("Erro na rota /api/lead:", error)
+    return NextResponse.json({ success: false, message: error.message || "Erro interno" }, { status: 500 })
   }
 }

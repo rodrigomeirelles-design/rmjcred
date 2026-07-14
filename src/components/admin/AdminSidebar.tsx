@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Kanban, Building2, User, DollarSign, Settings, HelpCircle, X, Calendar, Users } from "lucide-react";
+import { Kanban, Building2, User, DollarSign, Settings, HelpCircle, X, Calendar, Users, LayoutDashboard, CheckSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
-  { href: "/admin/painel", icon: Calendar, label: "Meu Painel" },
+  { href: "/admin/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+  { href: "/admin/tarefas", icon: Calendar, label: "Tarefas" },
   { href: "/admin/propostas", icon: Kanban, label: "Propostas" },
   { href: "/admin/empresas", icon: Building2, label: "Pessoa Jurídica" },
   { href: "/admin/pf", icon: User, label: "Pessoa Física" },

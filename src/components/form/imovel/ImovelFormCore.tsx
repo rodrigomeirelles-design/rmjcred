@@ -16,15 +16,15 @@ interface ImovelFormCoreProps {
 }
 
 const STEP_FIELDS: (keyof PropostaImovelFormData)[][] = [
-  ["nome", "cpf", "celular", "email", "nascimento", "rgCnh", "estadoCivil", "nomeMae", "cep", "logradouro", "numero", "bairro", "cidade", "uf"],
-  ["fonteRenda", "rendaMensal", "banco"],
+  ["nome", "cpf", "celular", "email", "nascimento", "rgCnh", "estadoCivil", "regimeCasamento", "nomeMae", "cep", "logradouro", "numero", "bairro", "cidade", "uf", "conjuge_nome", "conjuge_cpf", "conjuge_celular", "conjuge_email", "conjuge_nascimento", "conjuge_sexo", "conjuge_profissao", "conjuge_fonteRenda", "conjuge_rendaMensal", "conjugeFiliacao", "conjugeRg"],
+  ["fonteRenda", "rendaMensal", "banco", "empresa_cnpj", "empresa_endereco", "empresa_ramo"],
   ["tipoImovel", "estadoConservacao", "valorImovel", "valorFinanciamento", "prazo"],
   ["aceite_lgpd"],
 ];
 
 const STEP_FIELDS_HE: (keyof PropostaImovelFormData)[][] = [
-  ["nome", "cpf", "celular", "email", "nascimento", "rgCnh", "estadoCivil", "nomeMae", "cep", "logradouro", "numero", "bairro", "cidade", "uf"],
-  ["fonteRenda", "rendaMensal", "banco"],
+  ["nome", "cpf", "celular", "email", "nascimento", "rgCnh", "estadoCivil", "regimeCasamento", "nomeMae", "cep", "logradouro", "numero", "bairro", "cidade", "uf", "conjuge_nome", "conjuge_cpf", "conjuge_celular", "conjuge_email", "conjuge_nascimento", "conjuge_sexo", "conjuge_profissao", "conjuge_fonteRenda", "conjuge_rendaMensal", "conjugeFiliacao", "conjugeRg"],
+  ["fonteRenda", "rendaMensal", "banco", "empresa_cnpj", "empresa_endereco", "empresa_ramo"],
   ["tipoImovel", "estadoConservacao", "situacaoImovel", "imovel_cep", "imovel_logradouro", "imovel_numero", "imovel_bairro", "imovel_cidade", "imovel_uf", "valorImovel", "valorFinanciamento", "prazo"],
   ["aceite_lgpd"],
 ];

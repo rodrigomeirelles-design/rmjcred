@@ -29,6 +29,7 @@ type PessoaFisicaCore = {
   nascimento?: string; sexo?: string; nomeMae?: string; nomePai?: string;
   rgCnh?: string; orgaoEmissor?: string; profissao?: string;
   fonteRenda?: string; rendaMensal?: number;
+  empresa_cnpj?: string; empresa_endereco?: string; empresa_ramo?: string;
 };
 
 function pessoaFisicaCoreRows(d: PessoaFisicaCore): DetailRow[] {
@@ -37,7 +38,7 @@ function pessoaFisicaCoreRows(d: PessoaFisicaCore): DetailRow[] {
     { label: "CPF", value: d.cpf },
     { label: "Celular", value: d.celular },
     { label: "E-mail", value: d.email },
-    { label: "Nascimento", value: d.nascimento },
+    { label: "Nascimento", value: d.nascimento ? formatDate(d.nascimento) : undefined },
     { label: "Sexo", value: d.sexo },
     { label: "Nome da Mãe", value: d.nomeMae },
     { label: "Nome do Pai", value: d.nomePai },
@@ -46,6 +47,9 @@ function pessoaFisicaCoreRows(d: PessoaFisicaCore): DetailRow[] {
     { label: "Profissão", value: d.profissao },
     { label: "Fonte de Renda", value: d.fonteRenda },
     { label: "Renda Mensal", value: money(d.rendaMensal), mono: true },
+    { label: "CNPJ da Empresa", value: d.empresa_cnpj ? formatCNPJ(d.empresa_cnpj) : undefined },
+    { label: "Ramo da Empresa", value: d.empresa_ramo },
+    { label: "Endereço da Empresa", value: d.empresa_endereco },
   ];
 }
 
@@ -74,9 +78,10 @@ export function buildPFSections(p: PropostaImovel & { etapa_label?: string }): D
         nascimento: p.nascimento, sexo: p.sexo, nomeMae: p.nomeMae, nomePai: p.nomePai,
         rgCnh: p.rgCnh, orgaoEmissor: p.orgaoEmissor, profissao: p.profissao,
         fonteRenda: p.fonteRenda, rendaMensal: p.rendaMensal,
+        empresa_cnpj: p.empresa_cnpj, empresa_endereco: p.empresa_endereco, empresa_ramo: p.empresa_ramo,
       }),
       { label: "Estado Civil", value: p.estadoCivil },
-      { label: "Regime de Comunhão", value: p.regimeUniao },
+      { label: "Regime de Casamento", value: p.regimeCasamento || p.regimeUniao },
       { label: "Naturalidade", value: p.naturalidade },
       { label: "Nacionalidade", value: p.nacionalidade },
     ],
@@ -103,13 +108,15 @@ export function buildPFSections(p: PropostaImovel & { etapa_label?: string }): D
 
   if (p.conjuge_nome) {
     sections.push({
-      title: `Cônjuge${p.regimeUniao ? ` — ${p.regimeUniao}` : ""}`,
+      title: `Cônjuge${p.regimeCasamento ? ` — ${p.regimeCasamento}` : p.regimeUniao ? ` — ${p.regimeUniao}` : ""}`,
       rows: [
         { label: "Nome", value: p.conjuge_nome },
         { label: "CPF", value: p.conjuge_cpf },
+        { label: "RG", value: p.conjugeRg },
+        { label: "Filiação", value: p.conjugeFiliacao },
         { label: "Celular", value: p.conjuge_celular },
         { label: "E-mail", value: p.conjuge_email },
-        { label: "Nascimento", value: p.conjuge_nascimento },
+        { label: "Nascimento", value: p.conjuge_nascimento ? formatDate(p.conjuge_nascimento) : undefined },
         { label: "Sexo", value: p.conjuge_sexo },
         { label: "Profissão", value: p.conjuge_profissao },
         { label: "Fonte de Renda", value: p.conjuge_fonteRenda },
@@ -314,7 +321,7 @@ export function buildVeiculoSections(p: PropostaVeiculo & { etapa_label?: string
       { label: "CPF", value: p.cpf },
       { label: "RG", value: p.rg },
       { label: "Órgão Emissor", value: p.rg_orgao_emissor },
-      { label: "Nascimento", value: p.nascimento },
+      { label: "Nascimento", value: p.nascimento ? formatDate(p.nascimento) : undefined },
       { label: "Estado Civil", value: p.estado_civil },
       { label: "Nacionalidade", value: p.nacionalidade },
       { label: "Nome da Mãe", value: p.nome_mae },
@@ -328,7 +335,7 @@ export function buildVeiculoSections(p: PropostaVeiculo & { etapa_label?: string
       rows: [
         { label: "Nome", value: p.conjugeNome },
         { label: "CPF", value: p.conjugeCpf },
-        { label: "Nascimento", value: p.conjugeNascimento },
+        { label: "Nascimento", value: p.conjugeNascimento ? formatDate(p.conjugeNascimento) : undefined },
         { label: "Celular", value: p.conjugeCelular },
         { label: "E-mail", value: p.conjugeEmail },
       ],
@@ -365,9 +372,9 @@ export function buildVeiculoSections(p: PropostaVeiculo & { etapa_label?: string
   if (p.situacao_profissional === "assalariado") {
     profRows.push(
       { label: "Empresa", value: p.empresa },
-      { label: "CNPJ da Empresa", value: p.empresa_cnpj },
+      { label: "CNPJ da Empresa", value: p.empresa_cnpj ? formatCNPJ(p.empresa_cnpj) : undefined },
       { label: "Cargo", value: p.cargo },
-      { label: "Data de Admissão", value: p.data_admissao },
+      { label: "Data de Admissão", value: p.data_admissao ? formatDate(p.data_admissao) : undefined },
     );
   } else if (p.situacao_profissional === "autonomo") {
     profRows.push(

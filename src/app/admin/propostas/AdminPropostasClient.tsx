@@ -60,6 +60,22 @@ export default function AdminPropostasClient({ initialPropostas }: Props) {
           }).catch(console.error);
         }
       }
+
+      // Regra de Auto-Retorno para Novo Negócio baseado no follow-up
+      if (p.coluna_kanban === "nao_aprovado" && p.followup_data) {
+        const followDate = new Date(p.followup_data + "T00:00:00");
+        if (now >= followDate) {
+          propostasParaAjuste = propostasParaAjuste.map(x => 
+            x.id_proposta === p.id_proposta ? { ...x, coluna_kanban: "novo_negocio" } : x
+          );
+          
+          fetch(`/api/propostas/${p.id_proposta}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ coluna_kanban: "novo_negocio" }),
+          }).catch(console.error);
+        }
+      }
     });
 
     setPropostas(propostasParaAjuste);

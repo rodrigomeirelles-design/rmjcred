@@ -294,11 +294,22 @@ export async function appendProposta(proposta: Proposta): Promise<void> {
   const auth = getAuth();
   const sheets = google.sheets({ version: "v4", auth });
   await ensurePropostasSheet(sheets);
+
+  const headerRes = await sheets.spreadsheets.values.get({
+    spreadsheetId: SHEET_ID,
+    range: `${SHEET_NAME}!1:1`,
+  });
+  const actualHeaders = (headerRes.data.values?.[0] as string[] | undefined) ?? SHEET_HEADERS;
+
+  const baseRow = propostaToRow(proposta);
+  const dict = Object.fromEntries(SHEET_HEADERS.map((h, i) => [h, baseRow[i]]));
+  const row = actualHeaders.map(h => dict[h] ?? "");
+
   await sheets.spreadsheets.values.append({
     spreadsheetId: SHEET_ID,
     range: `${SHEET_NAME}!A1`,
     valueInputOption: "RAW",
-    requestBody: { values: [propostaToRow(proposta)] },
+    requestBody: { values: [row] },
   });
 }
 
@@ -450,6 +461,7 @@ export const SHEET_HEADERS_IMOVEL = [
   "naturalidade", "nacionalidade",
   "cep", "logradouro", "numero", "complemento", "bairro", "cidade", "uf",
   "fonteRenda", "rendaMensal", "profissao", "banco", "agencia", "conta",
+  "empresa_cnpj", "empresa_endereco", "empresa_ramo",
   "temSegundoProponente",
   "sp_nome", "sp_cpf", "sp_celular", "sp_email", "sp_nascimento", "sp_sexo",
   "sp_nomeMae", "sp_nomePai", "sp_rgCnh", "sp_orgaoEmissor",
@@ -458,10 +470,10 @@ export const SHEET_HEADERS_IMOVEL = [
   "usarFgts", "valorFgts",
   "imovel_cep", "imovel_logradouro", "imovel_numero", "imovel_complemento",
   "imovel_bairro", "imovel_cidade", "imovel_uf", "matriculaIptu", "situacaoImovel",
-  "regimeUniao",
+  "regimeUniao", "regimeCasamento",
   "conjuge_nome", "conjuge_cpf", "conjuge_celular", "conjuge_email",
   "conjuge_nascimento", "conjuge_sexo", "conjuge_profissao",
-  "conjuge_fonteRenda", "conjuge_rendaMensal",
+  "conjuge_fonteRenda", "conjuge_rendaMensal", "conjugeFiliacao", "conjugeRg",
   "observacoes",
 ];
 
@@ -603,11 +615,25 @@ export async function appendPropostaImovel(proposta: PropostaImovel): Promise<vo
   const auth = getAuth();
   const sheets = google.sheets({ version: "v4", auth });
   await ensureImovelSheet(sheets);
+
+  const headerRes = await sheets.spreadsheets.values.get({
+    spreadsheetId: SHEET_ID,
+    range: `${SHEET_NAME_IMOVEL}!1:1`,
+  });
+  const actualHeaders = (headerRes.data.values?.[0] as string[] | undefined) ?? SHEET_HEADERS_IMOVEL;
+
+  const row = actualHeaders.map((key) => {
+    const val = (proposta as unknown as Record<string, unknown>)[key];
+    if (val === null || val === undefined) return "";
+    if (typeof val === "boolean") return val ? "sim" : "nao";
+    return String(val);
+  });
+
   await sheets.spreadsheets.values.append({
     spreadsheetId: SHEET_ID,
     range: `${SHEET_NAME_IMOVEL}!A1`,
     valueInputOption: "RAW",
-    requestBody: { values: [propostaImovelToRow(proposta)] },
+    requestBody: { values: [row] },
   });
 }
 
@@ -837,14 +863,28 @@ async function ensureVeiculoSheet(sheets: any): Promise<void> {
 }
 
 export async function appendPropostaVeiculo(proposta: PropostaVeiculo): Promise<void> {
-  const auth   = getAuth();
+  const auth = getAuth();
   const sheets = google.sheets({ version: "v4", auth });
   await ensureVeiculoSheet(sheets);
+
+  const headerRes = await sheets.spreadsheets.values.get({
+    spreadsheetId: SHEET_ID,
+    range: `${SHEET_NAME_VEICULO}!1:1`,
+  });
+  const actualHeaders = (headerRes.data.values?.[0] as string[] | undefined) ?? SHEET_HEADERS_VEICULO;
+
+  const row = actualHeaders.map((key) => {
+    const val = (proposta as unknown as Record<string, unknown>)[key];
+    if (val === null || val === undefined) return "";
+    if (typeof val === "boolean") return val ? "sim" : "nao";
+    return String(val);
+  });
+
   await sheets.spreadsheets.values.append({
     spreadsheetId: SHEET_ID,
     range: `${SHEET_NAME_VEICULO}!A1`,
     valueInputOption: "RAW",
-    requestBody: { values: [propostaVeiculoToRow(proposta)] },
+    requestBody: { values: [row] },
   });
 }
 

@@ -1,6 +1,6 @@
 import { requireAuth } from "@/lib/serverAuth";
 import { getPropostasImovel, getPropostasVeiculo } from "@/lib/sheets";
-import PainelClient from "./PainelClient";
+import TarefasClient from "./TarefasClient";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -42,5 +42,5 @@ export default async function AdminPainelPage() {
     addAniversario(p.nome, p.cpf, p.nascimento);
   }
 
-  return <PainelClient aniversarios={aniversarios} />;
+  return <TarefasClient aniversarios={aniversarios} />;
 }

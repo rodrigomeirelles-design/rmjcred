@@ -18,6 +18,8 @@ interface StepFinanceiroProps {
 export default function StepFinanceiro({ form }: StepFinanceiroProps) {
   const { register, control, watch, formState: { errors } } = form;
   const temSP = watch("temSegundoProponente");
+  const fonteRenda = watch("fonteRenda");
+  const isEmpresario = fonteRenda === "Empresário / Sócio";
 
   return (
     <div className="space-y-6">
@@ -57,6 +59,33 @@ export default function StepFinanceiro({ form }: StepFinanceiroProps) {
               {...register("profissao")}
             />
           </div>
+          {isEmpresario && (
+            <>
+              <Input
+                label="CNPJ da Empresa"
+                required
+                placeholder="00.000.000/0000-00"
+                error={errors.empresa_cnpj?.message}
+                {...register("empresa_cnpj", { required: "CNPJ é obrigatório para empresários" })}
+              />
+              <Input
+                label="Ramo de Atividade"
+                required
+                placeholder="Ex: Comércio, Tecnologia..."
+                error={errors.empresa_ramo?.message}
+                {...register("empresa_ramo", { required: "Ramo de atividade é obrigatório" })}
+              />
+              <div className="sm:col-span-2">
+                <Input
+                  label="Endereço da Empresa"
+                  required
+                  placeholder="Rua, Número, Bairro, Cidade/UF"
+                  error={errors.empresa_endereco?.message}
+                  {...register("empresa_endereco", { required: "Endereço da empresa é obrigatório" })}
+                />
+              </div>
+            </>
+          )}
         </div>
       </div>
 

@@ -20,6 +20,7 @@ import {
   X,
   Clock,
   Bell,
+  Edit3,
 } from "lucide-react";
 
 interface Aniversario {
@@ -187,20 +188,22 @@ function DayCell({
 
 function EventModal({
   defaultDate,
+  initialEvent,
   onClose,
   onSaved,
 }: {
   defaultDate: string;
+  initialEvent?: CalendarEvent;
   onClose: () => void;
-  onSaved: (event: CalendarEvent) => void;
+  onSaved: (event: CalendarEvent, isEdit?: boolean) => void;
 }) {
   const [form, setForm] = useState<NewEventForm>({
-    title: "",
-    category: "tarefa",
-    date: defaultDate,
-    startTime: "",
-    endTime: "",
-    description: "",
+    title: initialEvent?.title || "",
+    category: initialEvent?.category || "tarefa",
+    date: initialEvent?.date || defaultDate,
+    startTime: initialEvent?.startTime || "",
+    endTime: initialEvent?.endTime || "",
+    description: initialEvent?.description || "",
   });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -213,34 +216,41 @@ function EventModal({
     setSubmitting(true);
     setError(null);
     try {
+      const method = initialEvent ? "PATCH" : "POST";
+      const payload: any = {
+        title: form.title.trim(),
+        category: form.category,
+        date: form.date,
+        startTime: form.startTime || undefined,
+        endTime: form.endTime || undefined,
+        description: form.description || undefined,
+      };
+      if (initialEvent) payload.id = initialEvent.id;
+
       const res = await fetch("/api/calendar/events", {
-        method: "POST",
+        method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title: form.title.trim(),
-          category: form.category,
-          date: form.date,
-          startTime: form.startTime || undefined,
-          endTime: form.endTime || undefined,
-          description: form.description || undefined,
-        }),
+        body: JSON.stringify(payload),
       });
       const data = await res.json();
       if (data.success) {
-        onSaved({
-          id: data.id,
-          title: form.title.trim(),
-          category: form.category,
-          date: form.date,
-          startTime: form.startTime || undefined,
-          endTime: form.endTime || undefined,
-          description: form.description || undefined,
-        });
+        onSaved(
+          {
+            id: initialEvent ? initialEvent.id : data.id,
+            ...payload,
+          },
+          !!initialEvent
+        );
       } else {
-        setError("Erro ao criar evento. Verifique as configurações do Google Calendar.");
+        const msg: string = data.error || "";
+        if (msg.includes("GOOGLE_CALENDAR_ID")) {
+          setError("Calendário não configurado. Acesse Configurações > Google Calendar para ativar.");
+        } else {
+          setError("Erro ao salvar evento: " + (data.error || "tente novamente."));
+        }
       }
     } catch {
-      setError("Erro de conexão.");
+      setError("Erro de rede ao salvar. Verifique sua conexão e tente novamente.");
     } finally {
       setSubmitting(false);
     }
@@ -258,7 +268,7 @@ function EventModal({
       >
         <div className="flex items-center justify-between mb-5">
           <h2 className="text-lg font-bold" style={{ color: "#234469" }}>
-            Novo Evento
+            {initialEvent ? "Editar Evento" : "Novo Evento"}
           </h2>
           <button
             onClick={onClose}
@@ -364,7 +374,7 @@ function EventModal({
               onChange={(e) =>
                 setForm({ ...form, description: e.target.value })
               }
-              rows={2}
+              rows={4}
               placeholder="Observações..."
               className="w-full px-3 py-2 border rounded-xl text-sm focus:outline-none resize-none"
               style={{ borderColor: "#D8E2EE", color: "#234469" }}
@@ -398,7 +408,7 @@ function EventModal({
 
 // ── Main component ───────────────────────────────────────────────────────────
 
-export default function PainelClient({
+export default function TarefasClient({
   aniversarios,
 }: {
   aniversarios: Aniversario[];
@@ -410,6 +420,7 @@ export default function PainelClient({
     new Date().toISOString().split("T")[0]
   );
   const [showModal, setShowModal] = useState(false);
+  const [editingEvent, setEditingEvent] = useState<CalendarEvent | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [notifPerm, setNotifPerm] = useState<NotificationPermission>("default");
   const notifTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
@@ -603,7 +614,10 @@ export default function PainelClient({
               </div>
 
               <button
-                onClick={() => setShowModal(true)}
+                onClick={() => {
+                  setEditingEvent(null);
+                  setShowModal(true);
+                }}
                 className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-sm font-semibold text-white transition-all hover:opacity-90"
                 style={{ background: "#234469" }}
               >
@@ -705,7 +719,10 @@ export default function PainelClient({
               })}
             </h2>
             <button
-              onClick={() => setShowModal(true)}
+              onClick={() => {
+                setEditingEvent(null);
+                setShowModal(true);
+              }}
               className="mt-3 w-full flex items-center justify-center gap-2 py-2 rounded-xl border-2 border-dashed text-sm font-semibold transition-colors hover:opacity-70"
               style={{ borderColor: "#234469", color: "#234469" }}
             >
@@ -800,12 +817,23 @@ export default function PainelClient({
                             </p>
                           )}
                         </div>
-                        <button
-                          onClick={() => handleDeleteEvent(event.id)}
-                          className="text-red-400 hover:text-red-600 flex-shrink-0 p-1 transition-colors"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
+                        <div className="flex flex-col gap-1 flex-shrink-0">
+                          <button
+                            onClick={() => {
+                              setEditingEvent(event);
+                              setShowModal(true);
+                            }}
+                            className="text-slate-400 hover:text-slate-700 p-1 transition-colors"
+                          >
+                            <Edit3 className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteEvent(event.id)}
+                            className="text-red-400 hover:text-red-600 p-1 transition-colors"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       </div>
                     );
                   })}
@@ -842,11 +870,20 @@ export default function PainelClient({
       {showModal && (
         <EventModal
           defaultDate={selectedDate}
-          onClose={() => setShowModal(false)}
-          onSaved={(event) => {
-            setEvents((prev) => [...prev, event]);
+          initialEvent={editingEvent || undefined}
+          onClose={() => {
+            setShowModal(false);
+            setEditingEvent(null);
+          }}
+          onSaved={(event, isEdit) => {
+            if (isEdit) {
+              setEvents((prev) => prev.map((e) => e.id === event.id ? event : e));
+            } else {
+              setEvents((prev) => [...prev, event]);
+            }
             setSelectedDate(event.date);
             setShowModal(false);
+            setEditingEvent(null);
           }}
         />
       )}

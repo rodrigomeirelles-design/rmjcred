@@ -45,6 +45,9 @@ export interface PropostaImovelFormData {
   fonteRenda: string;
   rendaMensal: number;
   profissao?: string;
+  empresa_cnpj?: string;
+  empresa_endereco?: string;
+  empresa_ramo?: string;
   banco: string;
   agencia?: string;
   conta?: string;
@@ -80,6 +83,7 @@ export interface PropostaImovelFormData {
   matriculaIptu?: string;
   situacaoImovel?: string;
   regimeUniao?: string;
+  regimeCasamento?: string;
   conjuge_nome?: string;
   conjuge_cpf?: string;
   conjuge_celular?: string;
@@ -89,6 +93,8 @@ export interface PropostaImovelFormData {
   conjuge_profissao?: string;
   conjuge_fonteRenda?: string;
   conjuge_rendaMensal?: number;
+  conjugeFiliacao?: string;
+  conjugeRg?: string;
   observacoes?: string;
   aceite_lgpd: boolean;
 }

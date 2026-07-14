@@ -165,12 +165,12 @@ export default function StepPessoal({ form }: StepPessoalProps) {
           {isCasado && (
             <div className="mb-4">
               <Select
-                label="Regime de Comunhão"
+                label="Regime de Casamento"
                 required
                 options={REGIME_UNIAO_OPTIONS}
                 placeholder="Selecione o regime"
-                error={errors.regimeUniao?.message}
-                {...register("regimeUniao", { required: "Regime de comunhão é obrigatório para casados" })}
+                error={errors.regimeCasamento?.message}
+                {...register("regimeCasamento", { required: "Regime de casamento é obrigatório para casados" })}
               />
             </div>
           )}
@@ -202,6 +202,16 @@ export default function StepPessoal({ form }: StepPessoalProps) {
               {...register("conjuge_celular", {
                 onChange: (e) => { e.target.value = maskPhone(e.target.value); },
               })}
+            />
+            <Input
+              label="RG do Cônjuge"
+              placeholder="Número do RG"
+              {...register("conjugeRg")}
+            />
+            <Input
+              label="Filiação do Cônjuge"
+              placeholder="Nome da mãe / pai"
+              {...register("conjugeFiliacao")}
             />
             <Input
               label="E-mail do Cônjuge"

@@ -18,6 +18,7 @@ export interface ConjugeDados {
   nascimento: string;
   telefone: string;
   email: string;
+  profissao?: string;
   imovel_tipo?: string;
   imovel_valor?: number | null;
   possui_imovel: "sim" | "nao";

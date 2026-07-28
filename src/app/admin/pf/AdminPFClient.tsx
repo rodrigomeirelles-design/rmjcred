@@ -2,26 +2,60 @@
 
 import { useState, useMemo } from "react";
 import { PropostaImovel } from "@/types/imovel";
+import { PropostaVeiculo } from "@/types/veiculo";
 import { KanbanColumn } from "@/types";
-import { buildPFSections } from "@/lib/detailSchemas";
+import { buildPFSections, buildVeiculoSections } from "@/lib/detailSchemas";
 import DetailPanel from "@/components/admin/DetailPanel";
-import { Search, Home, Building2, X, Trash2, Eye, Pencil, Printer } from "lucide-react";
+import { Search, Home, Building2, Car, X, Trash2, Eye, Pencil, Printer } from "lucide-react";
 import { formatMoney, maskMoney, parseMoney } from "@/lib/utils";
 
-type PropostaComEtapa = PropostaImovel & { etapa_kanban: KanbanColumn; etapa_label: string };
+// ─── Tipos unificados ──────────────────────────────────────────────────────────
+
+type PropostaImovelEnriquecida = PropostaImovel & {
+  tipo_ficha: "imovel";
+  etapa_kanban: KanbanColumn;
+  etapa_label: string;
+  nome_display: string;
+  cpf_display: string;
+  valor_display?: number;
+  produto_display: string;
+  timestamp_display?: string;
+};
+
+type PropostaVeiculoEnriquecida = PropostaVeiculo & {
+  tipo_ficha: "veiculo";
+  etapa_kanban: string;
+  etapa_label: string;
+  nome_display: string;
+  cpf_display: string;
+  valor_display?: number;
+  produto_display: string;
+  timestamp_display?: string;
+};
+
+type PropostaPF = PropostaImovelEnriquecida | PropostaVeiculoEnriquecida;
 
 interface Props {
-  initialPropostas: PropostaComEtapa[];
+  initialPropostas: PropostaPF[];
 }
 
 // ─── Badges ───────────────────────────────────────────────────────────────────
 
-function ProdutoBadge({ produto }: { produto: string }) {
-  const isHE = produto === "Crédito com Garantia de Imóvel";
+function ProdutoBadge({ proposta }: { proposta: PropostaPF }) {
+  if (proposta.tipo_ficha === "veiculo") {
+    const isGarantia = proposta.produto === "Crédito com Garantia de Veículo";
+    return (
+      <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap ${isGarantia ? "bg-orange-100 text-orange-700" : "bg-green-100 text-green-700"}`}>
+        <Car className="w-3 h-3" />
+        {isGarantia ? "Garantia Veíc." : "Fin. Veículo"}
+      </span>
+    );
+  }
+  const isHE = proposta.produto === "Crédito com Garantia de Imóvel";
   return (
     <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap ${isHE ? "bg-orange-100 text-orange-700" : "bg-blue-100 text-blue-700"}`}>
       {isHE ? <Building2 className="w-3 h-3" /> : <Home className="w-3 h-3" />}
-      {isHE ? "Home Equity" : "Financiamento"}
+      {isHE ? "Home Equity" : "Fin. Imóvel"}
     </span>
   );
 }
@@ -34,9 +68,68 @@ function EtapaBadge({ label }: { label: string }) {
   );
 }
 
-// ─── Modal Editar ──────────────────────────────────────────────────────────────
+// ─── Impressão ────────────────────────────────────────────────────────────────
 
-function EditarModal({ p, onClose, onSaved }: { p: PropostaComEtapa; onClose: () => void; onSaved: (updated: Partial<PropostaImovel>) => void }) {
+function gerarHtmlFicha(nome: string, produto: string, etapa_label: string, timestamp: string | undefined, sectionsHtml: string) {
+  return `<!DOCTYPE html><html><head>
+    <title>Ficha – ${nome}</title><meta charset="utf-8" />
+    <style>
+      *{box-sizing:border-box;margin:0;padding:0}
+      body{font-family:Arial,sans-serif;font-size:11pt;color:#111;background:#fff;padding:24px}
+      h1{font-size:16pt;margin-bottom:4px}
+      .sub{font-size:9pt;color:#666;margin-bottom:8px}
+      h2{font-size:10pt;font-weight:bold;text-transform:uppercase;letter-spacing:.05em;color:#1E40AF;border-bottom:1.5px solid #1E40AF;padding-bottom:3px;margin:18px 0 8px}
+      table{width:100%;border-collapse:collapse;margin-bottom:4px}
+      tr:nth-child(even){background:#f5f7fa}
+      footer{margin-top:24px;font-size:8pt;color:#999;border-top:1px solid #ddd;padding-top:8px}
+      @media print{body{padding:16px}}
+    </style></head><body>
+    <h1>${nome}</h1>
+    <p class="sub">${produto} · Etapa: ${etapa_label} · Enviado em ${timestamp ? new Date(timestamp).toLocaleDateString("pt-BR") : "—"}</p>
+    ${sectionsHtml}
+    <footer>Ficha gerada em ${new Date().toLocaleDateString("pt-BR")} — RMJ Soluções de Crédito</footer>
+    </body></html>`;
+}
+
+function buildSectionsHtml(sections: { title: string; rows: { label: string; value?: string | number | null }[] }[]) {
+  return sections.map((s) => {
+    const rows = s.rows.filter((r) => r.value != null && r.value !== "");
+    if (rows.length === 0) return "";
+    const rowsHtml = rows.map((r) =>
+      r.label === ""
+        ? `<tr><td colspan="2" style="padding:4px 8px;font-style:italic;color:#555">${r.value}</td></tr>`
+        : `<tr><td style="padding:3px 6px;color:#555;width:36%;font-size:9pt;vertical-align:top">${r.label}</td><td style="padding:3px 6px;font-size:10pt">${r.value}</td></tr>`
+    ).join("");
+    return `<h2>${s.title}</h2><table><tbody>${rowsHtml}</tbody></table>`;
+  }).join("");
+}
+
+function imprimirFicha(p: PropostaPF) {
+  let sections;
+  if (p.tipo_ficha === "veiculo") {
+    sections = buildVeiculoSections({ ...p, etapa_label: p.etapa_label });
+  } else {
+    sections = buildPFSections({ ...p, etapa_label: p.etapa_label });
+  }
+
+  const sectionsHtml = buildSectionsHtml(sections);
+  const html = gerarHtmlFicha(p.nome_display, p.produto_display, p.etapa_label, p.timestamp_display, sectionsHtml);
+
+  const win = window.open("", "_blank");
+  if (!win) return;
+  win.document.write(html);
+  win.document.close();
+  win.focus();
+  setTimeout(() => { win.print(); win.close(); }, 300);
+}
+
+// ─── Modal Editar Imóvel ───────────────────────────────────────────────────────
+
+function EditarModalImovel({ p, onClose, onSaved }: {
+  p: PropostaImovelEnriquecida;
+  onClose: () => void;
+  onSaved: (updated: Partial<PropostaImovel>) => void;
+}) {
   const [saving, setSaving] = useState(false);
   const [temSP, setTemSP] = useState(p.temSegundoProponente);
   const [fields, setFields] = useState({
@@ -52,7 +145,8 @@ function EditarModal({ p, onClose, onSaved }: { p: PropostaComEtapa; onClose: ()
     conjuge_profissao: p.conjuge_profissao ?? "", conjuge_fonteRenda: p.conjuge_fonteRenda ?? "",
     cep: p.cep, logradouro: p.logradouro, numero: p.numero, complemento: p.complemento ?? "",
     bairro: p.bairro, cidade: p.cidade, uf: p.uf,
-    fonteRenda: p.fonteRenda, profissao: p.profissao ?? "",
+    fonteRenda: p.fonteRenda, profissao: p.profissao ?? "", empresa: p.empresa ?? "",
+    data_casamento: p.data_casamento ?? "",
     banco: p.banco, agencia: p.agencia ?? "", conta: p.conta ?? "",
     sp_nome: p.sp_nome ?? "", sp_cpf: p.sp_cpf ?? "", sp_celular: p.sp_celular ?? "",
     sp_email: p.sp_email ?? "", sp_nascimento: p.sp_nascimento ?? "", sp_sexo: p.sp_sexo ?? "",
@@ -83,7 +177,7 @@ function EditarModal({ p, onClose, onSaved }: { p: PropostaComEtapa; onClose: ()
       rgCnh: fields.rgCnh, orgaoEmissor: fields.orgaoEmissor,
       nomeMae: fields.nomeMae, nomePai: fields.nomePai,
       naturalidade: fields.naturalidade, nacionalidade: fields.nacionalidade,
-      regimeUniao: fields.regimeUniao,
+      regimeUniao: fields.regimeUniao, data_casamento: fields.data_casamento,
       conjuge_nome: fields.conjuge_nome, conjuge_cpf: fields.conjuge_cpf,
       conjuge_celular: fields.conjuge_celular, conjuge_email: fields.conjuge_email,
       conjuge_nascimento: fields.conjuge_nascimento, conjuge_sexo: fields.conjuge_sexo,
@@ -91,7 +185,7 @@ function EditarModal({ p, onClose, onSaved }: { p: PropostaComEtapa; onClose: ()
       conjuge_rendaMensal: parseMoney(fields.conjuge_rendaMensal_d),
       cep: fields.cep, logradouro: fields.logradouro, numero: fields.numero,
       complemento: fields.complemento, bairro: fields.bairro, cidade: fields.cidade, uf: fields.uf,
-      fonteRenda: fields.fonteRenda, profissao: fields.profissao,
+      fonteRenda: fields.fonteRenda, profissao: fields.profissao, empresa: fields.empresa,
       banco: fields.banco, agencia: fields.agencia, conta: fields.conta,
       rendaMensal: parseMoney(fields.rendaMensal_d),
       temSegundoProponente: temSP,
@@ -175,7 +269,7 @@ function EditarModal({ p, onClose, onSaved }: { p: PropostaComEtapa; onClose: ()
       <div className="bg-[var(--color-surface)] rounded-2xl shadow-2xl w-full max-w-2xl max-h-[85vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         <div className="sticky top-0 bg-[var(--color-surface)] border-b border-[var(--color-border)] px-5 py-4 flex items-center justify-between z-10">
           <div>
-            <h2 className="text-base font-bold text-[var(--color-text)]">Editar Proposta</h2>
+            <h2 className="text-base font-bold text-[var(--color-text)]">Editar Proposta — Imóvel</h2>
             <p className="text-xs text-[var(--color-text-muted)]">{p.nome} · {p.cpf}</p>
           </div>
           <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-[var(--color-surface-subtle)] text-[var(--color-text-muted)]">
@@ -197,6 +291,7 @@ function EditarModal({ p, onClose, onSaved }: { p: PropostaComEtapa; onClose: ()
               <Field label="RG / CNH" name="rgCnh" />
               <Field label="Órgão Emissor" name="orgaoEmissor" />
               <Field label="Profissão" name="profissao" />
+              <Field label="Empresa / Empregador" name="empresa" />
               <Field label="Estado Civil" name="estadoCivil" />
               <Field label="Naturalidade" name="naturalidade" />
               <Field label="Nacionalidade" name="nacionalidade" />
@@ -209,6 +304,7 @@ function EditarModal({ p, onClose, onSaved }: { p: PropostaComEtapa; onClose: ()
             <EditSection title="Cônjuge">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <Field label="Regime de Comunhão" name="regimeUniao" />
+                <Field label="Data do Casamento / União" name="data_casamento" type="date" />
                 <Field label="Nome do Cônjuge" name="conjuge_nome" />
                 <Field label="CPF do Cônjuge" name="conjuge_cpf" />
                 <Field label="Celular do Cônjuge" name="conjuge_celular" />
@@ -318,101 +414,77 @@ function EditSection({ title, children }: { title: string; children: React.React
   );
 }
 
-// ─── Impressão (mesmo schema da tela) ───────────────────────────────────────────
-
-function imprimirFicha(p: PropostaComEtapa) {
-  const sections = buildPFSections(p);
-  const sectionsHtml = sections.map((s) => {
-    const rows = s.rows.filter((r) => r.value != null && r.value !== "");
-    if (rows.length === 0) return "";
-    const rowsHtml = rows.map((r) =>
-      r.label === ""
-        ? `<tr><td colspan="2" style="padding:4px 8px;font-style:italic;color:#555">${r.value}</td></tr>`
-        : `<tr><td style="padding:3px 6px;color:#555;width:36%;font-size:9pt;vertical-align:top">${r.label}</td><td style="padding:3px 6px;font-size:10pt">${r.value}</td></tr>`
-    ).join("");
-    return `<h2>${s.title}</h2><table><tbody>${rowsHtml}</tbody></table>`;
-  }).join("");
-
-  const win = window.open("", "_blank");
-  if (!win) return;
-  win.document.write(`<!DOCTYPE html><html><head>
-    <title>Ficha – ${p.nome}</title><meta charset="utf-8" />
-    <style>
-      *{box-sizing:border-box;margin:0;padding:0}
-      body{font-family:Arial,sans-serif;font-size:11pt;color:#111;background:#fff;padding:24px}
-      h1{font-size:16pt;margin-bottom:4px}
-      .sub{font-size:9pt;color:#666;margin-bottom:8px}
-      h2{font-size:10pt;font-weight:bold;text-transform:uppercase;letter-spacing:.05em;color:#1E40AF;border-bottom:1.5px solid #1E40AF;padding-bottom:3px;margin:18px 0 8px}
-      table{width:100%;border-collapse:collapse;margin-bottom:4px}
-      tr:nth-child(even){background:#f5f7fa}
-      footer{margin-top:24px;font-size:8pt;color:#999;border-top:1px solid #ddd;padding-top:8px}
-      @media print{body{padding:16px}}
-    </style></head><body>
-    <h1>${p.nome}</h1>
-    <p class="sub">${p.produto} · Etapa: ${p.etapa_label} · Enviado em ${p.timestamp_envio ? new Date(p.timestamp_envio).toLocaleDateString("pt-BR") : "—"}</p>
-    ${sectionsHtml}
-    <footer>Ficha gerada em ${new Date().toLocaleDateString("pt-BR")} — RMJ Soluções de Crédito</footer>
-    </body></html>`);
-  win.document.close();
-  win.focus();
-  setTimeout(() => { win.print(); win.close(); }, 300);
-}
-
 // ─── Tabela principal ──────────────────────────────────────────────────────────
+
+type FiltroTipo = "todos" | "imovel" | "veiculo";
 
 export default function AdminPFClient({ initialPropostas }: Props) {
   const [propostas, setPropostas] = useState(initialPropostas);
   const [busca, setBusca] = useState("");
-  const [filtroProduto, setFiltroProduto] = useState<"todos" | "FIN" | "HE">("todos");
-  const [detalhe, setDetalhe] = useState<PropostaComEtapa | null>(null);
-  const [editando, setEditando] = useState<PropostaComEtapa | null>(null);
+  const [filtroTipo, setFiltroTipo] = useState<FiltroTipo>("todos");
+  const [detalhe, setDetalhe] = useState<PropostaPF | null>(null);
+  const [editando, setEditando] = useState<PropostaImovelEnriquecida | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const filtered = useMemo(() => {
     return propostas.filter((p) => {
       if (busca) {
         const q = busca.toLowerCase();
-        if (!p.nome.toLowerCase().includes(q) && !p.cpf.includes(busca)) return false;
+        if (!p.nome_display.toLowerCase().includes(q) && !p.cpf_display.includes(busca)) return false;
       }
-      if (filtroProduto === "FIN" && p.produto !== "Financiamento Imobiliário") return false;
-      if (filtroProduto === "HE"  && p.produto !== "Crédito com Garantia de Imóvel") return false;
+      if (filtroTipo === "imovel" && p.tipo_ficha !== "imovel") return false;
+      if (filtroTipo === "veiculo" && p.tipo_ficha !== "veiculo") return false;
       return true;
     });
-  }, [propostas, busca, filtroProduto]);
+  }, [propostas, busca, filtroTipo]);
 
-  async function handleDelete(id: string) {
+  async function handleDelete(p: PropostaPF) {
     if (!confirm("Excluir esta proposta? Esta ação não pode ser desfeita.")) return;
-    setDeletingId(id);
-    await fetch(`/api/propostas/${id}`, { method: "DELETE" });
-    setPropostas((prev) => prev.filter((p) => p.id_proposta !== id));
+    setDeletingId(p.id_proposta);
+    // Excluir do kanban principal
+    await fetch(`/api/propostas/${p.id_proposta}`, { method: "DELETE" });
+    // Excluir da planilha específica
+    if (p.tipo_ficha === "imovel") {
+      await fetch(`/api/propostas-imovel/${p.id_proposta}`, { method: "DELETE" });
+    } else {
+      await fetch(`/api/propostas-veiculo/${p.id_proposta}`, { method: "DELETE" });
+    }
+    setPropostas((prev) => prev.filter((x) => x.id_proposta !== p.id_proposta));
     setDeletingId(null);
   }
 
-  function handleSaved(id: string, updated: Partial<PropostaImovel>) {
-    setPropostas((prev) => prev.map((p) => p.id_proposta === id ? { ...p, ...updated } : p));
+  function handleSavedImovel(id: string, updated: Partial<PropostaImovel>) {
+    setPropostas((prev) => prev.map((p) => p.id_proposta === id ? { ...p, ...updated } as PropostaPF : p));
     setEditando(null);
   }
 
-  const totalVolume = filtered.reduce((s, p) => s + (p.valorFinanciamento || 0), 0);
+  const totalVolume = filtered.reduce((s, p) => s + (p.valor_display || 0), 0);
 
   return (
     <div className="flex flex-col h-full">
+      {/* Painel de detalhe */}
       {detalhe && (
         <DetailPanel
-          title={detalhe.nome}
-          subtitle={detalhe.cpf}
-          badge={<ProdutoBadge produto={detalhe.produto} />}
-          sections={buildPFSections(detalhe)}
+          title={detalhe.nome_display}
+          subtitle={detalhe.cpf_display}
+          badge={<ProdutoBadge proposta={detalhe} />}
+          sections={
+            detalhe.tipo_ficha === "veiculo"
+              ? buildVeiculoSections({ ...detalhe as PropostaVeiculoEnriquecida, etapa_label: detalhe.etapa_label })
+              : buildPFSections({ ...detalhe as PropostaImovelEnriquecida, etapa_label: detalhe.etapa_label })
+          }
           onClose={() => setDetalhe(null)}
           actions={
             <>
-              <button
-                onClick={() => { setEditando(detalhe); setDetalhe(null); }}
-                title="Editar"
-                className="p-1.5 rounded-lg text-blue-500 hover:bg-blue-50 hover:text-blue-700 transition-colors"
-              >
-                <Pencil className="w-4 h-4" />
-              </button>
+              {detalhe.tipo_ficha === "imovel" && (
+                <button
+                  onClick={() => { setEditando(detalhe as PropostaImovelEnriquecida); setDetalhe(null); }}
+                  title="Editar"
+                  className="p-1.5 rounded-lg text-blue-500 hover:bg-blue-50 hover:text-blue-700 transition-colors"
+                >
+                  <Pencil className="w-4 h-4" />
+                </button>
+              )}
               <button
                 onClick={() => imprimirFicha(detalhe)}
                 title="Imprimir ficha"
@@ -424,14 +496,17 @@ export default function AdminPFClient({ initialPropostas }: Props) {
           }
         />
       )}
+
+      {/* Modal editar imóvel */}
       {editando && (
-        <EditarModal
+        <EditarModalImovel
           p={editando}
           onClose={() => setEditando(null)}
-          onSaved={(updated) => handleSaved(editando.id_proposta, updated)}
+          onSaved={(updated) => handleSavedImovel(editando.id_proposta, updated)}
         />
       )}
 
+      {/* Header com busca e filtros */}
       <div className="bg-[var(--color-surface)] border-b border-[var(--color-border)] px-4 py-3 flex-shrink-0">
         <div className="flex items-center gap-3 flex-wrap">
           <div className="flex items-center gap-2 bg-[var(--color-surface-subtle)] border border-[var(--color-border)] rounded-lg px-3 py-1.5 flex-1 min-w-48">
@@ -445,13 +520,13 @@ export default function AdminPFClient({ initialPropostas }: Props) {
             />
           </div>
           <div className="flex rounded-lg border border-[var(--color-border)] overflow-hidden text-xs font-semibold">
-            {(["todos", "FIN", "HE"] as const).map((t) => (
+            {(["todos", "imovel", "veiculo"] as const).map((t) => (
               <button
                 key={t}
-                onClick={() => setFiltroProduto(t)}
-                className={`px-3 py-1.5 transition-colors ${filtroProduto === t ? "bg-[var(--color-brand-primary)] text-white" : "bg-[var(--color-surface)] text-[var(--color-text-muted)] hover:bg-[var(--color-surface-subtle)]"}`}
+                onClick={() => setFiltroTipo(t)}
+                className={`px-3 py-1.5 transition-colors ${filtroTipo === t ? "bg-[var(--color-brand-primary)] text-white" : "bg-[var(--color-surface)] text-[var(--color-text-muted)] hover:bg-[var(--color-surface-subtle)]"}`}
               >
-                {t === "todos" ? "Todos" : t === "FIN" ? "Financiamento" : "Home Equity"}
+                {t === "todos" ? "Todos" : t === "imovel" ? "🏠 Imóvel" : "🚗 Veículo"}
               </button>
             ))}
           </div>
@@ -468,6 +543,7 @@ export default function AdminPFClient({ initialPropostas }: Props) {
         </div>
       </div>
 
+      {/* Tabela */}
       <div className="flex-1 overflow-auto">
         <table className="w-full text-sm border-collapse">
           <thead className="sticky top-0 bg-[var(--color-surface)] border-b border-[var(--color-border)] z-10">
@@ -492,24 +568,26 @@ export default function AdminPFClient({ initialPropostas }: Props) {
             {filtered.map((p) => (
               <tr key={p.id_proposta} className="hover:bg-[var(--color-surface-subtle)] transition-colors">
                 <td className="px-4 py-3">
-                  <p className="font-medium text-[var(--color-text)]">{p.nome}</p>
-                  <p className="text-xs text-[var(--color-text-muted)] sm:hidden">{p.cpf}</p>
+                  <p className="font-medium text-[var(--color-text)]">{p.nome_display}</p>
+                  <p className="text-xs text-[var(--color-text-muted)] sm:hidden">{p.cpf_display}</p>
                 </td>
-                <td className="px-4 py-3 text-[var(--color-text-muted)] font-mono text-xs hidden sm:table-cell">{p.cpf}</td>
+                <td className="px-4 py-3 text-[var(--color-text-muted)] font-mono text-xs hidden sm:table-cell">{p.cpf_display}</td>
                 <td className="px-4 py-3 hidden md:table-cell"><EtapaBadge label={p.etapa_label} /></td>
-                <td className="px-4 py-3"><ProdutoBadge produto={p.produto} /></td>
+                <td className="px-4 py-3"><ProdutoBadge proposta={p} /></td>
                 <td className="px-4 py-3 text-right font-mono text-green-600 hidden lg:table-cell">
-                  {p.valorFinanciamento ? formatMoney(p.valorFinanciamento) : "—"}
+                  {p.valor_display ? formatMoney(p.valor_display) : "—"}
                 </td>
                 <td className="px-4 py-3 text-[var(--color-text-muted)] text-xs hidden xl:table-cell">
-                  {p.timestamp_envio ? new Date(p.timestamp_envio).toLocaleDateString("pt-BR") : "—"}
+                  {p.timestamp_display ? new Date(p.timestamp_display).toLocaleDateString("pt-BR") : "—"}
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-1 justify-end">
                     <ActionBtn title="Detalhes" onClick={() => setDetalhe(p)}><Eye className="w-3.5 h-3.5" /></ActionBtn>
-                    <ActionBtn title="Editar" onClick={() => setEditando(p)} color="blue"><Pencil className="w-3.5 h-3.5" /></ActionBtn>
+                    {p.tipo_ficha === "imovel" && (
+                      <ActionBtn title="Editar" onClick={() => setEditando(p as PropostaImovelEnriquecida)} color="blue"><Pencil className="w-3.5 h-3.5" /></ActionBtn>
+                    )}
                     <ActionBtn title="Imprimir ficha" onClick={() => imprimirFicha(p)} color="purple"><Printer className="w-3.5 h-3.5" /></ActionBtn>
-                    <ActionBtn title="Excluir" onClick={() => handleDelete(p.id_proposta)} disabled={deletingId === p.id_proposta} color="red"><Trash2 className="w-3.5 h-3.5" /></ActionBtn>
+                    <ActionBtn title="Excluir" onClick={() => handleDelete(p)} disabled={deletingId === p.id_proposta} color="red"><Trash2 className="w-3.5 h-3.5" /></ActionBtn>
                   </div>
                 </td>
               </tr>

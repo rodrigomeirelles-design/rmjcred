@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getPropostaVeiculoById, updatePropostaVeiculoField } from "@/lib/sheets";
+import { getPropostaVeiculoById, updatePropostaVeiculoField, deletePropostaVeiculoRow } from "@/lib/sheets";
 
 export async function GET(
   _req: NextRequest,
@@ -28,5 +28,19 @@ export async function PATCH(
   } catch (error) {
     console.error("PATCH /api/propostas-veiculo/[id]:", error);
     return NextResponse.json({ success: false, error: "Erro ao atualizar" }, { status: 500 });
+  }
+}
+
+export async function DELETE(
+  _req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    await deletePropostaVeiculoRow(id);
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("DELETE /api/propostas-veiculo/[id]:", error);
+    return NextResponse.json({ success: false, error: "Erro ao excluir" }, { status: 500 });
   }
 }

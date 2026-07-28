@@ -89,10 +89,31 @@ export function formatCNPJ(value: string | null | undefined): string {
   return maskCNPJ(value || "");
 }
 
-export function formatDate(iso: string): string {
-  if (!iso) return "";
-  const [y, m, d] = iso.split("-");
-  return `${d}/${m}/${y}`;
+export function formatDate(input: string | null | undefined): string {
+  if (!input) return "";
+  const str = String(input).trim();
+  if (!str) return "";
+
+  // Se já estiver em DD/MM/YYYY
+  if (/^\d{2}\/\d{2}\/\d{4}$/.test(str)) {
+    return str;
+  }
+
+  // Se YYYY-MM-DD ou YYYY-MM-DD...
+  const isoMatch = str.match(/^(\d{4})[-/](\d{2})[-/](\d{2})/);
+  if (isoMatch) {
+    const [, y, m, d] = isoMatch;
+    return `${d}/${m}/${y}`;
+  }
+
+  // Se DD-MM-YYYY
+  const brMatch = str.match(/^(\d{2})[-/](\d{2})[-/](\d{4})/);
+  if (brMatch) {
+    const [, d, m, y] = brMatch;
+    return `${d}/${m}/${y}`;
+  }
+
+  return str;
 }
 
 export function addDays(dateStr: string, days: number): string {

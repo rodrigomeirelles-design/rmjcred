@@ -162,8 +162,8 @@ export default function StepPessoal({ form }: StepPessoalProps) {
             </span>
           </div>
 
-          {isCasado && (
-            <div className="mb-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            {isCasado && (
               <Select
                 label="Regime de Casamento"
                 required
@@ -172,8 +172,13 @@ export default function StepPessoal({ form }: StepPessoalProps) {
                 error={errors.regimeCasamento?.message}
                 {...register("regimeCasamento", { required: "Regime de casamento é obrigatório para casados" })}
               />
-            </div>
-          )}
+            )}
+            <Input
+              label="Data do Casamento / União"
+              type="date"
+              {...register("data_casamento")}
+            />
+          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="sm:col-span-2">

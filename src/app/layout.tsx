@@ -12,7 +12,11 @@ export const metadata: Metadata = {
   title: "RMJ Soluções de Crédito",
   description: "Sistema de CRM para gestão de propostas de crédito — RMJ Soluções de Crédito",
   icons: {
-    apple: "/apple-touch-icon.png",
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: "/favicon.ico",
   },
   appleWebApp: {
     title: "RMJ CRM",
@@ -20,6 +24,7 @@ export const metadata: Metadata = {
     capable: true,
   },
 };
+
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

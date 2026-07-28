@@ -27,7 +27,7 @@ function proxMes(dataISO: string): string {
 type PessoaFisicaCore = {
   nome?: string; cpf?: string; celular?: string; email?: string;
   nascimento?: string; sexo?: string; nomeMae?: string; nomePai?: string;
-  rgCnh?: string; orgaoEmissor?: string; profissao?: string;
+  rgCnh?: string; orgaoEmissor?: string; profissao?: string; empresa?: string;
   fonteRenda?: string; rendaMensal?: number;
   empresa_cnpj?: string; empresa_endereco?: string; empresa_ramo?: string;
 };
@@ -45,6 +45,7 @@ function pessoaFisicaCoreRows(d: PessoaFisicaCore): DetailRow[] {
     { label: "RG / CNH", value: d.rgCnh },
     { label: "Órgão Emissor", value: d.orgaoEmissor },
     { label: "Profissão", value: d.profissao },
+    { label: "Empresa / Empregador", value: d.empresa },
     { label: "Fonte de Renda", value: d.fonteRenda },
     { label: "Renda Mensal", value: money(d.rendaMensal), mono: true },
     { label: "CNPJ da Empresa", value: d.empresa_cnpj ? formatCNPJ(d.empresa_cnpj) : undefined },
@@ -76,12 +77,13 @@ export function buildPFSections(p: PropostaImovel & { etapa_label?: string }): D
       ...pessoaFisicaCoreRows({
         nome: p.nome, cpf: p.cpf, celular: p.celular, email: p.email,
         nascimento: p.nascimento, sexo: p.sexo, nomeMae: p.nomeMae, nomePai: p.nomePai,
-        rgCnh: p.rgCnh, orgaoEmissor: p.orgaoEmissor, profissao: p.profissao,
+        rgCnh: p.rgCnh, orgaoEmissor: p.orgaoEmissor, profissao: p.profissao, empresa: p.empresa,
         fonteRenda: p.fonteRenda, rendaMensal: p.rendaMensal,
         empresa_cnpj: p.empresa_cnpj, empresa_endereco: p.empresa_endereco, empresa_ramo: p.empresa_ramo,
       }),
       { label: "Estado Civil", value: p.estadoCivil },
       { label: "Regime de Casamento", value: p.regimeCasamento || p.regimeUniao },
+      { label: "Data do Casamento / União", value: p.data_casamento ? formatDate(p.data_casamento) : undefined },
       { label: "Naturalidade", value: p.naturalidade },
       { label: "Nacionalidade", value: p.nacionalidade },
     ],
@@ -106,7 +108,7 @@ export function buildPFSections(p: PropostaImovel & { etapa_label?: string }): D
     ],
   });
 
-  if (p.conjuge_nome) {
+  if (p.conjuge_nome || p.data_casamento || p.regimeCasamento || p.regimeUniao) {
     sections.push({
       title: `Cônjuge${p.regimeCasamento ? ` — ${p.regimeCasamento}` : p.regimeUniao ? ` — ${p.regimeUniao}` : ""}`,
       rows: [
@@ -117,6 +119,7 @@ export function buildPFSections(p: PropostaImovel & { etapa_label?: string }): D
         { label: "Celular", value: p.conjuge_celular },
         { label: "E-mail", value: p.conjuge_email },
         { label: "Nascimento", value: p.conjuge_nascimento ? formatDate(p.conjuge_nascimento) : undefined },
+        { label: "Data do Casamento / União", value: p.data_casamento ? formatDate(p.data_casamento) : undefined },
         { label: "Sexo", value: p.conjuge_sexo },
         { label: "Profissão", value: p.conjuge_profissao },
         { label: "Fonte de Renda", value: p.conjuge_fonteRenda },
@@ -212,10 +215,12 @@ function socioSections(s: SocioDados, index: number): DetailSection[] {
         { label: "Nascimento", value: c.nascimento ? formatDate(c.nascimento) : undefined },
         { label: "Telefone", value: c.telefone },
         { label: "E-mail", value: c.email },
-        { label: "Imóvel", value: c.imovel_tipo },
-        { label: "Imóvel (valor)", value: money(c.imovel_valor) },
-        { label: "Veículos", value: (c.veiculo_placas?.length ?? 0) > 0 ? c.veiculo_placas.join(", ") : undefined },
-        { label: "Compõe renda", value: c.incluir_renda === "sim" ? money(c.renda) : undefined, mono: true },
+        { label: "Profissão", value: c.profissao },
+        { label: "Compõe renda", value: c.incluir_renda === "sim" ? "Sim" : "Não" },
+        { label: "Renda do Cônjuge", value: c.incluir_renda === "sim" ? money(c.renda) : undefined, mono: true },
+        { label: "Imóvel", value: c.possui_imovel === "sim" ? "Sim" : c.possui_imovel === "nao" ? "Não" : undefined },
+        { label: "Imóvel (valor)", value: c.possui_imovel === "sim" ? money(c.imovel_valor) : undefined },
+        { label: "Veículos", value: c.possui_veiculo === "sim" && (c.veiculo_placas?.length ?? 0) > 0 ? c.veiculo_placas.join(", ") : c.possui_veiculo === "sim" ? "Sim" : "Não" },
       ],
     });
   }

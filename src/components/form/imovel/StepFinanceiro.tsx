@@ -52,13 +52,16 @@ export default function StepFinanceiro({ form }: StepFinanceiroProps) {
               />
             )}
           />
-          <div className="sm:col-span-2">
-            <Input
-              label="Profissão"
-              placeholder="Ex: Engenheiro, Professora..."
-              {...register("profissao")}
-            />
-          </div>
+          <Input
+            label="Profissão"
+            placeholder="Ex: Engenheiro, Professora..."
+            {...register("profissao")}
+          />
+          <Input
+            label="Nome da Empresa / Empregador"
+            placeholder="Ex: Nome da empresa onde trabalha ou possui"
+            {...register("empresa")}
+          />
           {isEmpresario && (
             <>
               <Input

@@ -97,7 +97,18 @@ export default function AdminPropostasClient({ initialPropostas }: Props) {
     return propostas.filter((p) => {
       if (busca) {
         const q = busca.toLowerCase();
-        if (!p.emp_razao.toLowerCase().includes(q) && !p.emp_cnpj.includes(busca.replace(/\D/g, ""))) return false;
+        const qDigits = busca.replace(/\D/g, "");
+        const match =
+          p.emp_razao.toLowerCase().includes(q) ||
+          (p.emp_fantasia || "").toLowerCase().includes(q) ||
+          p.emp_repr_nome.toLowerCase().includes(q) ||
+          p.emp_email.toLowerCase().includes(q) ||
+          p.emp_telefone.replace(/\D/g, "").includes(qDigits || q) ||
+          (qDigits && (
+            p.emp_cnpj.includes(qDigits) ||
+            p.emp_repr_cpf.includes(qDigits)
+          ));
+        if (!match) return false;
       }
       if (filtroPeriodo !== "todos" && p.timestamp_envio) {
         const created = new Date(p.timestamp_envio);

@@ -509,6 +509,10 @@ function SocioCard({ form, index, onRemove, canRemove }: {
                     pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "E-mail inválido" },
                   })}
                 />
+                <Input
+                  label="Profissão do cônjuge"
+                  {...register(`${prefix}.conjuge.profissao`)}
+                />
                 <div className="sm:col-span-2">
                   <p className="label-base mb-2">
                     Deseja incluir a renda do cônjuge na proposta? <span className="text-red-500">*</span>

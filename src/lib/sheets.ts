@@ -3,7 +3,7 @@ import { Proposta, KanbanColumn, StatusRepasse } from "@/types";
 import { PropostaImovel, KanbanColumnImovel } from "@/types/imovel";
 import { PropostaVeiculo } from "@/types/veiculo";
 
-const SHEET_ID = process.env.GOOGLE_SHEETS_ID!;
+const SHEET_ID = (process.env.GOOGLE_SHEETS_ID || process.env.GOOGLE_SHEET_ID)!;
 const SHEET_NAME = "Propostas";
 
 function getAuth() {
@@ -37,6 +37,7 @@ export const SHEET_HEADERS = [
     `socio${i+1}_complemento`,`socio${i+1}_bairro`,`socio${i+1}_cidade`,`socio${i+1}_uf`,
     `socio${i+1}_imovel_tipo`,`socio${i+1}_imovel_valor`,
     `socio${i+1}_veiculo_placas`,
+    // 11 colunas cônjuge — manter posição original!
     `conjuge${i+1}_nome`,`conjuge${i+1}_cpf`,`conjuge${i+1}_rg`,
     `conjuge${i+1}_nascimento`,`conjuge${i+1}_telefone`,`conjuge${i+1}_email`,
     `conjuge${i+1}_imovel_tipo`,`conjuge${i+1}_imovel_valor`,
@@ -51,6 +52,11 @@ export const SHEET_HEADERS = [
   ]).flat(),
   "comissao_percentual",
   "data_finalizado",
+  // Colunas de cônjuge adicionadas no final (v2)
+  ...Array.from({ length: 5 }, (_, i) => [
+    `conjuge${i+1}_profissao`,
+    `conjuge${i+1}_possui_veiculo`,
+  ]).flat(),
 ];
 
 function propostaToRow(p: Proposta): string[] {
@@ -86,7 +92,8 @@ function propostaToRow(p: Proposta): string[] {
         base.push(
           c.nome, c.cpf, c.rg, c.nascimento, c.telefone, c.email,
           c.possui_imovel, String(c.possui_imovel === "sim" ? (c.imovel_valor ?? "") : ""),
-          c.possui_veiculo === "sim" ? (c.veiculo_placas || []).join(";") : "", String(c.incluir_renda === "sim" ? (c.renda ?? "") : ""), c.incluir_renda,
+          c.possui_veiculo === "sim" ? (c.veiculo_placas || []).join(";") : "",
+          String(c.incluir_renda === "sim" ? (c.renda ?? "") : ""), c.incluir_renda,
         );
       } else {
         base.push(...Array(11).fill(""));
@@ -108,6 +115,16 @@ function propostaToRow(p: Proposta): string[] {
   }
   base.push(String(p.comissao_percentual ?? ""));
   base.push(p.data_finalizado ?? "");
+
+  // Novas colunas cônjuge (v2) — no final
+  for (let i = 0; i < 5; i++) {
+    const s = p.socios[i];
+    const c = s?.conjuge;
+    base.push(
+      c?.profissao ?? "",
+      c?.possui_veiculo ?? "",
+    );
+  }
 
   return base;
 }
@@ -183,7 +200,7 @@ function rowToProposta(headers: string[], row: string[]): Proposta {
         imovel_residencial: (get(`socio${i+1}_imovel_residencial`) || undefined) as "sim" | "nao" | undefined,
         reside_imovel_proprio: (get(`socio${i+1}_reside_imovel_proprio`) || undefined) as "sim" | "nao" | undefined,
         imovel_residencial_valor: parseFloat(get(`socio${i+1}_imovel_residencial_valor`)) || null,
-        possui_veiculo: get(`socio${i+1}_veiculo_placas`) ? "sim" : "nao",
+        possui_veiculo: (get(`socio${i+1}_veiculo_placas`) ? "sim" : "nao") as "sim" | "nao",
         veiculo_placas: get(`socio${i+1}_veiculo_placas`).split(";").filter(Boolean),
         conjuge: conjugeNome ? {
           nome: conjugeNome,
@@ -192,10 +209,14 @@ function rowToProposta(headers: string[], row: string[]): Proposta {
           nascimento: get(`conjuge${i+1}_nascimento`),
           telefone: get(`conjuge${i+1}_telefone`),
           email: get(`conjuge${i+1}_email`),
+          // profissao lido da coluna no final (v2)
+          profissao: get(`conjuge${i+1}_profissao`) || undefined,
+          // imovel_tipo armazena "sim"/"nao" na planilha original
           possui_imovel: (get(`conjuge${i+1}_imovel_tipo`) || "nao") as "sim" | "nao",
-          imovel_tipo: get(`conjuge${i+1}_imovel_tipo`),
+          imovel_tipo: get(`conjuge${i+1}_imovel_tipo`) || undefined,
           imovel_valor: parseFloat(get(`conjuge${i+1}_imovel_valor`)) || null,
-          possui_veiculo: get(`conjuge${i+1}_veiculo_placas`) ? "sim" : "nao",
+          // possui_veiculo lido da coluna no final (v2), fallback para placas
+          possui_veiculo: (get(`conjuge${i+1}_possui_veiculo`) || (get(`conjuge${i+1}_veiculo_placas`) ? "sim" : "nao")) as "sim" | "nao",
           veiculo_placas: get(`conjuge${i+1}_veiculo_placas`).split(";").filter(Boolean),
           renda: parseFloat(get(`conjuge${i+1}_renda`)) || null,
           incluir_renda: (get(`conjuge${i+1}_incluir_renda`) || "nao") as "sim" | "nao",
@@ -460,7 +481,7 @@ export const SHEET_HEADERS_IMOVEL = [
   "nomeMae", "nomePai", "rgCnh", "orgaoEmissor", "estadoCivil",
   "naturalidade", "nacionalidade",
   "cep", "logradouro", "numero", "complemento", "bairro", "cidade", "uf",
-  "fonteRenda", "rendaMensal", "profissao", "banco", "agencia", "conta",
+  "fonteRenda", "rendaMensal", "profissao", "empresa", "banco", "agencia", "conta",
   "empresa_cnpj", "empresa_endereco", "empresa_ramo",
   "temSegundoProponente",
   "sp_nome", "sp_cpf", "sp_celular", "sp_email", "sp_nascimento", "sp_sexo",
@@ -470,7 +491,7 @@ export const SHEET_HEADERS_IMOVEL = [
   "usarFgts", "valorFgts",
   "imovel_cep", "imovel_logradouro", "imovel_numero", "imovel_complemento",
   "imovel_bairro", "imovel_cidade", "imovel_uf", "matriculaIptu", "situacaoImovel",
-  "regimeUniao", "regimeCasamento",
+  "regimeUniao", "regimeCasamento", "data_casamento",
   "conjuge_nome", "conjuge_cpf", "conjuge_celular", "conjuge_email",
   "conjuge_nascimento", "conjuge_sexo", "conjuge_profissao",
   "conjuge_fonteRenda", "conjuge_rendaMensal", "conjugeFiliacao", "conjugeRg",
@@ -516,6 +537,10 @@ function rowToPropostaImovel(headers: string[], row: string[]): PropostaImovel {
     fonteRenda: get("fonteRenda"),
     rendaMensal: parseFloat(get("rendaMensal")) || 0,
     profissao: get("profissao") || undefined,
+    empresa: get("empresa") || undefined,
+    empresa_cnpj: get("empresa_cnpj") || undefined,
+    empresa_endereco: get("empresa_endereco") || undefined,
+    empresa_ramo: get("empresa_ramo") || undefined,
     banco: get("banco"),
     agencia: get("agencia") || undefined,
     conta: get("conta") || undefined,
@@ -551,6 +576,8 @@ function rowToPropostaImovel(headers: string[], row: string[]): PropostaImovel {
     matriculaIptu: get("matriculaIptu") || undefined,
     situacaoImovel: get("situacaoImovel") || undefined,
     regimeUniao: get("regimeUniao") || undefined,
+    regimeCasamento: get("regimeCasamento") || undefined,
+    data_casamento: get("data_casamento") || undefined,
     conjuge_nome: get("conjuge_nome") || undefined,
     conjuge_cpf: get("conjuge_cpf") || undefined,
     conjuge_celular: get("conjuge_celular") || undefined,
@@ -560,6 +587,8 @@ function rowToPropostaImovel(headers: string[], row: string[]): PropostaImovel {
     conjuge_profissao: get("conjuge_profissao") || undefined,
     conjuge_fonteRenda: get("conjuge_fonteRenda") || undefined,
     conjuge_rendaMensal: parseFloat(get("conjuge_rendaMensal")) || undefined,
+    conjugeFiliacao: get("conjugeFiliacao") || undefined,
+    conjugeRg: get("conjugeRg") || undefined,
     observacoes: get("observacoes") || undefined,
     aceite_lgpd: true,
   };
@@ -729,6 +758,7 @@ export const SHEET_HEADERS_VEICULO = [
   "veiculo_ano_fabricacao", "veiculo_placa", "veiculo_valor_fipe",
   "valor_veiculo", "valor_entrada", "valor_financiamento", "parcelas",
   "veiculo_tem_divida", "veiculo_saldo_devedor",
+  "conjugeNome", "conjugeCpf", "conjugeNascimento", "conjugeCelular", "conjugeEmail", "conjugeRenda",
   "observacoes",
 ];
 
@@ -797,6 +827,12 @@ function rowToPropostaVeiculo(headers: string[], row: string[]): PropostaVeiculo
     parcelas:       get("parcelas"),
     veiculo_tem_divida:    (get("veiculo_tem_divida") || undefined) as "sim" | "nao" | undefined,
     veiculo_saldo_devedor: parseFloat(get("veiculo_saldo_devedor")) || undefined,
+    conjugeNome:    get("conjugeNome") || undefined,
+    conjugeCpf:     get("conjugeCpf") || undefined,
+    conjugeNascimento: get("conjugeNascimento") || undefined,
+    conjugeCelular: get("conjugeCelular") || undefined,
+    conjugeEmail:   get("conjugeEmail") || undefined,
+    conjugeRenda:   parseFloat(get("conjugeRenda")) || undefined,
     observacoes:    get("observacoes") || undefined,
     aceite_lgpd:    true,
   };

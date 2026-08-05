@@ -16,7 +16,7 @@ export async function PATCH(
     
     // Sync to Calendar if followup or liberacao changed
     if (propostaAnterior) {
-      const nomeCliente = propostaAnterior.emp_razao || propostaAnterior.nome || "Cliente (Sem Nome)";
+      const nomeCliente = propostaAnterior.emp_razao || (propostaAnterior.socios && propostaAnterior.socios[0]?.nome) || "Cliente (Sem Nome)";
       
       if (body.followup_data && body.followup_data !== propostaAnterior.followup_data) {
         await createCalendarEvent({
@@ -32,7 +32,7 @@ export async function PATCH(
           title: `Crédito Liberado: ${nomeCliente}`,
           date: body.data_liberacao,
           category: "credito_liberado",
-          description: `Liberação de crédito para o cliente ${nomeCliente}. Valor: R$ ${body.valor_liberado || propostaAnterior.valor_liberado || 'Não informado'}`,
+          description: `Liberação de crédito para o cliente ${nomeCliente}. Valor Solicitado: R$ ${body.valor_solicitado || propostaAnterior.valor_solicitado || 'Não informado'}`,
         }).catch(e => console.error("Error creating credito liberado calendar event", e));
       }
     }

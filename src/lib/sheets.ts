@@ -244,6 +244,11 @@ export async function getPropostas(): Promise<Proposta[]> {
   }
 }
 
+export async function getPropostaById(id: string): Promise<Proposta | null> {
+  const propostas = await getPropostas();
+  return propostas.find((p) => p.id_proposta === id) || null;
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function ensurePropostasSheet(sheets: any): Promise<void> {
   const meta = await sheets.spreadsheets.get({ spreadsheetId: SHEET_ID });

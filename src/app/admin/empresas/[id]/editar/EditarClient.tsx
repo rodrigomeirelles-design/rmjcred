@@ -97,8 +97,111 @@ export default function EditarClient({ proposta }: { proposta: Proposta }) {
         banco_conta: data.banco_conta,
         banco_digito: data.banco_digito,
         obs_finais: data.obs_finais,
-        socios: JSON.stringify(data.socios),
       };
+
+      // Flatten socios data to match Google Sheets headers
+      for (let i = 0; i < 5; i++) {
+        const s = data.socios[i];
+        if (s) {
+          payload[`socio${i+1}_nome`] = s.nome;
+          payload[`socio${i+1}_cpf`] = s.cpf;
+          payload[`socio${i+1}_rg`] = s.rg;
+          payload[`socio${i+1}_participacao`] = s.participacao;
+          payload[`socio${i+1}_nascimento`] = s.nascimento;
+          payload[`socio${i+1}_estado_civil`] = s.estado_civil;
+          payload[`socio${i+1}_regime`] = s.regime;
+          payload[`socio${i+1}_profissao`] = s.profissao;
+          payload[`socio${i+1}_nacionalidade`] = s.nacionalidade;
+          payload[`socio${i+1}_email`] = s.email;
+          payload[`socio${i+1}_telefone`] = s.telefone;
+          payload[`socio${i+1}_renda`] = s.renda;
+          payload[`socio${i+1}_cep`] = s.cep;
+          payload[`socio${i+1}_logradouro`] = s.logradouro;
+          payload[`socio${i+1}_numero`] = s.numero;
+          payload[`socio${i+1}_complemento`] = s.complemento;
+          payload[`socio${i+1}_bairro`] = s.bairro;
+          payload[`socio${i+1}_cidade`] = s.cidade;
+          payload[`socio${i+1}_uf`] = s.uf;
+          payload[`socio${i+1}_imovel_tipo`] = s.possui_imovel;
+          payload[`socio${i+1}_imovel_valor`] = s.possui_imovel === "sim" ? s.imovel_valor : "";
+          payload[`socio${i+1}_veiculo_placas`] = s.possui_veiculo === "sim" ? (s.veiculo_placas || []).join(";") : "";
+          payload[`socio${i+1}_imovel_residencial`] = s.imovel_residencial || "";
+          payload[`socio${i+1}_reside_imovel_proprio`] = s.reside_imovel_proprio || "";
+          payload[`socio${i+1}_imovel_residencial_valor`] = s.imovel_residencial_valor || "";
+
+          const c = s.conjuge;
+          if (c) {
+            payload[`conjuge${i+1}_nome`] = c.nome;
+            payload[`conjuge${i+1}_cpf`] = c.cpf;
+            payload[`conjuge${i+1}_rg`] = c.rg;
+            payload[`conjuge${i+1}_nascimento`] = c.nascimento;
+            payload[`conjuge${i+1}_telefone`] = c.telefone;
+            payload[`conjuge${i+1}_email`] = c.email;
+            payload[`conjuge${i+1}_profissao`] = c.profissao || "";
+            payload[`conjuge${i+1}_imovel_tipo`] = c.possui_imovel;
+            payload[`conjuge${i+1}_imovel_valor`] = c.possui_imovel === "sim" ? c.imovel_valor : "";
+            payload[`conjuge${i+1}_possui_veiculo`] = c.possui_veiculo;
+            payload[`conjuge${i+1}_veiculo_placas`] = c.possui_veiculo === "sim" ? (c.veiculo_placas || []).join(";") : "";
+            payload[`conjuge${i+1}_renda`] = c.incluir_renda === "sim" ? c.renda : "";
+            payload[`conjuge${i+1}_incluir_renda`] = c.incluir_renda;
+          } else {
+            payload[`conjuge${i+1}_nome`] = "";
+            payload[`conjuge${i+1}_cpf`] = "";
+            payload[`conjuge${i+1}_rg`] = "";
+            payload[`conjuge${i+1}_nascimento`] = "";
+            payload[`conjuge${i+1}_telefone`] = "";
+            payload[`conjuge${i+1}_email`] = "";
+            payload[`conjuge${i+1}_profissao`] = "";
+            payload[`conjuge${i+1}_imovel_tipo`] = "";
+            payload[`conjuge${i+1}_imovel_valor`] = "";
+            payload[`conjuge${i+1}_possui_veiculo`] = "";
+            payload[`conjuge${i+1}_veiculo_placas`] = "";
+            payload[`conjuge${i+1}_renda`] = "";
+            payload[`conjuge${i+1}_incluir_renda`] = "";
+          }
+        } else {
+          // Clear socio and conjuge data if socio doesn't exist
+          payload[`socio${i+1}_nome`] = "";
+          payload[`socio${i+1}_cpf`] = "";
+          payload[`socio${i+1}_rg`] = "";
+          payload[`socio${i+1}_participacao`] = "";
+          payload[`socio${i+1}_nascimento`] = "";
+          payload[`socio${i+1}_estado_civil`] = "";
+          payload[`socio${i+1}_regime`] = "";
+          payload[`socio${i+1}_profissao`] = "";
+          payload[`socio${i+1}_nacionalidade`] = "";
+          payload[`socio${i+1}_email`] = "";
+          payload[`socio${i+1}_telefone`] = "";
+          payload[`socio${i+1}_renda`] = "";
+          payload[`socio${i+1}_cep`] = "";
+          payload[`socio${i+1}_logradouro`] = "";
+          payload[`socio${i+1}_numero`] = "";
+          payload[`socio${i+1}_complemento`] = "";
+          payload[`socio${i+1}_bairro`] = "";
+          payload[`socio${i+1}_cidade`] = "";
+          payload[`socio${i+1}_uf`] = "";
+          payload[`socio${i+1}_imovel_tipo`] = "";
+          payload[`socio${i+1}_imovel_valor`] = "";
+          payload[`socio${i+1}_veiculo_placas`] = "";
+          payload[`socio${i+1}_imovel_residencial`] = "";
+          payload[`socio${i+1}_reside_imovel_proprio`] = "";
+          payload[`socio${i+1}_imovel_residencial_valor`] = "";
+
+          payload[`conjuge${i+1}_nome`] = "";
+          payload[`conjuge${i+1}_cpf`] = "";
+          payload[`conjuge${i+1}_rg`] = "";
+          payload[`conjuge${i+1}_nascimento`] = "";
+          payload[`conjuge${i+1}_telefone`] = "";
+          payload[`conjuge${i+1}_email`] = "";
+          payload[`conjuge${i+1}_profissao`] = "";
+          payload[`conjuge${i+1}_imovel_tipo`] = "";
+          payload[`conjuge${i+1}_imovel_valor`] = "";
+          payload[`conjuge${i+1}_possui_veiculo`] = "";
+          payload[`conjuge${i+1}_veiculo_placas`] = "";
+          payload[`conjuge${i+1}_renda`] = "";
+          payload[`conjuge${i+1}_incluir_renda`] = "";
+        }
+      }
 
       if (valor !== undefined && !isNaN(valor) && valor > 0) {
         payload.valor_solicitado = valor;

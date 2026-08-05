@@ -21,7 +21,6 @@ async function getBrazilHolidays(yearMonth: string) {
     if (!res.ok) return [];
     const data: BrasilAPIHoliday[] = await res.json();
     return data
-      .filter((h) => h.date.startsWith(`${year}-${month}`))
       .map((h) => ({
         id: `feriado-${h.date}`,
         title: h.name,

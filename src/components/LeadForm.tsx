@@ -5,9 +5,10 @@ import styles from "./LeadForm.module.css";
 
 interface LeadFormProps {
   defaultService?: string;
+  defaultValor?: string;
 }
 
-export default function LeadForm({ defaultService = "BDMG" }: LeadFormProps) {
+export default function LeadForm({ defaultService = "BDMG", defaultValor = "" }: LeadFormProps) {
   const [formData, setFormData] = useState({
     nome: "",
     email: "",
@@ -15,7 +16,7 @@ export default function LeadForm({ defaultService = "BDMG" }: LeadFormProps) {
     empresa: "",
     cnpj: "",
     servico: defaultService,
-    valor: "",
+    valor: defaultValor,
     marcaModelo: "",
     anoVeiculo: "",
     valorVeiculo: "",

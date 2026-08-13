@@ -23,7 +23,7 @@ export default function Consorcios() {
         { id: "c1", q: "O que é lance?", a: "Lance é uma oferta feita pelo consorciado para antecipar sua contemplação. Você pode oferecer um percentual do crédito como lance livre, lance embutido (descontado da própria carta) ou lance fixo, conforme as regras do grupo." },
         { id: "c2", q: "Como funcionam os sorteios?", a: "Mensalmente, a administradora realiza assembleias onde são sorteados consorciados para contemplação. Todos os participantes do grupo concorrem igualmente — independente do tempo de adesão." },
         { id: "c3", q: "Em quanto tempo posso ser contemplado?", a: "A contemplação pode ocorrer desde o primeiro mês (por lance ou sorteio) até o final do prazo do grupo. Não há garantia de prazo, mas estratégias de lance podem acelerar o processo." },
-        { id: "c4", q: "Existe prazo máximo para usar o crédito após a contemplação?", a: "Sim. As administradoras estabelecem um prazo para que o crédito seja utilizado após a contemplação — normalmente entre 30 e 90 dias. Caso o prazo expire, a contemplação pode ser suspensa. Nossa equipe orienta todo o processo para evitar isso." },
+        { id: "c4", q: "Existe prazo máximo para usar o crédito após a contemplação?", a: "Não existe um prazo máximo obrigatório que faça você perder o crédito. Uma vez contemplado, o valor da sua carta fica aplicado no Tesouro Nacional (ou similar seguro), rendendo juros até o momento em que você decidir utilizá-lo para a compra do bem." },
       ],
     },
     {
@@ -106,28 +106,52 @@ export default function Consorcios() {
           <div className={styles.chartGrid}>
             {/* Barras */}
             <div className={styles.chartWrapper}>
-              <h3 className={styles.chartTitle}>Custo Total ao Longo do Prazo</h3>
-              <div className={styles.chartBars}>
-                <div className={styles.barGroup}>
-                  <div className={styles.barLabelTop}>~18%</div>
-                  <div className={styles.barConsorcio} style={{ height: "80px" }} />
-                  <div className={styles.barLabel}>Consórcio<br /><small>(taxa administrativa)</small></div>
-                </div>
-                <div className={styles.barGroup}>
-                  <div className={styles.barLabelTop} style={{ color: "#94A3B8" }}>~90%</div>
-                  <div className={styles.barFinanciamento} style={{ height: "260px" }} />
-                  <div className={styles.barLabel} style={{ color: "#64748B" }}>Financiamento<br /><small>(juros acumulados)</small></div>
-                </div>
+              <h3 className={styles.chartTitle}>Taxa Administrativa Consórcio x Juros Financiamento (Bancos)</h3>
+              <div className={styles.chartLegend}>
+                <span className={styles.legendConsorcio}>■ Consórcio</span>
+                <span className={styles.legendBancos}>■ Bancos</span>
               </div>
-              <p className={styles.chartNote}>* Valores médios de mercado, sujeitos a variação por instituição e perfil de crédito.</p>
+              <div className={styles.chartBars}>
+                
+                {/* Grupo Imobiliário */}
+                <div className={styles.chartCategory}>
+                  <div className={styles.categoryBars}>
+                    <div className={styles.barGroup}>
+                      <div className={styles.barLabelTop}>1% a.a.</div>
+                      <div className={styles.barConsorcio} style={{ height: "20px" }} />
+                    </div>
+                    <div className={styles.barGroup}>
+                      <div className={styles.barLabelTop} style={{ color: "#94A3B8" }}>8% a.a.</div>
+                      <div className={styles.barFinanciamento} style={{ height: "100px" }} />
+                    </div>
+                  </div>
+                  <div className={styles.categoryLabel}>Imobiliário</div>
+                </div>
+
+                {/* Grupo Veículo */}
+                <div className={styles.chartCategory}>
+                  <div className={styles.categoryBars}>
+                    <div className={styles.barGroup}>
+                      <div className={styles.barLabelTop}>2% a.a.</div>
+                      <div className={styles.barConsorcio} style={{ height: "30px" }} />
+                    </div>
+                    <div className={styles.barGroup}>
+                      <div className={styles.barLabelTop} style={{ color: "#94A3B8" }}>22% a.a.</div>
+                      <div className={styles.barFinanciamento} style={{ height: "240px" }} />
+                    </div>
+                  </div>
+                  <div className={styles.categoryLabel}>Veículo</div>
+                </div>
+
+              </div>
             </div>
 
             {/* Texto ao lado */}
             <div className={styles.chartText}>
-              <span className={styles.chartBadge}>Economia Real</span>
-              <h2 className={styles.chartHeading}>Você nunca paga juros</h2>
-              <p>No consórcio, o custo total da operação se limita à <strong>taxa de administração</strong> — cobrada de forma diluída ao longo das parcelas. Nos financiamentos bancários convencionais, os juros compostos podem mais do que dobrar o valor total pago ao final do contrato.</p>
-              <p style={{ marginTop: "1rem" }}>Isso significa que, ao contratar um consórcio de R$ 300.000, você paga apenas esse valor mais a taxa — enquanto no financiamento poderia pagar R$ 570.000 ou mais pelo mesmo bem.</p>
+              <span className={styles.chartBadge}>Compare</span>
+              <h2 className={styles.chartHeading}>Você nunca mais vai pagar juros para o banco!</h2>
+              <p>Venha realizar com a maior administradora independente do Brasil em créditos ativos. Não perca essa oportunidade!</p>
+              <p style={{ marginTop: "1rem" }}>Fonte: Comparativo realizado com base no relatório geral das taxas de juros praticadas pelos bancos disponíveis no site do Banco Central do Brasil.</p>
             </div>
           </div>
         </div>

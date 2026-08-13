@@ -137,54 +137,80 @@
 .chartBars {
   display: flex;
   align-items: flex-end;
-  gap: 2.5rem;
+  gap: 4rem;
   justify-content: center;
-  min-height: 300px;
+  min-height: 280px;
   padding-bottom: 0.5rem;
   border-bottom: 2px solid #E2E8F0;
+}
+
+.chartCategory {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.categoryBars {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
 }
 
 .barGroup {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  width: 100px;
+  gap: 0.25rem;
+  width: 60px;
 }
 
 .barLabelTop {
-  font-size: 1.4rem;
+  font-size: 0.85rem;
   font-weight: 800;
   color: #EE661C;
 }
 
 .barConsorcio {
-  width: 80px;
-  background: linear-gradient(to top, #EE661C, #f5924a);
+  width: 100%;
+  background: #EE661C;
   border-radius: 6px 6px 0 0;
   align-self: flex-end;
   transition: height 0.6s ease;
 }
 
 .barFinanciamento {
-  width: 80px;
-  background: linear-gradient(to top, #94A3B8, #b8c4d0);
+  width: 100%;
+  background: #E2E8F0;
   border-radius: 6px 6px 0 0;
   align-self: flex-end;
   transition: height 0.6s ease;
 }
 
-.barLabel {
-  font-size: 0.78rem;
+.categoryLabel {
+  font-size: 0.95rem;
   color: #475569;
-  font-weight: 600;
+  font-weight: 700;
   text-align: center;
-  line-height: 1.4;
 }
 
-.barLabel small {
-  font-weight: 400;
+.chartLegend {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  justify-content: center;
+}
+
+.legendConsorcio {
+  color: #EE661C;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.legendBancos {
   color: #94A3B8;
+  font-weight: 600;
+  font-size: 0.9rem;
 }
 
 .chartNote {

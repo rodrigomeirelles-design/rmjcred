@@ -150,6 +150,9 @@ export default function Consorcios() {
             <div className={styles.chartText}>
               <span className={styles.chartBadge}>Compare</span>
               <h2 className={styles.chartHeading}>Você nunca mais vai pagar juros para o banco!</h2>
+              <div style={{ margin: "1.5rem 0 1rem 0" }}>
+                <Image src="/assets/ademicon.svg" alt="Ademicon - Maior administradora independente do Brasil" width={220} height={45} />
+              </div>
               <p>Venha realizar com a maior administradora independente do Brasil em créditos ativos. Não perca essa oportunidade!</p>
               <p style={{ marginTop: "1rem" }}>Fonte: Comparativo realizado com base no relatório geral das taxas de juros praticadas pelos bancos disponíveis no site do Banco Central do Brasil.</p>
             </div>

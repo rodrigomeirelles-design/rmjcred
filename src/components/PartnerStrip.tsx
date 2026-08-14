@@ -1,6 +1,5 @@
 import styles from "./PartnerStrip.module.css";
-
-export default function PartnerStrip() {
+import Image from "next/image";export default function PartnerStrip() {
   return (
     <section className={styles.partnerStrip}>
       <div className={`${styles.stripContainer} container`}>
@@ -15,6 +14,11 @@ export default function PartnerStrip() {
               <path d="M17 12 C14 15 12 18 12 22 L22 22 C22 18 17 15 17 12 Z" fill="#00a1e4" />
               <text x="28" y="21" fontFamily="system-ui, sans-serif" fontWeight="800" fontSize="16" fill="#000000">Porto</text>
             </svg>
+          </div>
+
+          {/* Ademicon */}
+          <div className={styles.logoItem} title="Ademicon">
+            <Image src="/assets/ademicon.svg" alt="Ademicon" width={110} height={30} style={{ objectFit: 'contain' }} />
           </div>
 
           {/* 2. Creditas */}

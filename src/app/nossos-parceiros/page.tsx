@@ -22,7 +22,8 @@ export default function NossosParceiros() {
     { name: "Banco Bari", logo: "/assets/logo-bari.png" },
     { name: "Omni", logo: "/assets/logo-omni.png" },
     { name: "Sim", logo: "/assets/logo-sim.png" },
-    { name: "Banco Safra", logo: "/assets/logo-safra.png" }
+    { name: "Banco Safra", logo: "/assets/logo-safra.png" },
+    { name: "Ademicon", logo: "/assets/ademicon.svg" }
   ];
 
   return (

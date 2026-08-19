@@ -1,6 +1,6 @@
 .headerSection {
   position: relative;
-  background-image: linear-gradient(rgba(11, 26, 48, 0.85), rgba(11, 26, 48, 0.85)), url('/assets/happy_family_car.png');
+  background-image: linear-gradient(to right, rgba(11, 26, 48, 1) 0%, rgba(11, 26, 48, 0.85) 50%, rgba(11, 26, 48, 0.2) 100%), url('/assets/mg_historic_city.png');
   background-size: cover;
   background-position: center;
   padding: 8rem 0 6rem 0;
@@ -41,10 +41,51 @@
 }
 
 .leadText {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: rgba(255, 255, 255, 0.9);
-  max-width: 800px;
+  max-width: 600px;
   line-height: 1.6;
+}
+
+.orangeTitle {
+  color: var(--accent-color);
+  font-weight: 700;
+}
+
+.headerLogoWrapper {
+  margin-bottom: 0.5rem;
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.headerButtons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.btnOutline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  background-color: transparent;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btnOutline:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.4);
 }
 
 /* Detalhes de Produtos */

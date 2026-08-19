@@ -14,22 +14,19 @@ export default function CreditoBdmg() {
       {/* 1. Cabeçalho da Página */}
       <section className={styles.headerSection}>
         <div className={`${styles.titleContainer} container`}>
-          <Link href="/" className={styles.backLink}>
-            &larr; Voltar para a Página Inicial
-          </Link>
-          <nav className={styles.breadcrumbNav} aria-label="Breadcrumb">
-            <ol style={{ display: 'flex', listStyle: 'none', gap: '0.5rem', padding: 0, fontSize: '0.9rem', color: 'rgba(255,255,255,0.7)' }}>
-              <li><Link href="/" style={{ color: 'inherit' }}>Início</Link></li>
-              <li>/</li>
-              <li style={{ color: '#fff' }}>Crédito BDMG</li>
-            </ol>
-          </nav>
-          <h1 className={styles.title}>
-            Capital de Giro <span className={styles.italicTitle}>BDMG</span> em Itajubá
+          <div className={styles.headerLogoWrapper}>
+             <Image src="/assets/logo-bdmg-parceiro-244x150.png" alt="Parceiro BDMG" width={140} height={45} style={{ objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+          </div>
+          <h1 className={styles.title} style={{ maxWidth: '600px', fontSize: '3.5rem', lineHeight: '1.1', fontWeight: '800' }}>
+            Crédito BDMG Inteligente para <span className={styles.orangeTitle}>Pequenos Negócios</span>
           </h1>
           <p className={styles.leadText}>
-            Impulsione o caixa da sua micro ou pequena empresa através de linhas de fomento do Banco de Desenvolvimento de Minas Gerais. O crédito inteligente com até 12 meses de carência e taxas abaixo dos bancos tradicionais.
+            Tenha acesso a crédito empresarial descomplicado, com os melhores prazos, taxas competitivas e menos burocracia. Potencialize o crescimento do seu negócio sem precisar adquirir produtos casados.
           </p>
+          <div className={styles.headerButtons}>
+            <Link href="#simular" className="btn btn-primary">Simular Crédito Agora</Link>
+            <Link href="#como-funciona" className={styles.btnOutline}>Como Funciona?</Link>
+          </div>
         </div>
       </section>
 
@@ -88,7 +85,7 @@ export default function CreditoBdmg() {
               </div>
             </div>
 
-            <div>
+            <div id="como-funciona" style={{ scrollMarginTop: '100px' }}>
               <h2 style={{ fontSize: '1.75rem', color: 'var(--primary-dark)', marginBottom: '1rem' }}>Como funciona o processo de contratação via RMJ?</h2>
               <p style={{ color: 'var(--neutral-muted)', fontSize: '1.05rem', lineHeight: '1.7', marginBottom: '1.5rem' }}>
                 Nosso fluxo operacional foi planejado para poupar o tempo do empresário. Dividimos o processo em etapas simples:

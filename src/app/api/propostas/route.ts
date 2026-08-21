@@ -47,32 +47,6 @@ export async function POST(req: NextRequest) {
       errors.push(`Soma das participações (${totalParticipacao}%) ultrapassa 100%`);
     }
 
-    const allEmails: { email: string; nome: string }[] = [];
-    const allPhones: { phone: string; nome: string }[] = [];
-
-    for (const s of socios) {
-      allEmails.push({ email: s.email, nome: s.nome });
-      allPhones.push({ phone: s.telefone.replace(/\D/g, ""), nome: s.nome });
-      if (s.conjuge?.email) allEmails.push({ email: s.conjuge.email, nome: `Cônjuge de ${s.nome}` });
-      if (s.conjuge?.telefone) allPhones.push({ phone: s.conjuge.telefone.replace(/\D/g, ""), nome: `Cônjuge de ${s.nome}` });
-    }
-
-    for (let i = 0; i < allEmails.length; i++) {
-      for (let j = i + 1; j < allEmails.length; j++) {
-        if (allEmails[i].email && allEmails[i].email === allEmails[j].email) {
-          errors.push(`E-mail de "${allEmails[j].nome}" é igual ao de "${allEmails[i].nome}"`);
-        }
-      }
-    }
-
-    for (let i = 0; i < allPhones.length; i++) {
-      for (let j = i + 1; j < allPhones.length; j++) {
-        if (allPhones[i].phone && allPhones[i].phone === allPhones[j].phone && allPhones[i].phone.length >= 10) {
-          errors.push(`Telefone de "${allPhones[j].nome}" é igual ao de "${allPhones[i].nome}"`);
-        }
-      }
-    }
-
     if (body.emp_imovel === "sim" && body.emp_imovel_tipo && body.emp_imovel_tipo !== "Não possui") {
       if (!body.emp_imovel_valor || body.emp_imovel_valor <= 0) {
         errors.push("Valor do imóvel da empresa deve ser maior que zero");

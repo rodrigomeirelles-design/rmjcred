@@ -104,7 +104,8 @@ export default function CadastroBdmgPage() {
         });
         const result = await res.json();
         if (!result.success) {
-          setSubmitError(result.error || "Erro ao enviar.");
+          const msg = result.errors?.join(", ") || result.error || "Erro ao enviar.";
+          setSubmitError(msg);
           setIsSubmitting(false);
           return;
         }

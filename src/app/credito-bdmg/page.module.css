@@ -434,3 +434,47 @@
     grid-template-columns: repeat(3, 1fr);
   }
 }
+
+
+/* Seção de Destaques (Benefícios de Carência) */
+.highlightsBar {
+  background-color: var(--primary-color);
+  color: var(--neutral-white);
+  padding: 2.5rem 0;
+  border-bottom: 4px solid var(--secondary-color);
+}
+
+.highlightsContainer {
+  display: grid;
+  gap: 2rem;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .highlightsContainer { grid-template-columns: repeat(3, 1fr); }
+}
+
+.highlightItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.highlightNumber {
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--secondary-color);
+  line-height: 1;
+}
+
+.highlightLabel {
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.highlightDesc {
+  font-size: 0.85rem;
+  opacity: 0.85;
+}

@@ -10,26 +10,7 @@ export default function Home() {
       {/* 1. Hero Section */}
       <HeroCarousel />
 
-      {/* 2. Destaques / Benefícios de Carência */}
-      <section className={styles.highlightsBar}>
-        <div className={`${styles.highlightsContainer} container`}>
-          <div className={styles.highlightItem}>
-            <span className={styles.highlightNumber}>12</span>
-            <span className={styles.highlightLabel}>Meses de Carência</span>
-            <span className={styles.highlightDesc}>Comece a pagar somente após 1 ano</span>
-          </div>
-          <div className={styles.highlightItem}>
-            <span className={styles.highlightNumber}>72</span>
-            <span className={styles.highlightLabel}>Meses de Prazo</span>
-            <span className={styles.highlightDesc}>Opções flexíveis de amortização e pagamento</span>
-          </div>
-          <div className={styles.highlightItem}>
-            <span className={styles.highlightNumber}>0%</span>
-            <span className={styles.highlightLabel}>Venda Casada</span>
-            <span className={styles.highlightDesc}>Sem exigência de adesão a cartões ou outros produtos</span>
-          </div>
-        </div>
-      </section>
+
 
       {/* 3. Nossos Serviços (Grid de Cards) */}
       <section className={`${styles.services} section`} id="servicos">

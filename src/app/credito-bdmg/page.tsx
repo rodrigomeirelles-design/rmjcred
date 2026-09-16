@@ -30,6 +30,27 @@ export default function CreditoBdmg() {
         </div>
       </section>
 
+      {/* 2. Destaques / Benefícios de Carência */}
+      <section className={styles.highlightsBar}>
+        <div className={`${styles.highlightsContainer} container`}>
+          <div className={styles.highlightItem}>
+            <span className={styles.highlightNumber}>12</span>
+            <span className={styles.highlightLabel}>Meses de Carência</span>
+            <span className={styles.highlightDesc}>Comece a pagar somente após 1 ano</span>
+          </div>
+          <div className={styles.highlightItem}>
+            <span className={styles.highlightNumber}>72</span>
+            <span className={styles.highlightLabel}>Meses de Prazo</span>
+            <span className={styles.highlightDesc}>Opções flexíveis de amortização e pagamento</span>
+          </div>
+          <div className={styles.highlightItem}>
+            <span className={styles.highlightNumber}>0%</span>
+            <span className={styles.highlightLabel}>Venda Casada</span>
+            <span className={styles.highlightDesc}>Sem exigência de adesão a cartões ou outros produtos</span>
+          </div>
+        </div>
+      </section>
+
       {/* 2. Conteúdo Principal Denso */}
       <section className="section" style={{ backgroundColor: 'var(--neutral-white)' }}>
         <div className="container page-grid">
@@ -154,7 +175,7 @@ export default function CreditoBdmg() {
               <p style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.85)', margin: 0 }}>
                 Tire suas dúvidas sobre documentos fiscais, faturamento ou taxas com o Rodrigo.
               </p>
-              <a href="https://wa.me/5535997248658" target="_blank" rel="noopener noreferrer" className="btn btn-accent" style={{ width: '100%', fontSize: '0.9rem' }}>
+              <a href="https://wa.me/5535991084513" target="_blank" rel="noopener noreferrer" className="btn btn-accent" style={{ width: '100%', fontSize: '0.9rem' }}>
                 Falar no WhatsApp
               </a>
             </div>

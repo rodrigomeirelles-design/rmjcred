@@ -1,6 +1,8 @@
 /* ── HERO ───────────────────────────────────────────────────── */
 .headerSection {
-  background: linear-gradient(135deg, #162F4B 0%, #21446A 100%);
+  background-image: linear-gradient(rgba(11, 26, 48, 0.85), rgba(11, 26, 48, 0.85)), url('/assets/consorcio_hero_bg.jpg');
+  background-size: cover;
+  background-position: center;
   padding: 6rem 0 4rem 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }

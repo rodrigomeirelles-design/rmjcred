@@ -12,9 +12,10 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.rmjcred.com.br"),
   title: "RMJ Soluções de Crédito — Inteligência e Fomento Financeiro",
-  description: "Hub financeiro completo em Itajubá - MG. Crédito BDMG para pequenos negócios, Financiamento Imobiliário, Home Equity, Veículos e Consórcios.",
-  keywords: "crédito, BDMG, financiamento, imobiliário, home equity, consórcios, veículos, empréstimo, Itajubá, Minas Gerais",
+  description: "Com mais de 20 anos de experiência, a RMJ é o seu hub financeiro completo. Crédito BDMG, Financiamento Imobiliário, Home Equity, Veículos e Consórcios em Itajubá e região.",
+  keywords: "crédito, BDMG, financiamento imobiliário, home equity, consórcios, veículos, empréstimo, capital de giro, Itajubá, Minas Gerais, 20 anos de experiência, correspondente bancário",
   authors: [{ name: "RMJ Soluções de Crédito" }],
   icons: {
     icon: "/assets/ea111fdf9358a37c013843e46181e048.png",
@@ -22,7 +23,7 @@ export const metadata: Metadata = {
     apple: "/assets/48b891dd6e65f9c7e893c3fa2fcccf82.png",
   },
   openGraph: {
-    title: "RMJ Soluções de Crédito",
+    title: "RMJ Soluções de Crédito | 20 Anos de Mercado",
     description: "Expertise e atendimento estratégico para impulsionar negócios e viabilizar conquistas financeiras.",
     url: "https://www.rmjcred.com.br",
     siteName: "RMJ Soluções de Crédito",

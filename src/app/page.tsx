@@ -2,43 +2,13 @@ import Link from "next/link";
 import Image from "next/image";
 import styles from "./page.module.css";
 import LeadForm from "@/components/LeadForm";
+import HeroCarousel from "@/components/HeroCarousel";
 
 export default function Home() {
   return (
     <>
       {/* 1. Hero Section */}
-      <section className={styles.hero}>
-        <div className={`${styles.heroContainer} container`}>
-          <div className={styles.heroContent}>
-            <div className={styles.heroPartnerIntegrated}>
-              <Image
-                src="/assets/logo-bdmg-preto.png"
-                alt="Logo Oficial Parceiro BDMG"
-                width={150}
-                height={92}
-                className={styles.heroPartnerLogo}
-                style={{ objectFit: "contain" }}
-                priority
-              />
-            </div>
-            <h1 className={styles.heroTitle}>
-              Crédito BDMG Inteligente para <span className={styles.heroTitleHighlight}>Pequenos Negócios</span>
-            </h1>
-            <p className={styles.heroDescription}>
-              Tenha acesso a crédito empresarial descomplicado, com os melhores prazos, taxas competitivas e menos burocracia. Potencialize o crescimento do seu negócio sem precisar adquirir produtos casados.
-            </p>
-            <div className={styles.heroButtons}>
-              <Link href="#simular" className="btn btn-primary">
-                Simular Crédito Agora
-              </Link>
-              <Link href="#como-funciona" className="btn btn-outline">
-                Como Funciona?
-              </Link>
-            </div>
-          </div>
-          <div className={styles.heroRightSpacer}></div>
-        </div>
-      </section>
+      <HeroCarousel />
 
       {/* 2. Destaques / Benefícios de Carência */}
       <section className={styles.highlightsBar}>

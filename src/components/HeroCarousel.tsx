@@ -85,9 +85,6 @@ export default function HeroCarousel() {
               />
             )}
           </div>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', backgroundColor: 'rgba(238, 102, 28, 0.15)', padding: '0.4rem 0.8rem', borderRadius: '4px', border: '1px solid rgba(238, 102, 28, 0.3)', width: 'fit-content', marginBottom: '-0.5rem' }}>
-            <span style={{ color: '#EE661C', fontWeight: 'bold', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px' }}>20 Anos de Experiência</span>
-          </div>
           <h1 className={styles.heroTitle}>
             {slide.title}<span className={styles.heroTitleHighlight}>{slide.highlight}</span>
           </h1>

@@ -42,9 +42,9 @@ const slides = [
   {
     id: 'consorcio',
     logo: null,
-    title: 'Planeje o Futuro com ',
-    highlight: 'Consórcio Inteligente',
-    description: 'A forma mais segura e econômica de planejar a compra do seu veículo ou imóvel, sem pagar juros para os bancos.',
+    title: 'Segurança patrimonial e ',
+    highlight: 'planejamento sob medida',
+    description: 'Consórcios imobiliários e automotivos estruturados sob medida por quem entende de estratégia financeira.',
     bgImage: '/assets/consorcio_hero_bg.jpg',
     primaryLink: '/consorcios#simular',
     secondaryLink: '/consorcios',

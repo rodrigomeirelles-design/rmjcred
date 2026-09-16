@@ -51,9 +51,9 @@ export default function Consorcios() {
           <Link href="/" className={styles.backLink}>
             &larr; Voltar para a Página Inicial
           </Link>
-          <h1 className={styles.title}>Consórcios</h1>
+          <h1 className={styles.title} style={{ maxWidth: '800px', fontSize: '2.5rem', lineHeight: '1.2' }}>Segurança patrimonial e planejamento sob medida para o seu próximo grande passo.</h1>
           <p className={styles.leadText}>
-            Planejamento inteligente para conquistas sólidas. O consórcio é a melhor alternativa para quem deseja adquirir bens sem pagar juros abusivos — com o suporte da RMJ e de administradoras parceiras autorizadas pelo Banco Central.
+            Consórcios imobiliários e automotivos estruturados sob medida por quem entende de estratégia financeira.
           </p>
         </div>
       </section>

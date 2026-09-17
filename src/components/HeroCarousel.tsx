@@ -34,7 +34,7 @@ const slides = [
     title: 'Transforme o seu Imóvel em ',
     highlight: 'Dinheiro na Conta',
     description: 'O Home Equity oferece as menores taxas do mercado usando seu imóvel quitado como garantia. Ideal para unificar dívidas ou investir.',
-    bgImage: '/assets/home_equity_hero_bg.jpg',
+    bgImage: '/assets/home_equity_hero_bg_v2.png',
     primaryLink: '/home-equity#simular',
     secondaryLink: '/home-equity',
     secondaryText: 'Saiba Mais'

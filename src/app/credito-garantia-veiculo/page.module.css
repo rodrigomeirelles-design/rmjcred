@@ -198,6 +198,8 @@
   color: var(--primary-color);
 }
 
+.tabContentWrapper {}
+
 /* Tab contents conditional show */
 .tabContent {
   display: none;

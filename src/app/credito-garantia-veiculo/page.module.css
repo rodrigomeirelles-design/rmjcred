@@ -213,9 +213,9 @@
   font-weight: 700;
 }
 
-#tab-comprador:checked ~ .tabContentWrapper .contentComprador,
-#tab-vendedor:checked ~ .tabContentWrapper .contentVendedor,
-#tab-contrato:checked ~ .tabContentWrapper .contentContrato {
+#tab-comprador:checked ~ .tabContentWrapper :global(.contentComprador),
+#tab-vendedor:checked ~ .tabContentWrapper :global(.contentVendedor),
+#tab-contrato:checked ~ .tabContentWrapper :global(.contentContrato) {
   display: block;
 }
 

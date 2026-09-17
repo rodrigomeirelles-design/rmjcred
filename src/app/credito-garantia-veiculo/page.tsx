@@ -51,7 +51,7 @@ export default function CreditoGarantiaVeiculo() {
 
             <div className={styles.tabContentWrapper}>
               {/* Como Funciona */}
-              <div className={`${styles.tabContent} ${styles.contentComprador}`}>
+              <div className={`${styles.tabContent} contentComprador`}>
                 <p className={styles.tabIntro}>
                   O processo é simples e totalmente digital. Você continua dirigindo seu veículo normalmente enquanto utiliza o crédito.
                 </p>
@@ -98,7 +98,7 @@ export default function CreditoGarantiaVeiculo() {
               </div>
 
               {/* Veículo Financiado */}
-              <div className={`${styles.tabContent} ${styles.contentVendedor}`}>
+              <div className={`${styles.tabContent} contentVendedor`}>
                 <p className={styles.tabIntro}>
                   O seu veículo atual ainda possui parcelas abertas? Nós também conseguimos fazer a operação de forma simples.
                 </p>
@@ -147,7 +147,7 @@ export default function CreditoGarantiaVeiculo() {
               </div>
 
               {/* Vantagens RMJ */}
-              <div className={`${styles.tabContent} ${styles.contentContrato}`}>
+              <div className={`${styles.tabContent} contentContrato`}>
                 <p className={styles.tabIntro}>
                   Por que contratar seu Crédito com Garantia de Veículo através da assessoria da RMJ Soluções de Crédito?
                 </p>

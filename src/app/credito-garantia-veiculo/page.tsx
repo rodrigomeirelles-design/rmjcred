@@ -39,14 +39,14 @@ export default function CreditoGarantiaVeiculo() {
           </div>
 
           <div className={styles.tabsContainer}>
-            <input type="radio" id="tab-como-funciona" name="vehicle-tabs" defaultChecked className={styles.tabRadio} />
-            <input type="radio" id="tab-requisitos" name="vehicle-tabs" className={styles.tabRadio} />
-            <input type="radio" id="tab-vantagens" name="vehicle-tabs" className={styles.tabRadio} />
+            <input type="radio" id="tab-comprador" name="vehicle-tabs" defaultChecked className={styles.tabRadio} />
+            <input type="radio" id="tab-vendedor" name="vehicle-tabs" className={styles.tabRadio} />
+            <input type="radio" id="tab-contrato" name="vehicle-tabs" className={styles.tabRadio} />
 
             <div className={styles.tabHeaders}>
-              <label htmlFor="tab-como-funciona" className={styles.tabLabel}>Como Funciona</label>
-              <label htmlFor="tab-requisitos" className={styles.tabLabel}>Veículo Financiado</label>
-              <label htmlFor="tab-vantagens" className={styles.tabLabel}>Vantagens RMJ</label>
+              <label htmlFor="tab-comprador" className={styles.tabLabel}>Como Funciona</label>
+              <label htmlFor="tab-vendedor" className={styles.tabLabel}>Veículo Financiado</label>
+              <label htmlFor="tab-contrato" className={styles.tabLabel}>Vantagens RMJ</label>
             </div>
 
             <div className={styles.tabContentWrapper}>
@@ -85,14 +85,14 @@ export default function CreditoGarantiaVeiculo() {
                     <h4>Sem burocracia</h4>
                     <p>Assessoria completa da RMJ para lidar com todos os trâmites do gravame e liberação contratual digital.</p>
                   </div>
-                  <a href="https://wa.me/5535997248658" target="_blank" rel="noopener noreferrer" className={`${styles.advantageCard} ${styles.whatsappCard}`}>
+                  <a href="https://wa.me/5535991084513" target="_blank" rel="noopener noreferrer" className={`${styles.advantageCard} ${styles.whatsappCard}`}>
                     <div className={styles.advantageIcon}>
                       <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
                       </svg>
                     </div>
                     <h4>Atendimento no WhatsApp</h4>
-                    <p>Faça uma simulação imediata do seu veículo com o Rodrigo pelo número <strong>(35) 99724-8658</strong>.</p>
+                    <p>Faça uma simulação imediata do seu veículo com o Rodrigo pelo número <strong>(35) 99108-4513</strong>.</p>
                   </a>
                 </div>
               </div>
@@ -134,14 +134,14 @@ export default function CreditoGarantiaVeiculo() {
                     <h4>Intermediação Completa</h4>
                     <p>Nós lidamos com o banco atual do seu financiamento para obter o boleto de quitação, sem dor de cabeça para você.</p>
                   </div>
-                  <a href="https://wa.me/5535997248658" target="_blank" rel="noopener noreferrer" className={`${styles.advantageCard} ${styles.whatsappCard}`}>
+                  <a href="https://wa.me/5535991084513" target="_blank" rel="noopener noreferrer" className={`${styles.advantageCard} ${styles.whatsappCard}`}>
                     <div className={styles.advantageIcon}>
                       <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
                       </svg>
                     </div>
                     <h4>Fale com o Consultor</h4>
-                    <p>Tire suas dúvidas sobre refinanciamento de carros com parcelas em aberto pelo WhatsApp <strong>(35) 99724-8658</strong>.</p>
+                    <p>Tire suas dúvidas sobre refinanciamento de carros com parcelas em aberto pelo WhatsApp <strong>(35) 99108-4513</strong>.</p>
                   </a>
                 </div>
               </div>
@@ -159,8 +159,8 @@ export default function CreditoGarantiaVeiculo() {
                         <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
                       </svg>
                     </div>
-                    <h4>Melhores Bancos do País</h4>
-                    <p>Parcerias com Itaú, BV, Santander, Creditas, Safra e Bradesco para garantir que você tenha a melhor proposta de juros.</p>
+                    <h4>Melhores Bancos do Mercado</h4>
+                    <p>Parcerias com as principais instituições do país (Itaú, BV, Santander, Creditas, Safra e Bradesco) para garantir que você tenha sempre a melhor proposta e a menor taxa de juros.</p>
                   </div>
                   <div className={styles.advantageCard}>
                     <div className={styles.advantageIcon}>
@@ -168,8 +168,8 @@ export default function CreditoGarantiaVeiculo() {
                         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
                       </svg>
                     </div>
-                    <h4>Dinheiro sem Destinação</h4>
-                    <p>Diferente de um financiamento tradicional, você pode usar o dinheiro da garantia para o que quiser: quitar dívidas, viajar, reformar ou investir.</p>
+                    <h4>20 Anos de Experiência</h4>
+                    <p>Mais de duas décadas de expertise no mercado de crédito de veículos. A RMJ garante total segurança, transparência e agilidade na aprovação da sua operação.</p>
                   </div>
                   <div className={styles.advantageCard}>
                     <div className={styles.advantageIcon}>
@@ -182,14 +182,14 @@ export default function CreditoGarantiaVeiculo() {
                     <h4>Taxas muito mais baixas</h4>
                     <p>Por oferecer o veículo como garantia, as taxas de juros são drasticamente menores do que empréstimo pessoal ou cartão de crédito.</p>
                   </div>
-                  <a href="https://wa.me/5535997248658" target="_blank" rel="noopener noreferrer" className={`${styles.advantageCard} ${styles.whatsappCard}`}>
+                  <a href="https://wa.me/5535991084513" target="_blank" rel="noopener noreferrer" className={`${styles.advantageCard} ${styles.whatsappCard}`}>
                     <div className={styles.advantageIcon}>
                       <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
                       </svg>
                     </div>
                     <h4>Simule sua Taxa</h4>
-                    <p>Envie os dados do seu veículo e encontre a melhor proposta de crédito por WhatsApp: <strong>(35) 99724-8658</strong>.</p>
+                    <p>Envie os dados do seu veículo e encontre a melhor proposta de crédito por WhatsApp: <strong>(35) 99108-4513</strong>.</p>
                   </a>
                 </div>
               </div>

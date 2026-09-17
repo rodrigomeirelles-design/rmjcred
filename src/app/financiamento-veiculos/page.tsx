@@ -59,7 +59,7 @@ export default function FinanciamentoVeiculos() {
 
             <div className={styles.tabContentWrapper}>
               {/* Conteúdo Comprador */}
-              <div className={`${styles.tabContent} ${styles.contentComprador}`}>
+              <div className={`${styles.tabContent} ${"contentComprador"}`}>
                 <p className={styles.tabIntro}>
                   Financiamento particular rápido e seguro entre pessoas físicas. Confira todas as vantagens e faça uma simulação agora mesmo.
                 </p>
@@ -94,20 +94,20 @@ export default function FinanciamentoVeiculos() {
                     <h4>Praticidade</h4>
                     <p>Faça a compra do seu veículo de onde quiser de forma rápida e segura, com assessoria contratual digital.</p>
                   </div>
-                  <a href="https://wa.me/5535997248658" target="_blank" rel="noopener noreferrer" className={`${styles.advantageCard} ${styles.whatsappCard}`}>
+                  <a href="https://wa.me/5535991084513" target="_blank" rel="noopener noreferrer" className={`${styles.advantageCard} ${styles.whatsappCard}`}>
                     <div className={styles.advantageIcon}>
                       <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
                       </svg>
                     </div>
                     <h4>Atendimento no WhatsApp</h4>
-                    <p>Você conta com atendimento humano e personalizado direto com o Rodrigo pelo número <strong>(35) 99724-8658</strong>.</p>
+                    <p>Você conta com atendimento humano e personalizado direto com o Rodrigo pelo número <strong>(35) 99108-4513</strong>.</p>
                   </a>
                 </div>
               </div>
 
               {/* Conteúdo Vendedor */}
-              <div className={`${styles.tabContent} ${styles.contentVendedor}`}>
+              <div className={`${styles.tabContent} ${"contentVendedor"}`}>
                 <p className={styles.tabIntro}>
                   Venda seu veículo para um particular de forma garantida. A RMJ financia o comprador e paga o valor à vista para você.
                 </p>
@@ -141,20 +141,20 @@ export default function FinanciamentoVeiculos() {
                     <h4>Quitação facilitada</h4>
                     <p>Se o seu veículo ainda possuir parcelas abertas ou saldo devedor, a RMJ cuida de todo o trâmite de quitação e liberação.</p>
                   </div>
-                  <a href="https://wa.me/5535997248658" target="_blank" rel="noopener noreferrer" className={`${styles.advantageCard} ${styles.whatsappCard}`}>
+                  <a href="https://wa.me/5535991084513" target="_blank" rel="noopener noreferrer" className={`${styles.advantageCard} ${styles.whatsappCard}`}>
                     <div className={styles.advantageIcon}>
                       <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
                       </svg>
                     </div>
                     <h4>Fale com o Consultor</h4>
-                    <p>Tire suas dúvidas sobre documentação e processos de venda pelo WhatsApp <strong>(35) 99724-8658</strong>.</p>
+                    <p>Tire suas dúvidas sobre documentação e processos de venda pelo WhatsApp <strong>(35) 99108-4513</strong>.</p>
                   </a>
                 </div>
               </div>
 
               {/* Conteúdo Refinanciamento */}
-              <div className={`${styles.tabContent} ${styles.contentContrato}`}>
+              <div className={`${styles.tabContent} ${"contentContrato"}`}>
                 <p className={styles.tabIntro}>
                   Busque taxas menores ou levante dinheiro em mãos refinanciando seu veículo atual com o suporte consultivo da RMJ.
                 </p>
@@ -189,14 +189,14 @@ export default function FinanciamentoVeiculos() {
                     <h4>Análise de portabilidade</h4>
                     <p>Avaliamos se o seu financiamento antigo é elegível para portabilidade de taxa nos principais bancos parceiros.</p>
                   </div>
-                  <a href="https://wa.me/5535997248658" target="_blank" rel="noopener noreferrer" className={`${styles.advantageCard} ${styles.whatsappCard}`}>
+                  <a href="https://wa.me/5535991084513" target="_blank" rel="noopener noreferrer" className={`${styles.advantageCard} ${styles.whatsappCard}`}>
                     <div className={styles.advantageIcon}>
                       <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
                       </svg>
                     </div>
                     <h4>Simule sua Taxa</h4>
-                    <p>Envie as condições básicas do seu contrato atual e buscaremos uma opção melhor via WhatsApp <strong>(35) 99724-8658</strong>.</p>
+                    <p>Envie as condições básicas do seu contrato atual e buscaremos uma opção melhor via WhatsApp <strong>(35) 99108-4513</strong>.</p>
                   </a>
                 </div>
               </div>

@@ -236,7 +236,7 @@ export default function Pronampe() {
               <p style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.85)', margin: 0 }}>
                 Tire suas dúvidas sobre documentos fiscais, faturamento ou taxas com o Rodrigo.
               </p>
-              <a href="https://wa.me/5535997248658" target="_blank" rel="noopener noreferrer" className="btn btn-accent" style={{ width: '100%', fontSize: '0.9rem' }}>
+              <a href="https://wa.me/5535991084513" target="_blank" rel="noopener noreferrer" className="btn btn-accent" style={{ width: '100%', fontSize: '0.9rem' }}>
                 Falar no WhatsApp
               </a>
             </div>

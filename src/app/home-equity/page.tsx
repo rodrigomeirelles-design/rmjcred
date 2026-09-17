@@ -151,7 +151,7 @@ export default function HomeEquity() {
               <p style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.85)', margin: 0 }}>
                 Envie os dados do seu imóvel residencial ou comercial para simulação rápida no WhatsApp.
               </p>
-              <a href="https://wa.me/5535997248658" target="_blank" rel="noopener noreferrer" className="btn btn-accent" style={{ width: '100%', fontSize: '0.9rem' }}>
+              <a href="https://wa.me/5535991084513" target="_blank" rel="noopener noreferrer" className="btn btn-accent" style={{ width: '100%', fontSize: '0.9rem' }}>
                 Simular no WhatsApp
               </a>
             </div>

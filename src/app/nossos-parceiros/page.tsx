@@ -11,6 +11,7 @@ export default function NossosParceiros() {
   const partnersList = [
     { name: "BDMG", logo: "/assets/logo-bdmg-simples.png" },
     { name: "BNDES", logo: "/assets/logo-bndes.png" },
+    { name: "Ademicon", logo: "/assets/ademicon.svg" },
     { name: "Santander", logo: "/assets/logo-santander.png" },
     { name: "Itaú", logo: "/assets/logo-itau.png" },
     { name: "Banco Daycoval", logo: "/assets/logo-daycoval.png" },
@@ -22,8 +23,7 @@ export default function NossosParceiros() {
     { name: "Banco Bari", logo: "/assets/logo-bari.png" },
     { name: "Omni", logo: "/assets/logo-omni.png" },
     { name: "Sim", logo: "/assets/logo-sim.png" },
-    { name: "Banco Safra", logo: "/assets/logo-safra.png" },
-    { name: "Ademicon", logo: "/assets/ademicon.svg" }
+    { name: "Banco Safra", logo: "/assets/logo-safra.png" }
   ];
 
   return (

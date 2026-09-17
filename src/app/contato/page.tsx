@@ -41,8 +41,8 @@ export default function Contato() {
                 <div className={styles.cardDetails}>
                   <h4 className={styles.cardTitle}>WhatsApp Oficial</h4>
                   <p className={styles.cardText}>Atendimento comercial das 8h às 18h.</p>
-                  <a href="https://wa.me/5535997248658" target="_blank" rel="noopener noreferrer" className={styles.cardLink}>
-                    (35) 99724-8658
+                  <a href="https://wa.me/5535991084513" target="_blank" rel="noopener noreferrer" className={styles.cardLink}>
+                    (35) 99108-4513
                   </a>
                 </div>
               </div>
@@ -52,8 +52,8 @@ export default function Contato() {
                 <div className={styles.cardDetails}>
                   <h4 className={styles.cardTitle}>Telefone Fixo / Celular</h4>
                   <p className={styles.cardText}>Ligue para falar com nossa mesa de crédito.</p>
-                  <a href="tel:+5535997248658" className={styles.cardLink}>
-                    (35) 99724-8658
+                  <a href="tel:+5535991084513" className={styles.cardLink}>
+                    (35) 99108-4513
                   </a>
                 </div>
               </div>

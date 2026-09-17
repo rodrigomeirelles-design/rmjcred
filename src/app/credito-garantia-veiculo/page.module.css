@@ -210,17 +210,17 @@
 }
 
 /* Logic to display correct content based on radio check */
-#tab-comprador:checked ~ .tabHeaders label[for="tab-comprador"],
-#tab-vendedor:checked ~ .tabHeaders label[for="tab-vendedor"],
-#tab-contrato:checked ~ .tabHeaders label[for="tab-contrato"] {
+:global(#tab-comprador):checked ~ .tabHeaders label[for="tab-comprador"],
+:global(#tab-vendedor):checked ~ .tabHeaders label[for="tab-vendedor"],
+:global(#tab-contrato):checked ~ .tabHeaders label[for="tab-contrato"] {
   border-bottom: 3px solid var(--secondary-color);
   color: var(--secondary-color);
   font-weight: 700;
 }
 
-#tab-comprador:checked ~ .tabContentWrapper :global(.contentComprador),
-#tab-vendedor:checked ~ .tabContentWrapper :global(.contentVendedor),
-#tab-contrato:checked ~ .tabContentWrapper :global(.contentContrato) {
+:global(#tab-comprador):checked ~ .tabContentWrapper :global(.contentComprador),
+:global(#tab-vendedor):checked ~ .tabContentWrapper :global(.contentVendedor),
+:global(#tab-contrato):checked ~ .tabContentWrapper :global(.contentContrato) {
   display: block;
 }
 

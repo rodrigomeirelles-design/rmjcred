@@ -71,7 +71,7 @@ export default function BlogHome() {
           <p>
             Nosso time de consultores está pronto para te atender de forma humana, clara e sem compromisso. Fale conosco agora mesmo.
           </p>
-          <a href="https://wa.me/5535997248658" target="_blank" rel="noopener noreferrer" className="btn btn-primary">
+          <a href="https://wa.me/5535991084513" target="_blank" rel="noopener noreferrer" className="btn btn-primary">
             Chamar no WhatsApp
           </a>
         </div>

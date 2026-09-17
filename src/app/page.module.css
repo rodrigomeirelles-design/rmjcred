@@ -103,27 +103,29 @@
 
 .sectionHeader {
   text-align: center;
-  max-width: 700px;
+  max-width: 800px;
   margin: 0 auto 4rem auto;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 1rem;
 }
 
 .sectionSubtitle {
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   color: var(--secondary-color);
-  font-weight: 700;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 2px;
 }
 
 .sectionTitle {
-  font-size: 2.25rem;
+  font-size: 2.85rem;
+  font-weight: 800;
+  line-height: 1.15;
 }
 
 .sectionDesc {
-  font-size: 1rem;
+  font-size: 1.15rem;
   color: var(--neutral-muted);
 }
 
@@ -328,23 +330,33 @@
 .partners {
   background-color: var(--neutral-white);
   border-top: 1px solid var(--neutral-border);
+  overflow: hidden;
 }
 
 .partnersGrid {
   display: flex;
-  flex-wrap: wrap;
-  gap: 2.5rem 3.5rem;
+  gap: 3.5rem;
   align-items: center;
-  justify-content: center;
   margin-top: 3rem;
   margin-bottom: 3rem;
+  width: max-content;
+  animation: marquee 35s linear infinite;
+}
+
+.partnersGrid:hover {
+  animation-play-state: paused;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
 .partnerLogoWrapper {
   position: relative;
-  width: calc(50% - 1.75rem);
-  max-width: 140px;
+  width: 140px;
   height: 60px;
+  flex-shrink: 0;
   filter: grayscale(100%);
   opacity: 0.65;
   transition: var(--transition-smooth);
@@ -365,11 +377,6 @@
   .heroContainer { grid-template-columns: 1.1fr 0.9fr; }
   .highlightsContainer { grid-template-columns: repeat(3, 1fr); }
   .simulatorContainer { grid-template-columns: 1fr 1fr; }
-  .partnersGrid { gap: 3rem 4rem; }
-  .partnerLogoWrapper {
-    width: auto;
-    flex: 0 0 160px;
-  }
 }
 
 @media (min-width: 992px) {

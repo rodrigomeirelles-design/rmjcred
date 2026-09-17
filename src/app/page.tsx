@@ -464,78 +464,37 @@ export default function Home() {
           </div>
 
           <div className={styles.partnersGrid}>
-            <div className={styles.partnerLogoWrapper}>
-              <Image
-                src="/assets/logo-bdmg-simples.png"
-                alt="Logo BDMG"
-                fill
-                style={{ objectFit: "contain" }}
-              />
-            </div>
-            <div className={styles.partnerLogoWrapper}>
-              <Image
-                src="/assets/logo-bndes.png"
-                alt="Logo BNDES"
-                fill
-                style={{ objectFit: "contain" }}
-              />
-            </div>
-            <div className={styles.partnerLogoWrapper}>
-              <Image
-                src="/assets/logo-santander.png"
-                alt="Logo Santander"
-                fill
-                style={{ objectFit: "contain" }}
-              />
-            </div>
-            <div className={styles.partnerLogoWrapper}>
-              <Image
-                src="/assets/logo-itau.png"
-                alt="Logo Itaú"
-                fill
-                style={{ objectFit: "contain" }}
-              />
-            </div>
-            <div className={styles.partnerLogoWrapper}>
-              <Image
-                src="/assets/logo-daycoval.png"
-                alt="Logo Banco Daycoval"
-                fill
-                style={{ objectFit: "contain" }}
-              />
-            </div>
-            <div className={styles.partnerLogoWrapper}>
-              <Image
-                src="/assets/logo-c6bank.png"
-                alt="Logo C6 Bank"
-                fill
-                style={{ objectFit: "contain" }}
-              />
-            </div>
-            <div className={styles.partnerLogoWrapper}>
-              <Image
-                src="/assets/logo-creditas.png"
-                alt="Logo Creditas"
-                fill
-                style={{ objectFit: "contain" }}
-              />
-            </div>
-            <div className={styles.partnerLogoWrapper}>
-              <Image
-                src="/assets/logo-bv.png"
-                alt="Logo BV Financeira"
-                fill
-                style={{ objectFit: "contain" }}
-              />
-            </div>
-            <div className={styles.partnerLogoWrapper}>
-              <Image
-                src="/assets/logo-bradesco.png"
-                alt="Logo Bradesco"
-                fill
-                style={{ objectFit: "contain" }}
-              />
-            </div>
+            {[
+              { src: "/assets/logo-bdmg-simples.png", alt: "Logo BDMG" },
+              { src: "/assets/logo-bndes.png", alt: "Logo BNDES" },
+              { src: "/assets/logo-santander.png", alt: "Logo Santander" },
+              { src: "/assets/logo-itau.png", alt: "Logo Itaú" },
+              { src: "/assets/logo-daycoval.png", alt: "Logo Banco Daycoval" },
+              { src: "/assets/logo-c6bank.png", alt: "Logo C6 Bank" },
+              { src: "/assets/logo-creditas.png", alt: "Logo Creditas" },
+              { src: "/assets/logo-bv.png", alt: "Logo BV Financeira" },
+              { src: "/assets/logo-bradesco.png", alt: "Logo Bradesco" },
+            ].map((logo, idx) => (
+              <div key={idx} className={styles.partnerLogoWrapper}>
+                <Image src={logo.src} alt={logo.alt} fill style={{ objectFit: "contain" }} />
+              </div>
+            ))}
+            {/* Duplicata para o efeito de carrossel infinito */}
+            {[
+              { src: "/assets/logo-bdmg-simples.png", alt: "Logo BDMG" },
+              { src: "/assets/logo-bndes.png", alt: "Logo BNDES" },
+              { src: "/assets/logo-santander.png", alt: "Logo Santander" },
+              { src: "/assets/logo-itau.png", alt: "Logo Itaú" },
+              { src: "/assets/logo-daycoval.png", alt: "Logo Banco Daycoval" },
+              { src: "/assets/logo-c6bank.png", alt: "Logo C6 Bank" },
+              { src: "/assets/logo-creditas.png", alt: "Logo Creditas" },
+              { src: "/assets/logo-bv.png", alt: "Logo BV Financeira" },
+              { src: "/assets/logo-bradesco.png", alt: "Logo Bradesco" },
+            ].map((logo, idx) => (
+              <div key={`dup-${idx}`} className={styles.partnerLogoWrapper}>
+                <Image src={logo.src} alt={logo.alt} fill style={{ objectFit: "contain" }} />
+              </div>
+            ))}
           </div>
           
           <div className={styles.partnersCTA}>

@@ -56,10 +56,8 @@ export default function RootLayout({
               "url": "https://www.rmjcred.com.br",
               "description": "Correspondente bancário parceiro oficial do BDMG no sul de Minas Gerais, oferecendo capital de giro, financiamento imobiliário e estruturação de crédito.",
               "sameAs": [
-                "https://www.linkedin.com/company/[LINKEDIN-DA-EMPRESA]",
-                "https://cnpj.biz/[CNPJ-DA-EMPRESA]",
-                "https://[LINK-BNI-MANTIQUEIRA]",
-                "https://[LINK-CDL-ITAJUBA]"
+                "https://cnpj.biz/57115632000118",
+                "https://www.linkedin.com/company/rmj-solu%C3%A7%C3%B5es-de-cr%C3%A9dito-rmj-cred/"
               ],
               "address": {
                 "@type": "PostalAddress",

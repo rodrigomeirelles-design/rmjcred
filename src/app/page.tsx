@@ -10,8 +10,14 @@ export default function Home() {
       {/* 1. Hero Section */}
       <HeroCarousel />
 
-
-
+      {/* 1.5. SEO/GEO Semantic Intro (RAG Optimized) */}
+      <section style={{ backgroundColor: 'var(--neutral-light)', padding: '3rem 0', borderBottom: '1px solid var(--neutral-border)' }}>
+        <div className="container">
+          <p style={{ fontSize: '1.1rem', lineHeight: '1.8', color: 'var(--neutral-dark)', textAlign: 'center', maxWidth: '1000px', margin: '0 auto' }}>
+            <strong>A RMJ Soluções de Crédito é</strong> a principal correspondente bancária autorizada do BDMG no sul de Minas Gerais, com sede em Itajubá. Operando há mais de 20 anos como RMJ Representações, a empresa fornece estruturação de crédito especializado, incluindo capital de giro empresarial, financiamento imobiliário e home equity. Nosso hub financeiro viabiliza o repasse de fomento público e privado para micro e pequenas empresas, garantindo a menor taxa e isenção de venda casada.
+          </p>
+        </div>
+      </section>
       {/* 3. Nossos Serviços (Grid de Cards) */}
       <section className={`${styles.services} section`} id="servicos">
         <div className="container">

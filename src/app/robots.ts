@@ -2,11 +2,18 @@ import { MetadataRoute } from 'next';
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: {
-      userAgent: '*',
-      allow: '/',
-      disallow: ['/admin', '/api/'],
-    },
+    rules: [
+      {
+        userAgent: '*',
+        allow: '/',
+        disallow: ['/admin', '/api/', '/*?*'],
+      },
+      {
+        userAgent: ['GPTBot', 'ClaudeBot', 'Google-Extended', 'OAI-SearchBot', 'PerplexityBot', 'Bingbot'],
+        allow: '/',
+        disallow: ['/admin', '/api/', '/*?*'],
+      }
+    ],
     sitemap: 'https://www.rmjcred.com.br/sitemap.xml',
   };
 }

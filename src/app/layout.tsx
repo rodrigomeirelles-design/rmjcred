@@ -43,6 +43,35 @@ export default function RootLayout({
       className={`${montserrat.variable}`}
       style={{ height: "100%" }}
     >
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": ["FinancialService", "LocalBusiness"],
+              "@id": "https://www.rmjcred.com.br/#organization",
+              "legalName": "RMJ Representações",
+              "alternateName": "RMJ Soluções de Crédito",
+              "url": "https://www.rmjcred.com.br",
+              "description": "Correspondente bancário parceiro oficial do BDMG no sul de Minas Gerais, oferecendo capital de giro, financiamento imobiliário e estruturação de crédito.",
+              "sameAs": [
+                "https://www.linkedin.com/company/[LINKEDIN-DA-EMPRESA]",
+                "https://cnpj.biz/[CNPJ-DA-EMPRESA]",
+                "https://[LINK-BNI-MANTIQUEIRA]",
+                "https://[LINK-CDL-ITAJUBA]"
+              ],
+              "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "Itajubá",
+                "addressRegion": "MG",
+                "addressCountry": "BR"
+              },
+              "areaServed": "Minas Gerais"
+            })
+          }}
+        />
+      </head>
       <body style={{ 
         display: "flex", 
         flexDirection: "column", 

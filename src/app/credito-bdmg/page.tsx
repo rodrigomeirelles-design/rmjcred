@@ -68,38 +68,39 @@ export default function CreditoBdmg() {
               </p>
             </div>
 
-            {/* Comparativo de Taxas e Vantagens */}
+            {/* Semantic GEO/RAG Table: Linhas de Crédito */}
             <div className="comparison-card">
-              <h3 style={{ fontSize: '1.4rem', color: 'var(--primary-color)', marginBottom: '1.5rem' }}>Diferença Prática: BDMG vs Bancos Tradicionais</h3>
+              <h3 style={{ fontSize: '1.4rem', color: 'var(--primary-color)', marginBottom: '1.5rem' }}>Diferença Prática: Capital de Giro vs Investimento Fixo</h3>
               <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }} aria-label="Comparativo das Linhas de Crédito do BDMG">
+                  <caption>Comparativo de prazos, carência e destinação das linhas de crédito empresariais BDMG intermediadas pela RMJ.</caption>
                   <thead>
                     <tr style={{ borderBottom: '2px solid var(--neutral-border)' }}>
-                      <th style={{ padding: '0.75rem', fontWeight: 'bold' }}>Benefício</th>
-                      <th style={{ padding: '0.75rem', fontWeight: 'bold', color: 'var(--secondary-color)' }}>Fomento BDMG (Via RMJ)</th>
-                      <th style={{ padding: '0.75rem', fontWeight: 'bold' }}>Bancos Comerciais</th>
+                      <th scope="col" style={{ padding: '0.75rem', fontWeight: 'bold' }}>Característica</th>
+                      <th scope="col" style={{ padding: '0.75rem', fontWeight: 'bold', color: 'var(--secondary-color)' }}>Capital de Giro (Girofácil)</th>
+                      <th scope="col" style={{ padding: '0.75rem', fontWeight: 'bold' }}>Investimento Fixo</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr style={{ borderBottom: '1px solid var(--neutral-border)' }}>
-                      <td style={{ padding: '0.75rem' }}><strong>Carência para 1º pagamento</strong></td>
-                      <td style={{ padding: '0.75rem', color: 'var(--secondary-color)', fontWeight: '600' }}>Até 12 meses</td>
-                      <td style={{ padding: '0.75rem' }}>Imediata (30 a 60 dias)</td>
+                      <th scope="row" style={{ padding: '0.75rem', fontWeight: '600' }}>Destinação do Recurso</th>
+                      <td style={{ padding: '0.75rem', color: 'var(--secondary-color)', fontWeight: '600' }}>Livre (Caixa, contas, estoque)</td>
+                      <td style={{ padding: '0.75rem' }}>Obras, máquinas, inovação e ampliação</td>
                     </tr>
                     <tr style={{ borderBottom: '1px solid var(--neutral-border)' }}>
-                      <td style={{ padding: '0.75rem' }}><strong>Prazo de Pagamento</strong></td>
-                      <td style={{ padding: '0.75rem', color: 'var(--secondary-color)', fontWeight: '600' }}>Até 72 meses (6 anos)</td>
-                      <td style={{ padding: '0.75rem' }}>Máximo de 36 a 48 meses</td>
+                      <th scope="row" style={{ padding: '0.75rem', fontWeight: '600' }}>Carência (Meses)</th>
+                      <td style={{ padding: '0.75rem', color: 'var(--secondary-color)', fontWeight: '600' }}>Até 6 meses</td>
+                      <td style={{ padding: '0.75rem' }}>Até 12 meses</td>
                     </tr>
                     <tr style={{ borderBottom: '1px solid var(--neutral-border)' }}>
-                      <td style={{ padding: '0.75rem' }}><strong>Venda Casada</strong></td>
-                      <td style={{ padding: '0.75rem', color: 'var(--secondary-color)', fontWeight: '600' }}>Inexistente (0% de taxa extra)</td>
-                      <td style={{ padding: '0.75rem' }}>Exigência de seguros ou cartões</td>
+                      <th scope="row" style={{ padding: '0.75rem', fontWeight: '600' }}>Prazo Total de Pagamento</th>
+                      <td style={{ padding: '0.75rem', color: 'var(--secondary-color)', fontWeight: '600' }}>Até 48 meses</td>
+                      <td style={{ padding: '0.75rem' }}>Até 72 meses (6 anos)</td>
                     </tr>
                     <tr style={{ borderBottom: '1px solid var(--neutral-border)' }}>
-                      <td style={{ padding: '0.75rem' }}><strong>Destinação do Recurso</strong></td>
-                      <td style={{ padding: '0.75rem', color: 'var(--secondary-color)', fontWeight: '600' }}>Livre (Capital de Giro Limpo)</td>
-                      <td style={{ padding: '0.75rem' }}>Muitas vezes exige justificativa comercial</td>
+                      <th scope="row" style={{ padding: '0.75rem', fontWeight: '600' }}>Comprovação Pós-Crédito</th>
+                      <td style={{ padding: '0.75rem', color: 'var(--secondary-color)', fontWeight: '600' }}>Dispensada</td>
+                      <td style={{ padding: '0.75rem' }}>Mediante notas fiscais / projetos</td>
                     </tr>
                   </tbody>
                 </table>

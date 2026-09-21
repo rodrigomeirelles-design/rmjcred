@@ -134,7 +134,7 @@ export const blogPosts: BlogPost[] = [
         "✅ **Ganha extra** sem sair de Itajubá  \\n✅ **Cliente fica satisfeito** (taxa melhor)  \\n✅ **Você fica bem com cliente** (resolveu problema dele)  \\n✅ **RMJ faz todo o trabalho** (você só indica)  \\n✅ **Sem limite de comissão** (quanto mais indica, mais ganha)",
         "**Como funciona a comissão:** para cada cliente indicado que for aprovado, você recebe uma comissão calculada sobre o valor do crédito liberado. O valor exato é definido conforme a modalidade e o volume — entre em contato para conhecer as condições atuais do programa.",
         "✅ Contadores  \\n✅ Consultores empresariais  \\n✅ Advogados (com clientes empresariais)  \\n✅ Membros BNI  \\n✅ Proprietários de imobiliárias  \\n✅ Corretores de imóveis  \\n✅ Qualquer um com acesso a clientes que precisam de crédito",
-        "**1. Faça Contato:**\\nWhatsApp: (35) 99724-8658  \\nEmail: contato@rmjcred.com.br",
+        "**1. Faça Contato:**\\nWhatsApp: (35) 99108-4513  \\nEmail: contato@rmjcred.com.br",
         "**2. Reunião de Boas-Vindas:**\\nRMJ apresenta o programa, condições de comissão e forma de trabalho.",
         "**3. Você Começa a Indicar:**\\nSempre que um cliente precisar, você indica a RMJ.",
         "**4. RMJ Cuida do Resto:**\\nAprovação, documentação, assinatura—tudo.",
@@ -142,7 +142,7 @@ export const blogPosts: BlogPost[] = [
         "✅ **Maior taxa de aprovação** do mercado  \\n✅ **Resposta rápida** (em 2 dias)  \\n✅ **Contato direto** com especialista  \\n✅ **Sem cota mínima** de indicações  \\n✅ **Comissão garantida** para cada aprovação",
         "*\"O programa de parceria da RMJ é fantástico. Consigo ajudar meus clientes a conseguirem crédito barato de verdade e ainda faturo uma excelente renda extra com as comissões.\"* — Marcos (Contador)",
         "Quer se tornar Parceiro RMJ?",
-        "**Envie um WhatsApp:**\\n→ (35) 99724-8658",
+        "**Envie um WhatsApp:**\\n→ (35) 99108-4513",
         "**Ou preencha o formulário:**\\n→ rmjcred.com.br/programa-parceiro",
         "*Escrito por **RMJ Soluções de Crédito** | Correspondente BDMG | Itajubá, MG*"
       ]
@@ -167,7 +167,7 @@ export const blogPosts: BlogPost[] = [
   'date': '28 de Maio de 2026',
   'readTime': '4 min de leitura',
   'category': 'Veículos',
-  'image': '/assets/blog/blog_vantagens_veiculo.png',
+  'image': '/assets/blog/blog_vantagens_veiculo_v2.jpg',
   'seoKeywords': ['vantagens de financiar veiculo particular', 'comprar carro direto do dono', 'economizar no financiamento de carro', 'taxa de juros financiamento veiculo usado'],
   'content': ['Ao decidir comprar um carro seminovo ou usado, o consumidor se depara com dois caminhos principais: negociar em uma concessionária/garagem ou fechar negócio direto com o proprietário particular. Embora as lojas ofereçam o veículo lavado e pronto no pátio, essa conveniência tem um preço alto que impacta diretamente o bolso do comprador por meio de margens embutidas no preço final e taxas ocultas.',
               "Uma das maiores vantagens de financiar um veículo particular é a ausência do 'markup' da loja. Concessionárias precisam arcar com custos fixos elevados (aluguel de pátio, funcionários, marketing, impostos de revenda) e repassam essa conta ao consumidor inflando o preço de tabela do carro. Ao comprar direto do dono, você paga o valor real de mercado (muitas vezes abaixo da Tabela Fipe) e economiza de saída milhares de reais.",

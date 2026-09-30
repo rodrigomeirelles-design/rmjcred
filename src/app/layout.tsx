@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
+import AnalyticsProvider from "@/components/AnalyticsProvider";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -76,6 +77,7 @@ export default function RootLayout({
         minHeight: "100vh",
         paddingTop: "70px" /* Espaço para a Navbar fixa */
       }}>
+        <AnalyticsProvider />
         <Navbar />
         <main style={{ flex: "1 0 auto" }}>
           {children}

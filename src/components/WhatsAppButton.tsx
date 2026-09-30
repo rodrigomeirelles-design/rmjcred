@@ -1,8 +1,15 @@
+"use client";
+
 import Image from "next/image";
 import styles from "./WhatsAppButton.module.css";
+import { trackWhatsAppClick } from "@/lib/analytics";
 
 export default function WhatsAppButton() {
-  const whatsappUrl = "https://wa.me/5535997248658?text=Olá,%20acessei%20o%20site%20da%20RMJ%20e%20gostaria%20de%20solicitar%20uma%20simulação%20de%20crédito.";
+  const whatsappUrl = "https://wa.me/5535991084513?text=Olá,%20acessei%20o%20site%20da%20RMJ%20e%20gostaria%20de%20solicitar%20uma%20simulação%20de%20crédito.";
+
+  const handleClick = () => {
+    trackWhatsAppClick("floating");
+  };
 
   return (
     <a
@@ -11,6 +18,7 @@ export default function WhatsAppButton() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Fale conosco pelo WhatsApp"
+      onClick={handleClick}
     >
       <Image
         src="/assets/whatsapp-icon.png"

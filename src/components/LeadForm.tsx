@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import styles from "./LeadForm.module.css";
+import { trackFormSubmit, trackFormBegin } from "@/lib/analytics";
 
 interface LeadFormProps {
   defaultService?: string;
@@ -25,6 +26,14 @@ export default function LeadForm({ defaultService = "BDMG", defaultValor = "" }:
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [formStarted, setFormStarted] = useState(false);
+
+  const handleFormFocus = () => {
+    if (!formStarted) {
+      setFormStarted(true);
+      trackFormBegin("simulador_credito");
+    }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -59,6 +68,13 @@ export default function LeadForm({ defaultService = "BDMG", defaultValor = "" }:
         body: JSON.stringify(formData),
       });
 
+      // 2. Rastrear conversão de lead no GA4/GTM
+      trackFormSubmit({
+        form_type: "simulador_credito",
+        service_selected: formData.servico,
+        estimated_amount: formData.valor || formData.valorVeiculo || "",
+      });
+
       setSuccess(true);
 
     } catch (error) {
@@ -85,7 +101,7 @@ export default function LeadForm({ defaultService = "BDMG", defaultValor = "" }:
           </p>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className={styles.form}>
+        <form onSubmit={handleSubmit} onFocus={handleFormFocus} className={styles.form}>
           <div className={styles.formGroup}>
             <label htmlFor="nome" className={styles.label}>Nome Completo *</label>
             <input

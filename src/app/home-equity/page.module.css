@@ -190,3 +190,10 @@
   gap: 3rem;
   align-items: center;
 }
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 2.25rem;
+    line-height: 1.2;
+  }
+}

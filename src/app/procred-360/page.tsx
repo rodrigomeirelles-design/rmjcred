@@ -4,8 +4,8 @@ import styles from "./page.module.css";
 import LeadForm from "@/components/LeadForm";
 
 export const metadata = {
-  title: "ProCred 360 em Itajubá: Fomento e Crédito para Microempresas | RMJ",
-  description: "Acelere sua microempresa com a linha ProCred 360 em Itajubá. Taxas subsidiadas de Selic + 5% ao ano, carência diferenciada e suporte especializado da RMJ.",
+  title: "ProCred 360 em Itajubá e Sul de Minas | RMJ Soluções de Crédito",
+  description: "A melhor opção de procred 360 para você e sua empresa em Itajubá e Sul de Minas. Simule agora com a RMJ Soluções de Crédito.",
 };
 
 export default function Procred360() {

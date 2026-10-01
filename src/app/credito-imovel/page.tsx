@@ -4,13 +4,32 @@ import styles from "./page.module.css";
 import LeadForm from "@/components/LeadForm";
 
 export const metadata = {
-  title: "Crédito Imobiliário e Lotes em Itajubá | RMJ",
-  description: "Compre seu imóvel comercial, residencial ou lote com a menor taxa de juros. Simulamos e aprovamos seu crédito imobiliário rapidamente nos maiores bancos.",
+  title: "Crédito Imobiliário em Itajubá e Sul de Minas | RMJ Soluções de Crédito",
+  description: "A melhor opção de crédito imobiliário para você e sua empresa em Itajubá e Sul de Minas. Simule agora com a RMJ Soluções de Crédito.",
 };
 
 export default function CreditoImovel() {
   return (
     <>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Service",
+            "name": "Crédito Imobiliário",
+            "provider": {
+              "@id": "https://rmjcred.com.br/#organizacao"
+            },
+            "areaServed": [
+              { "@type": "City", "name": "Itajubá" },
+              { "@type": "AdministrativeArea", "name": "Sul de Minas Gerais" }
+            ]
+          })
+        }}
+      />
+    
       {/* 1. Cabeçalho da Página */}
       <section className={styles.headerSection}>
         <div className={`${styles.titleContainer} container`}>

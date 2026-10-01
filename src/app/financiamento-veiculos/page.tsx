@@ -4,13 +4,32 @@ import styles from "./page.module.css";
 import LeadForm from "@/components/LeadForm";
 
 export const metadata = {
-  title: "Financiamento de Veículos e Carros em Itajubá | RMJ",
-  description: "Simule e financie carros novos, seminovos e veículos comerciais com as melhores taxas do mercado através da RMJ Soluções de Crédito.",
+  title: "Financiamento de Veículos em Itajubá e Sul de Minas | RMJ Soluções de Crédito",
+  description: "A melhor opção de financiamento de veículos para você e sua empresa em Itajubá e Sul de Minas. Simule agora com a RMJ Soluções de Crédito.",
 };
 
 export default function FinanciamentoVeiculos() {
   return (
     <>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Service",
+            "name": "Financiamento de Veículos",
+            "provider": {
+              "@id": "https://rmjcred.com.br/#organizacao"
+            },
+            "areaServed": [
+              { "@type": "City", "name": "Itajubá" },
+              { "@type": "AdministrativeArea", "name": "Sul de Minas Gerais" }
+            ]
+          })
+        }}
+      />
+    
       {/* 1. Cabeçalho da Página */}
       <section className={styles.headerSection}>
         <div className={`${styles.titleContainer} container`}>

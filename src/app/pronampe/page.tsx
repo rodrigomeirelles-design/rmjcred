@@ -4,8 +4,8 @@ import styles from "./page.module.css";
 import LeadForm from "@/components/LeadForm";
 
 export const metadata = {
-  title: "Pronampe em Itajubá: Crédito para Micro e Pequenas Empresas | RMJ",
-  description: "Obtenha crédito empresarial facilitado do PRONAMPE em Itajubá e região. Menores taxas garantidas (Selic + 6%), carência de 12 meses e assessoria RMJ.",
+  title: "Fomento PRONAMPE em Itajubá e Sul de Minas | RMJ Soluções de Crédito",
+  description: "A melhor opção de fomento pronampe para você e sua empresa em Itajubá e Sul de Minas. Simule agora com a RMJ Soluções de Crédito.",
 };
 
 export default function Pronampe() {

@@ -4,13 +4,32 @@ import styles from "./page.module.css";
 import LeadForm from "@/components/LeadForm";
 
 export const metadata = {
-  title: "Home Equity em Itajubá: Empréstimo com Garantia | RMJ",
-  description: "Consiga dinheiro rápido em mãos usando seu imóvel residencial ou comercial como garantia. Prazos de até 20 anos e juros reduzidos sem precisar vender.",
+  title: "Home Equity em Itajubá e Sul de Minas | RMJ Soluções de Crédito",
+  description: "A melhor opção de home equity para você e sua empresa em Itajubá e Sul de Minas. Simule agora com a RMJ Soluções de Crédito.",
 };
 
 export default function HomeEquity() {
   return (
     <>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Service",
+            "name": "Home Equity",
+            "provider": {
+              "@id": "https://rmjcred.com.br/#organizacao"
+            },
+            "areaServed": [
+              { "@type": "City", "name": "Itajubá" },
+              { "@type": "AdministrativeArea", "name": "Sul de Minas Gerais" }
+            ]
+          })
+        }}
+      />
+    
       {/* 1. Cabeçalho da Página */}
       <section className={styles.headerSection}>
         <div className={`${styles.titleContainer} container`}>
@@ -24,9 +43,7 @@ export default function HomeEquity() {
               <li style={{ color: '#fff' }}>Home Equity</li>
             </ol>
           </nav>
-          <h1 className={styles.title}>
-            Home Equity / Crédito com <span className={styles.italicTitle}>Garantia de Imóvel</span>
-          </h1>
+          <h1 className={styles.title}>Home Equity / Crédito com <span className={styles.italicTitle}>Garantia de Imóvel</span> <br/><span style={fontSize: "0.5em", fontWeight: "normal"}>em Itajubá e Sul de Minas</span></h1>
           <p className={styles.leadText}>
             Use seu imóvel quitado (residencial ou comercial) como garantia para captar dinheiro em mãos com as menores taxas do mercado de crédito, mantendo a posse do bem.
           </p>

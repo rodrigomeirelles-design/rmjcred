@@ -4,22 +4,39 @@ import styles from "./page.module.css";
 import LeadForm from "@/components/LeadForm";
 
 export const metadata = {
-  title: "Crédito BDMG em Itajubá com 12 Meses de Carência | RMJ",
-  description: "Impulsione sua micro ou pequena empresa com a menor taxa do mercado. Crédito de fomento BDMG em Itajubá e região com até 72 meses de prazo e sem venda casada.",
+  title: "Capital de Giro BDMG em Itajubá e Sul de Minas | RMJ Soluções de Crédito",
+  description: "A melhor opção de capital de giro bdmg para você e sua empresa em Itajubá e Sul de Minas. Simule agora com a RMJ Soluções de Crédito.",
 };
 
 export default function CreditoBdmg() {
   return (
     <>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Service",
+            "name": "Capital de Giro BDMG",
+            "provider": {
+              "@id": "https://rmjcred.com.br/#organizacao"
+            },
+            "areaServed": [
+              { "@type": "City", "name": "Itajubá" },
+              { "@type": "AdministrativeArea", "name": "Sul de Minas Gerais" }
+            ]
+          })
+        }}
+      />
+    
       {/* 1. Cabeçalho da Página */}
       <section className={styles.headerSection}>
         <div className={`${styles.titleContainer} container`}>
           <div className={styles.headerLogoWrapper}>
              <Image src="/assets/logo-bdmg-parceiro-244x150.png" alt="Parceiro BDMG" width={140} height={45} style={{ objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
           </div>
-          <h1 className={styles.title} style={{ maxWidth: '600px', fontSize: '3.5rem', lineHeight: '1.1', fontWeight: '800' }}>
-            Crédito BDMG Inteligente para <span className={styles.orangeTitle}>Pequenos Negócios</span>
-          </h1>
+          <h1 className={styles.title} style={{ maxWidth: '600px', fontSize: '3.5rem', lineHeight: '1.1', fontWeight: '800' }}>Crédito BDMG Inteligente para <span className={styles.orangeTitle}>Pequenos Negócios</span> <br/><span style={fontSize: "0.5em", fontWeight: "normal"}>em Itajubá e Sul de Minas</span></h1>
           <p className={styles.leadText}>
             Tenha acesso a crédito empresarial descomplicado, com os melhores prazos, taxas competitivas e menos burocracia. Potencialize o crescimento do seu negócio sem precisar adquirir produtos casados.
           </p>

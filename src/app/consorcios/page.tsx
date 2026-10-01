@@ -6,6 +6,11 @@ import styles from "./page.module.css";
 import LeadForm from "@/components/LeadForm";
 import { useState } from "react";
 
+export const metadata = {
+  title: "Consórcios em Itajubá e Sul de Minas | RMJ Soluções de Crédito",
+  description: "A melhor opção de consórcios para você e sua empresa em Itajubá e Sul de Minas. Simule agora com a RMJ Soluções de Crédito.",
+};
+
 export default function Consorcios() {
   // --- FAQ State ---
   const [openFaq, setOpenFaq] = useState<string | null>(null);
@@ -45,13 +50,32 @@ export default function Consorcios() {
 
   return (
     <>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Service",
+            "name": "Consórcios",
+            "provider": {
+              "@id": "https://rmjcred.com.br/#organizacao"
+            },
+            "areaServed": [
+              { "@type": "City", "name": "Itajubá" },
+              { "@type": "AdministrativeArea", "name": "Sul de Minas Gerais" }
+            ]
+          })
+        }}
+      />
+    
       {/* ── 1. HERO ─────────────────────────────────────────── */}
       <section className={styles.headerSection}>
         <div className={`${styles.titleContainer} container`}>
           <Link href="/" className={styles.backLink}>
             &larr; Voltar para a Página Inicial
           </Link>
-          <h1 className={styles.title} style={{ maxWidth: '800px', fontSize: '2.5rem', lineHeight: '1.2' }}>Segurança patrimonial e planejamento sob medida para o seu próximo grande passo.</h1>
+          <h1 className={styles.title} style={{ maxWidth: '800px', fontSize: '2.5rem', lineHeight: '1.2' }}>Segurança patrimonial e planejamento sob medida para o seu próximo grande passo. em Itajubá e Sul de Minas</h1>
           <p className={styles.leadText}>
             Consórcios imobiliários e automotivos estruturados sob medida por quem entende de estratégia financeira.
           </p>

@@ -13,10 +13,9 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.rmjcred.com.br"),
+  metadataBase: new URL("https://rmjcred.com.br"),
   title: "RMJ Soluções de Crédito — Inteligência e Fomento Financeiro",
   description: "Com mais de 20 anos de experiência, a RMJ é o seu hub financeiro completo. Crédito BDMG, Financiamento Imobiliário, Home Equity, Veículos e Consórcios em Itajubá e região.",
-  keywords: "crédito, BDMG, financiamento imobiliário, home equity, consórcios, veículos, empréstimo, capital de giro, Itajubá, Minas Gerais, 20 anos de experiência, correspondente bancário",
   authors: [{ name: "RMJ Soluções de Crédito" }],
   icons: {
     icon: "/assets/ea111fdf9358a37c013843e46181e048.png",
@@ -26,7 +25,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "RMJ Soluções de Crédito | 20 Anos de Mercado",
     description: "Expertise e atendimento estratégico para impulsionar negócios e viabilizar conquistas financeiras.",
-    url: "https://www.rmjcred.com.br",
+    url: "https://rmjcred.com.br",
     siteName: "RMJ Soluções de Crédito",
     locale: "pt_BR",
     type: "website",
@@ -50,23 +49,53 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
-              "@type": ["FinancialService", "LocalBusiness"],
-              "@id": "https://www.rmjcred.com.br/#organization",
+              "@type": "FinancialService",
+              "@id": "https://rmjcred.com.br/#organizacao",
+              "name": "RMJ Soluções de Crédito",
               "legalName": "RMJ Representações",
-              "alternateName": "RMJ Soluções de Crédito",
-              "url": "https://www.rmjcred.com.br",
-              "description": "Correspondente bancário parceiro oficial do BDMG no sul de Minas Gerais, oferecendo capital de giro, financiamento imobiliário e estruturação de crédito.",
-              "sameAs": [
-                "https://cnpj.biz/57115632000118",
-                "https://www.linkedin.com/company/rmj-solu%C3%A7%C3%B5es-de-cr%C3%A9dito-rmj-cred/"
-              ],
+              "alternateName": ["RMJ Cred", "RMJ Representações"],
+              "taxID": "57.115.632/0001-18",
+              "url": "https://rmjcred.com.br",
+              "logo": "https://rmjcred.com.br/assets/logo-rmj-header.jpg",
+              "image": "https://rmjcred.com.br/assets/rmj-office.jpg",
+              "description": "Correspondente bancário e consultoria de crédito empresarial em Itajubá e Sul de Minas: capital de giro BDMG, PRONAMPE, ProCred 360, consórcios, financiamento de veículos e imobiliário.",
+              "telephone": "+55-35-99108-4513",
+              "email": "contato@rmjcred.com.br",
               "address": {
                 "@type": "PostalAddress",
+                "streetAddress": "Rua Felipe Pizutto, 193",
                 "addressLocality": "Itajubá",
                 "addressRegion": "MG",
+                "postalCode": "37500-000",
                 "addressCountry": "BR"
               },
-              "areaServed": "Minas Gerais"
+              "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": "-22.426",
+                "longitude": "-45.453"
+              },
+              "hasMap": "https://maps.app.goo.gl/q3bXW81Tf1WXZX1k7",
+              "areaServed": [
+                { "@type": "City", "name": "Itajubá" },
+                { "@type": "AdministrativeArea", "name": "Sul de Minas Gerais" },
+                { "@type": "City", "name": "Pouso Alegre" },
+                { "@type": "City", "name": "Santa Rita do Sapucaí" },
+                { "@type": "City", "name": "São Lourenço" },
+                { "@type": "City", "name": "Varginha" },
+                { "@type": "City", "name": "Três Corações" },
+                { "@type": "City", "name": "Poços de Caldas" },
+                { "@type": "City", "name": "Extrema" },
+                { "@type": "City", "name": "Lavras" }
+              ],
+              "founder": {
+                "@type": "Person",
+                "name": "Rodrigo Meirelles",
+                "jobTitle": "Fundador"
+              },
+              "sameAs": [
+                "https://www.instagram.com/rmjcred/",
+                "https://www.facebook.com/people/RMJ-Solu%C3%A7%C3%B5es-de-Cr%C3%A9dito/61571346777005/"
+              ]
             })
           }}
         />

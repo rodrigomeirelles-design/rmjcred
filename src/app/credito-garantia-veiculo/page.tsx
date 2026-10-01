@@ -4,22 +4,39 @@ import styles from "./page.module.css";
 import LeadForm from "@/components/LeadForm";
 
 export const metadata = {
-  title: "Crédito com Garantia de Veículo — RMJ Soluções de Crédito",
-  description: "Use seu carro ou utilitário como garantia e tenha acesso a crédito rápido com taxas baixas. Dinheiro liberado de maneira ágil, com o veículo financiado ou não.",
+  title: "Crédito com Garantia de Veículo em Itajubá e Sul de Minas | RMJ Soluções de Crédito",
+  description: "A melhor opção de crédito com garantia de veículo para você e sua empresa em Itajubá e Sul de Minas. Simule agora com a RMJ Soluções de Crédito.",
 };
 
 export default function CreditoGarantiaVeiculo() {
   return (
     <>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Service",
+            "name": "Crédito com Garantia de Veículo",
+            "provider": {
+              "@id": "https://rmjcred.com.br/#organizacao"
+            },
+            "areaServed": [
+              { "@type": "City", "name": "Itajubá" },
+              { "@type": "AdministrativeArea", "name": "Sul de Minas Gerais" }
+            ]
+          })
+        }}
+      />
+    
       {/* 1. Cabeçalho da Página */}
       <section className={styles.headerSection}>
         <div className={`${styles.titleContainer} container`}>
           <Link href="/" className={styles.backLink}>
             &larr; Voltar para a Página Inicial
           </Link>
-          <h1 className={styles.title}>
-            Crédito com Garantia de <span className={styles.italicTitle}>Veículo</span>
-          </h1>
+          <h1 className={styles.title}>Crédito com Garantia de <span className={styles.italicTitle}>Veículo</span> <br/><span style={fontSize: "0.5em", fontWeight: "normal"}>em Itajubá e Sul de Minas</span></h1>
           <p className={styles.leadText}>
             Use seu veículo quitado ou financiado como garantia para obter dinheiro em mãos de forma rápida, mantendo a posse e o uso do carro. A RMJ garante taxas baixas e prazos flexíveis.
           </p>

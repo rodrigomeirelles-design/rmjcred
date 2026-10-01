@@ -5,3 +5,9 @@
 [build.environment]
   NEXT_PUBLIC_GA4_ID = "G-ZFRM3GJHZ8"
   NEXT_PUBLIC_CLARITY_ID = "yqk1a1rnj2"
+
+[[redirects]]
+  from = "https://www.rmjcred.com.br/*"
+  to = "https://rmjcred.com.br/:splat"
+  status = 301
+  force = true

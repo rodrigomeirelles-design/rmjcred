@@ -3,9 +3,9 @@ import Image from "next/image";
 import styles from "./page.module.css";
 
 export const metadata = {
-  title: "Sobre Nós — RMJ Soluções de Crédito",
-  description: "Conheça a RMJ Soluções de Crédito, nosso time liderado por Rodrigo Meirelles e Jô, e nossa expertise de 20 anos em fomento comercial e hub de crédito.",
-};
+  title: "Sobre a RMJ Soluções de Crédito | Consultoria em Itajubá, MG",
+  description: "Conheça a RMJ Soluções de Crédito. Consultoria especializada em crédito empresarial e pessoal em Itajubá, sul de Minas Gerais. Atendimento personalizado e sem burocracia.",
+};;
 
 export default function SobreNos() {
   return (
@@ -16,7 +16,7 @@ export default function SobreNos() {
           <Link href="/" className={styles.backLink}>
             &larr; Voltar para a Página Inicial
           </Link>
-          <h1 className={styles.title}>Sobre a RMJ</h1>
+          <h1 className={styles.title}>RMJ Soluções de Crédito: Sua Consultoria Financeira em Itajubá</h1>
           <p className={styles.leadText}>
             Expertise de ponta e atendimento consultivo humanizado para transformar o crédito em uma ferramenta real de alavancagem, segurança e crescimento.
           </p>
@@ -28,16 +28,29 @@ export default function SobreNos() {
         <div className={`${styles.historyGrid} container`}>
           {/* Coluna 1: Texto */}
           <div className={styles.historyContent}>
-            <h2>Propósito Estratégico</h2>
+            <h2>RMJ Soluções de Crédito</h2>
             <p>
-              A RMJ Soluções de Crédito nasceu para potencializar empresas que buscam estruturação de capital de giro e captação de investimentos via linhas de desenvolvimento subsidiadas pelo governo, com foco especial nos recursos de fomento do <strong>BDMG</strong> (Banco de Desenvolvimento de Minas Gerais) e do <strong>BNDES</strong> (Banco Nacional de Desenvolvimento Econômico e Social).
+              A RMJ Soluções de Crédito nasceu com o propósito de democratizar o acesso ao crédito no sul de Minas Gerais. Sediada em Itajubá, na Rua Felipe Pizutto, 193, atendemos empresas e pessoas físicas em um raio de 200 km — incluindo Pouso Alegre, Poços de Caldas, Varginha, Três Corações, Lavras e região.
             </p>
             <p>
-              A atuação da RMJ transcende a simples intermediação bancária. Entregamos um diagnóstico técnico e estratégico completo do caixa do cliente, alinhando prazos, carências e objetivos à realidade de cada negócio, garantindo que o crédito atue como um acelerador e não um gargalo.
+              Nossa missão é simplificar o processo de obtenção de crédito, conectando nossos clientes às melhores linhas disponíveis no mercado — Pronampe, BDMG, Home Equity e financiamento de veículos — com atendimento consultivo e personalizado.
             </p>
-            <p>
-              Com o tempo, nos consolidamos também como um hub financeiro integrado multimarcas. Por meio de parcerias estratégicas com mais de 150 bancos e instituições financeiras privadas, oferecemos soluções completas sob medida em crédito imobiliário, home equity, consórcios e veículos, garantindo taxas competitivas para o empresário e sua família.
-            </p>
+            
+            <h2 style={{ marginTop: '2rem' }}>O Que Nos Diferencia</h2>
+            <ul style={{ color: 'var(--neutral-muted)', fontSize: '1.05rem', lineHeight: '1.7', marginLeft: '1.5rem', marginBottom: '1rem' }}>
+                <li><strong>Transparência total</strong> — apresentamos todas as opções e custos antes de qualquer decisão</li>
+                <li><strong>Atendimento humano</strong> — cada cliente é atendido por um consultor dedicado, sem robôs</li>
+                <li><strong>Conhecimento local</strong> — entendemos a realidade econômica do sul de Minas</li>
+                <li><strong>Rede de parceiros</strong> — trabalhamos com os principais bancos e instituições do país</li>
+                <li><strong>Sem custo inicial</strong> — a análise de crédito é sempre gratuita</li>
+            </ul>
+            
+            <h2 style={{ marginTop: '2rem' }}>RMJ em Números</h2>
+            <ul style={{ color: 'var(--neutral-muted)', fontSize: '1.05rem', lineHeight: '1.7', marginLeft: '1.5rem', marginBottom: '1rem' }}>
+                <li>Milhares de clientes atendidos</li>
+                <li>Milhões de reais em crédito intermediado anualmente</li>
+                <li>Dezenas de cidades atendidas no sul de Minas</li>
+            </ul>
           </div>
 
           {/* Coluna 2: Imagem */}

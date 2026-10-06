@@ -4,9 +4,9 @@ import { blogPosts } from "@/data/blogPosts";
 import styles from "./page.module.css";
 
 export const metadata = {
-  title: "Blog, Dicas e Guias — RMJ Soluções de Crédito",
-  description: "Aprenda sobre financiamento de veículos, crédito imobiliário, capital de giro BDMG e tome as melhores decisões financeiras.",
-};
+  title: "Blog RMJ | Dicas de Crédito, Financiamento e Gestão Financeira",
+  description: "Artigos sobre crédito empresarial, financiamento de veículos, Home Equity e gestão financeira para empresas e pessoas físicas no sul de Minas.",
+};;
 
 export default function BlogHome() {
   return (
@@ -18,7 +18,7 @@ export default function BlogHome() {
             &larr; Voltar para a Página Inicial
           </Link>
           <span className={styles.pageSubtitle}>Dicas e Guias</span>
-          <h1 className={styles.title}>Consulte Nossos Conteúdos</h1>
+          <h1 className={styles.title}>Blog RMJ: Conteúdo sobre Crédito e Finanças</h1>
           <p className={styles.leadText}>
             Aprenda mais sobre o mercado de financiamento de veículos, crédito imobiliário, fomento e tome a decisão financeira mais inteligente para o seu bolso.
           </p>

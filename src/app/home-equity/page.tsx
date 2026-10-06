@@ -4,13 +4,57 @@ import styles from "./page.module.css";
 import LeadForm from "@/components/LeadForm";
 
 export const metadata = {
-  title: "Home Equity em Itajubá e Sul de Minas | RMJ Soluções de Crédito",
-  description: "A melhor opção de home equity para você e sua empresa em Itajubá e Sul de Minas. Simule agora com a RMJ Soluções de Crédito.",
-};
+  title: "Home Equity em Itajubá e Sul de Minas | Empréstimo com Garantia de Imóvel | RMJ",
+  description: "Empréstimo com garantia de imóvel (Home Equity) com as menores taxas do mercado — a partir de 0,99% a.m. Simule agora com a RMJ Soluções de Crédito em Itajubá.",
+};;
 
 export default function HomeEquity() {
   return (
     <>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "Posso perder meu imóvel?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "A alienação fiduciária é uma garantia, mas a perda só ocorre em casos de inadimplência crônica e prolongada, após diversas tentativas de negociação por parte da instituição financeira."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Qual o valor mínimo e máximo?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Você pode liberar de R$ 50 mil a R$ 3 milhões, dependendo do valor de avaliação do seu imóvel (limite geralmente entre 50% e 60% do valor do bem)."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Imóvel financiado serve?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Sim, caso o imóvel não esteja 100% quitado, parte do novo crédito aprovado será utilizada para quitar o saldo devedor do primeiro financiamento (interveniente quitante), e a diferença fica livre para você."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "O Home Equity é seguro?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Totalmente. O processo é regulamentado pelo Banco Central do Brasil. A RMJ Soluções de Crédito trabalha apenas com grandes bancos e instituições financeiras certificadas."
+                }
+              }
+            ]
+          })
+        }}
+      />
 
       <script
         type="application/ld+json"
@@ -43,10 +87,11 @@ export default function HomeEquity() {
               <li style={{ color: '#fff' }}>Home Equity</li>
             </ol>
           </nav>
-          <h1 className={styles.title}>Home Equity / Crédito com <span className={styles.italicTitle}>Garantia de Imóvel</span> <br/><span style={fontSize: "0.5em", fontWeight: "normal"}>em Itajubá e Sul de Minas</span></h1>
-          <p className={styles.leadText}>
-            Use seu imóvel quitado (residencial ou comercial) como garantia para captar dinheiro em mãos com as menores taxas do mercado de crédito, mantendo a posse do bem.
-          </p>
+          <h1 className={styles.title}>Home Equity: Empréstimo com Garantia de Imóvel com as Menores Taxas do Mercado</h1>
+          <div className={styles.leadText}>
+            <p style={{marginBottom: "1rem"}}>O Home Equity é a modalidade de crédito que mais cresce no Brasil. Com crescimento de 25% só no primeiro trimestre de 2026, essa linha permite que você use seu imóvel quitado ou financiado como garantia para acessar empréstimos com as menores taxas do mercado — muito abaixo do crédito pessoal ou do cheque especial.</p>
+            <p>Na RMJ Soluções de Crédito, somos especialistas em Home Equity e ajudamos dezenas de clientes em Itajubá e no Sul de Minas a transformar o patrimônio imobiliário em capital de trabalho, investimento ou reestruturação financeira.</p>
+          </div>
         </div>
       </section>
 
@@ -57,13 +102,13 @@ export default function HomeEquity() {
           {/* Coluna do Artigo de Conteúdo */}
           <article style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
             
+            
+
+            
             <div>
-              <h2 style={{ fontSize: '2rem', color: 'var(--primary-dark)', marginBottom: '1rem' }}>O que é o Home Equity (Crédito com Garantia de Imóvel)?</h2>
+              <h2 style={{ fontSize: '2rem', color: 'var(--primary-dark)', marginBottom: '1rem' }}>Para Que Você Pode Usar o Home Equity</h2>
               <p style={{ color: 'var(--neutral-muted)', fontSize: '1.05rem', lineHeight: '1.7', marginBottom: '1rem' }}>
-                O Home Equity é uma modalidade de crédito muito difundida nos Estados Unidos e Europa que ganha cada vez mais espaço no Brasil devido à sua inteligência financeira. Trata-se do empréstimo pessoal ou corporativo estruturado onde você oferece um imóvel de sua propriedade (casa, apartamento, sala comercial ou galpão) como garantia real da operação.
-              </p>
-              <p style={{ color: 'var(--neutral-muted)', fontSize: '1.05rem', lineHeight: '1.7' }}>
-                Diferente de um financiamento imobiliário tradicional onde o recurso é obrigatoriamente destinado à compra do imóvel, no Home Equity a destinação do dinheiro é 100% livre. Você pode utilizar o recurso para injetar capital de giro em sua empresa, reestruturar dívidas de juros caros, investir na ampliação de negócios ou realizar conquistas pessoais sem precisar se desfazer do seu patrimônio.
+                O recurso liberado pelo Home Equity é de uso livre. Os usos mais comuns entre nossos clientes incluem: quitação de dívidas com juros altos (cartão de crédito, cheque especial, empréstimos pessoais), capital de giro para o negócio, investimento em expansão da empresa, reforma ou construção, aquisição de outro imóvel ou veículo, e educação ou tratamentos médicos.
               </p>
             </div>
 

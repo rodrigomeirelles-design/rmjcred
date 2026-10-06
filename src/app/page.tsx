@@ -4,6 +4,12 @@ import styles from "./page.module.css";
 import LeadForm from "@/components/LeadForm";
 import HeroCarousel from "@/components/HeroCarousel";
 
+
+export const metadata = {
+  title: "Consultoria de Crédito em Itajubá | RMJ Soluções de Crédito",
+  description: "Consultoria especializada em crédito empresarial e pessoal em Itajubá e Sul de Minas. Pronampe, BDMG, Home Equity e financiamentos com as melhores taxas.",
+};
+
 export default function Home() {
   return (
     <>
@@ -23,9 +29,9 @@ export default function Home() {
         <div className="container">
           <div className={styles.sectionHeader}>
             <span className={styles.sectionSubtitle}>Nossas Soluções</span>
-            <h2 className={styles.sectionTitle}>Crédito na Medida para Seus Objetivos</h2>
+            <h2 className={styles.sectionTitle}>Linhas de Crédito para Cada Necessidade</h2>
             <p className={styles.sectionDesc}>
-              Como um hub financeiro integrado, conectamos você e sua empresa às melhores linhas de crédito em mais de 150 instituições parceiras.
+              Trabalhamos com as principais instituições financeiras do Brasil para oferecer as condições mais vantajosas. Conheça nossas soluções:
             </p>
           </div>
 
@@ -40,9 +46,7 @@ export default function Home() {
                 </svg>
               </div>
               <h3 className={styles.serviceTitle}>Capital de Giro BDMG</h3>
-              <p className={styles.serviceDesc}>
-                Crédito empresarial com taxa de fomento subsidiada para faturamento em Minas Gerais. Carência de 12 meses e até 72 meses de prazo.
-              </p>
+              <p className={styles.serviceDesc}>Linhas exclusivas do Banco de Desenvolvimento de Minas Gerais com condições especiais para micro e pequenas empresas. Em 2026, o BDMG disponibilizou R$ 1 bilhão em crédito para MPEs, com taxas a partir de 1,19% a.m.</p>
               <Link href="/credito-bdmg" className={styles.serviceLink}>
                 Saber Mais &rarr;
               </Link>
@@ -75,9 +79,7 @@ export default function Home() {
                 </svg>
               </div>
               <h3 className={styles.serviceTitle}>Home Equity</h3>
-              <p className={styles.serviceDesc}>
-                Use seu imóvel quitado ou semi-quitado como garantia e tenha acesso a taxas baixas com prazos de até 20 anos para pagar.
-              </p>
+              <p className={styles.serviceDesc}>Use seu imóvel como garantia e acesse as menores taxas do mercado — a partir de 0,99% a.m. — com prazos de até 240 meses. O mercado de Home Equity cresceu 25% no primeiro trimestre de 2026.</p>
               <Link href="/home-equity" className={styles.serviceLink}>
                 Saber Mais &rarr;
               </Link>
@@ -94,9 +96,7 @@ export default function Home() {
                 </svg>
               </div>
               <h3 className={styles.serviceTitle}>Financiamento de Veículos</h3>
-              <p className={styles.serviceDesc}>
-                Conquiste seu carro novo ou seminovo com taxas diferenciadas e parcelas que cabem perfeitamente no orçamento da sua família.
-              </p>
+              <p className={styles.serviceDesc}>Carros, motos, caminhões e máquinas agrícolas com as melhores condições. Parcerias com BV, Santander, Itaú, Bradesco e Safra.</p>
               <Link href="/financiamento-veiculos" className={styles.serviceLink}>
                 Saber Mais &rarr;
               </Link>
@@ -127,9 +127,7 @@ export default function Home() {
                 </svg>
               </div>
               <h3 className={styles.serviceTitle}>Fomento PRONAMPE</h3>
-              <p className={styles.serviceDesc}>
-                Crédito federal facilitado com taxas controladas e garantia de fundo governamental FGO para micro e pequenas empresas (MPE).
-              </p>
+              <p className={styles.serviceDesc}>O Programa Nacional de Apoio às Microempresas e Empresas de Pequeno Porte oferece taxas a partir de Selic + 6% a.a., com prazos de até 48 meses. Ideal para capital de giro, investimentos e expansão do seu negócio.</p>
               <Link href="/pronampe" className={styles.serviceLink}>
                 Saber Mais &rarr;
               </Link>
@@ -144,9 +142,7 @@ export default function Home() {
                 </svg>
               </div>
               <h3 className={styles.serviceTitle}>ProCred 360</h3>
-              <p className={styles.serviceDesc}>
-                Linha de fomento exclusiva com juros bonificados para microempresas com faturamento anual de até R$ 360 mil.
-              </p>
+              <p className={styles.serviceDesc}>Nossa metodologia exclusiva analisa seu perfil financeiro em 360 graus para encontrar a linha de crédito mais vantajosa.</p>
               <Link href="/procred-360" className={styles.serviceLink}>
                 Saber Mais &rarr;
               </Link>
@@ -300,10 +296,8 @@ export default function Home() {
         <div className={`${styles.simulatorContainer} container`}>
           <div className={styles.simulatorInfo}>
             <span className={styles.sectionSubtitle}>Simulador Grátis</span>
-            <h2 className={styles.sectionTitle}>Diga Adeus às Taxas Abusivas</h2>
-            <p>
-              A RMJ Soluções de Crédito faz toda a intermediação, análise e consultoria. Nós estruturamos sua pasta e buscamos as melhores oportunidades de captação de recursos governamentais ou de instituições privadas.
-            </p>
+            <h2 className={styles.sectionTitle}>Por Que Mais de 500 Clientes Confiam na RMJ</h2>
+            <p>Atendimento personalizado e consultivo — não somos um correspondente bancário comum. Acesso a mais de 20 instituições financeiras parceiras. Especialistas certificados com anos de experiência no mercado de crédito. Atendimento presencial em Itajubá e remoto para todo o Sul de Minas e Brasil. Transparência total: sem custos ocultos.</p>
             <div className={styles.infoCard}>
               <h4>Atendimento Humano</h4>
               <p>Trabalhamos com transparência e clareza, desmistificando o processo de contratação e garantindo suporte total do início ao fim.</p>

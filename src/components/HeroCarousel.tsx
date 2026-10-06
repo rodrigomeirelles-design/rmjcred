@@ -9,8 +9,8 @@ const slides = [
   {
     id: 'bdmg',
     logo: '/assets/logo-bdmg-parceiro-244x150.png',
-    title: 'Crédito BDMG Inteligente para ',
-    highlight: 'Pequenos Negócios',
+    title: 'Soluções de Crédito Inteligentes para ',
+    highlight: 'Empresas e Pessoas Físicas em Itajubá e Sul de Minas',
     description: 'Tenha acesso a crédito empresarial descomplicado, com os melhores prazos, taxas competitivas e menos burocracia. Potencialize o crescimento do seu negócio sem precisar adquirir produtos casados.',
     bgImage: '/assets/mg_historic_city.png',
     primaryLink: '/credito-bdmg#simular',

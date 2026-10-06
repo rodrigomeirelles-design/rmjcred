@@ -4,9 +4,9 @@ import styles from "./page.module.css";
 import LeadForm from "@/components/LeadForm";
 
 export const metadata = {
-  title: "Fomento PRONAMPE em Itajubá e Sul de Minas | RMJ Soluções de Crédito",
-  description: "A melhor opção de fomento pronampe para você e sua empresa em Itajubá e Sul de Minas. Simule agora com a RMJ Soluções de Crédito.",
-};
+  title: "Pronampe 2026 em Itajubá e Sul de Minas | Crédito para MPEs | RMJ",
+  description: "Solicite o Pronampe 2026 com acompanhamento completo. Taxas a partir de Selic + 6% a.a., até R$ 150 mil para micro e pequenas empresas. Consultoria RMJ em Itajubá.",
+};;
 
 export default function Pronampe() {
   const jsonLd = {
@@ -37,34 +37,34 @@ export default function Pronampe() {
     "mainEntity": [
       {
         "@type": "Question",
-        "name": "O que é o Pronampe e qual a sua finalidade?",
+        "name": "Qual a diferença entre Pronampe e empréstimo comum?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "O Programa Nacional de Apoio às Microempresas e Empresas de Pequeno Porte (Pronampe) é uma linha de fomento do Governo Federal destinada ao desenvolvimento e consolidação de negócios de pequeno porte, oferecendo taxas de juros limitadas por lei (Selic + 6% a.a.) e garantia integral do FGO."
+          "text": "O Pronampe possui taxas de juros limitadas por lei (Selic + 6% a.a.) e usa o FGO como garantia, tornando-o muito mais barato e acessível do que linhas de crédito comuns de mercado, que costumam passar de 25% a.a."
         }
       },
       {
         "@type": "Question",
-        "name": "A RMJ atende MEI para contratação do Pronampe?",
+        "name": "Quanto tempo leva para liberar?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Não. No momento, a RMJ Soluções de Crédito assessora exclusivamente empresas enquadradas como Microempresa (ME) ou Empresa de Pequeno Porte (EPP), não prestando atendimento a Microempreendedores Individuais (MEI) para essa linha específica."
+          "text": "Com a documentação em dia e suporte da consultoria RMJ, o processo de aprovação e liberação na conta da sua empresa costuma ocorrer entre 5 e 10 dias úteis."
         }
       },
       {
         "@type": "Question",
-        "name": "Qual é o limite máximo de empréstimo no Pronampe?",
+        "name": "Posso usar o recurso para qualquer coisa?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "O limite máximo de crédito que cada empresa pode pleitear é de até 30% do seu faturamento bruto anual declarado à Receita Federal no ano-calendário anterior. Para empresas novas (menos de 1 ano), o limite pode ser calculado com base no capital social ou média de faturamento mensal."
+          "text": "O recurso pode ser usado para qualquer atividade da empresa (capital de giro, pagamento de salários, compra de estoque, maquinário). É proibido usá-lo para distribuição de lucros entre os sócios."
         }
       },
       {
         "@type": "Question",
-        "name": "Qual a taxa de juros praticada no programa?",
+        "name": "Empresa com restrição pode solicitar?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "A taxa de juros anual do Pronampe é regulamentada por lei e limitada ao valor da taxa Selic acrescida de 6% ao ano. Isso o torna um dos recursos mais competitivos e seguros do mercado financeiro nacional."
+          "text": "Empresas com restrições graves ou impostos federais atrasados geralmente não conseguem a CND (Certidão Negativa de Débitos), que é obrigatória para acessar o Pronampe. A RMJ pode orientar sobre a regularização prévia."
         }
       }
     ]
@@ -94,12 +94,11 @@ export default function Pronampe() {
               <li style={{ color: '#fff' }}>Pronampe</li>
             </ol>
           </nav>
-          <h1 className={styles.title}>
-            Fomento <span className={styles.italicTitle}>PRONAMPE</span> em Itajubá
-          </h1>
-          <p className={styles.leadText}>
-            Acelere e estabilize seu fluxo de caixa corporativo através da linha de fomento do Governo Federal. Taxas limitadas por lei a Selic + 6% ao ano, com até 12 meses de carência e proteção de fundo garantidor (FGO).
-          </p>
+          <h1 className={styles.title}>Pronampe 2026: Crédito com as Melhores Condições para Micro e Pequenas Empresas</h1>
+          <div className={styles.leadText}>
+            <p style={{marginBottom: "1rem"}}>O Programa Nacional de Apoio às Microempresas e Empresas de Pequeno Porte (Pronampe) é a principal linha de crédito do Governo Federal para pequenos negócios. Com taxas subsidiadas, prazos estendidos e garantia do FGO (Fundo Garantidor de Operações), o Pronampe se tornou a opção mais acessível para empreendedores que precisam de capital de giro ou investimento.</p>
+            <p>A RMJ Soluções de Crédito é especialista em Pronampe e auxilia empresas de Itajubá e região a acessar esse recurso com agilidade, desde a documentação até a liberação.</p>
+          </div>
         </div>
       </section>
 
@@ -111,7 +110,7 @@ export default function Pronampe() {
           <article style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
             
             <div>
-              <h2 style={{ fontSize: '2rem', color: 'var(--primary-dark)', marginBottom: '1rem' }}>O que é o PRONAMPE e qual a sua importância para pequenas empresas?</h2>
+              <h2 style={{ fontSize: "2rem", color: "var(--primary-dark)", marginBottom: "1rem" }}>Condições Atualizadas do Pronampe 2026</h2>
               <p style={{ color: 'var(--neutral-muted)', fontSize: '1.05rem', lineHeight: '1.7', marginBottom: '1rem' }}>
                 O <strong>Programa Nacional de Apoio às Microempresas e Empresas de Pequeno Porte (PRONAMPE)</strong> foi criado originalmente pela Lei nº 13.999 em 2020 e tornou-se uma das linhas de crédito oficiais mais requisitadas por empresários do Brasil. O objetivo é assegurar liquidez e fluxo de fomento contínuo para o fortalecimento de pequenas corporações.
               </p>
@@ -122,6 +121,13 @@ export default function Pronampe() {
                 <strong>Atenção sobre o perfil atendido:</strong> Embora a lei nacional do programa preveja a elegibilidade de diferentes categorias legais, a <strong>RMJ Soluções de Crédito assessora exclusivamente Microempresas (ME) e Empresas de Pequeno Porte (EPP)</strong>. Não prestamos consultoria ou atendimento para a categoria de Microempreendedores Individuais (MEI) nesta linha.
               </p>
             </div>
+            <div style={{ marginTop: '2rem' }}>
+              <h2 style={{ fontSize: '2rem', color: 'var(--primary-dark)', marginBottom: '1rem' }}>Quem Pode Solicitar o Pronampe</h2>
+              <p style={{ color: 'var(--neutral-muted)', fontSize: '1.05rem', lineHeight: '1.7', marginBottom: '1rem' }}>
+                Para acessar o Pronampe, sua empresa precisa atender aos seguintes requisitos: ser microempresa (faturamento anual de até R$ 360 mil) ou empresa de pequeno porte (faturamento de até R$ 4,8 milhões), estar com CNPJ ativo há pelo menos 1 ano, não possuir restrições graves no CNPJ, e estar em dia com obrigações fiscais e trabalhistas. MEIs também podem solicitar, com limite proporcional ao faturamento.
+              </p>
+            </div>
+
 
             {/* Comparativo de Taxas e Vantagens */}
             <div style={{ margin: '2rem 0', padding: '2rem', backgroundColor: 'var(--neutral-light)', borderRadius: 'var(--radius-md)', border: '1px solid var(--neutral-border)' }}>

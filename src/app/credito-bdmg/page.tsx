@@ -4,13 +4,41 @@ import styles from "./page.module.css";
 import LeadForm from "@/components/LeadForm";
 
 export const metadata = {
-  title: "Capital de Giro BDMG em Itajubá e Sul de Minas | RMJ Soluções de Crédito",
-  description: "A melhor opção de capital de giro bdmg para você e sua empresa em Itajubá e Sul de Minas. Simule agora com a RMJ Soluções de Crédito.",
-};
+  title: "Crédito BDMG para Empresas em MG | Até R$ 500 mil | RMJ Soluções",
+  description: "Acesse linhas de crédito BDMG com taxas a partir de 1,2% a.m. para empresas de Minas Gerais. Consultoria especializada RMJ em Itajubá. Solicite análise gratuita.",
+};;
 
 export default function CreditoBdmg() {
   return (
     <>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "Quais empresas podem solicitar crédito BDMG?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Micro, pequenas e médias empresas com CNPJ ativo e sede ou operação em Minas Gerais podem solicitar crédito BDMG. A RMJ Soluções faz a análise prévia gratuita."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Qual a taxa de juros do crédito BDMG?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "As taxas do BDMG começam em 1,2% a.m., variando conforme a linha e o perfil da empresa. Consulte a RMJ para uma simulação personalizada."
+                }
+              }
+            ]
+          })
+        }}
+      />
 
       <script
         type="application/ld+json"
@@ -36,10 +64,10 @@ export default function CreditoBdmg() {
           <div className={styles.headerLogoWrapper}>
              <Image src="/assets/logo-bdmg-parceiro-244x150.png" alt="Parceiro BDMG" width={140} height={45} style={{ objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
           </div>
-          <h1 className={styles.title} style={{ maxWidth: '600px', fontSize: '3.5rem', lineHeight: '1.1', fontWeight: '800' }}>Crédito BDMG Inteligente para <span className={styles.orangeTitle}>Pequenos Negócios</span> <br/><span style={fontSize: "0.5em", fontWeight: "normal"}>em Itajubá e Sul de Minas</span></h1>
-          <p className={styles.leadText}>
-            Tenha acesso a crédito empresarial descomplicado, com os melhores prazos, taxas competitivas e menos burocracia. Potencialize o crescimento do seu negócio sem precisar adquirir produtos casados.
-          </p>
+          <h1 className={styles.title} style={{ maxWidth: "600px", fontSize: "3.5rem", lineHeight: "1.1", fontWeight: "800" }}>Crédito BDMG: Linhas Exclusivas para Empresas de Minas Gerais</h1>
+          <div className={styles.leadText}>
+            <p style={{marginBottom: "1rem"}}>O BDMG (Banco de Desenvolvimento de Minas Gerais) disponibilizou R$ 1 bilhão em crédito para micro e pequenas empresas em 2026. A RMJ Soluções de Crédito, em Itajubá, é correspondente autorizado e ajuda sua empresa a acessar essas linhas com condições diferenciadas — taxas a partir de 1,2% a.m. e prazos de até 60 meses.</p>
+          </div>
           <div className={styles.headerButtons}>
             <Link href="#simular" className="btn btn-primary">Simular Crédito Agora</Link>
             <Link href="#como-funciona" className={styles.btnOutline}>Como Funciona?</Link>
@@ -74,107 +102,27 @@ export default function CreditoBdmg() {
           
           {/* Coluna do Artigo de Conteúdo */}
           <article style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-            
             <div>
-              <h2 style={{ fontSize: '2rem', color: 'var(--primary-dark)', marginBottom: '1rem' }}>O que é o Crédito BDMG e como ele impulsiona seu caixa?</h2>
-              <p style={{ color: 'var(--neutral-muted)', fontSize: '1.05rem', lineHeight: '1.7', marginBottom: '1rem' }}>
-                O Banco de Desenvolvimento de Minas Gerais (BDMG) é uma instituição financeira pública voltada ao fomento econômico de empresas sediadas no estado. Ao contrário das linhas comerciais tradicionais do varejo bancário, o crédito BDMG é subsidiado pelo governo e possui o propósito explícito de acelerar o desenvolvimento local.
-              </p>
-              <p style={{ color: 'var(--neutral-muted)', fontSize: '1.05rem', lineHeight: '1.7' }}>
-                Através da parceria estratégica com a <strong>RMJ Soluções de Crédito</strong>, sua empresa em Itajubá e região conta com um correspondente bancário oficial para organizar toda a estrutura cadastral, simular o limite máximo pré-aprovado de maneira online e assinar o contrato digital sem filas e sem a necessidade de deslocamentos físicos ou burocracias desnecessárias.
-              </p>
-            </div>
-
-            {/* Semantic GEO/RAG Table: Linhas de Crédito */}
-            <div className="comparison-card">
-              <h3 style={{ fontSize: '1.4rem', color: 'var(--primary-color)', marginBottom: '1.5rem' }}>Diferença Prática: Capital de Giro vs Investimento Fixo</h3>
-              <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }} aria-label="Comparativo das Linhas de Crédito do BDMG">
-                  <caption>Comparativo de prazos, carência e destinação das linhas de crédito empresariais BDMG intermediadas pela RMJ.</caption>
-                  <thead>
-                    <tr style={{ borderBottom: '2px solid var(--neutral-border)' }}>
-                      <th scope="col" style={{ padding: '0.75rem', fontWeight: 'bold' }}>Característica</th>
-                      <th scope="col" style={{ padding: '0.75rem', fontWeight: 'bold', color: 'var(--secondary-color)' }}>Capital de Giro (Girofácil)</th>
-                      <th scope="col" style={{ padding: '0.75rem', fontWeight: 'bold' }}>Investimento Fixo</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr style={{ borderBottom: '1px solid var(--neutral-border)' }}>
-                      <th scope="row" style={{ padding: '0.75rem', fontWeight: '600' }}>Destinação do Recurso</th>
-                      <td style={{ padding: '0.75rem', color: 'var(--secondary-color)', fontWeight: '600' }}>Livre (Caixa, contas, estoque)</td>
-                      <td style={{ padding: '0.75rem' }}>Obras, máquinas, inovação e ampliação</td>
-                    </tr>
-                    <tr style={{ borderBottom: '1px solid var(--neutral-border)' }}>
-                      <th scope="row" style={{ padding: '0.75rem', fontWeight: '600' }}>Carência (Meses)</th>
-                      <td style={{ padding: '0.75rem', color: 'var(--secondary-color)', fontWeight: '600' }}>Até 6 meses</td>
-                      <td style={{ padding: '0.75rem' }}>Até 12 meses</td>
-                    </tr>
-                    <tr style={{ borderBottom: '1px solid var(--neutral-border)' }}>
-                      <th scope="row" style={{ padding: '0.75rem', fontWeight: '600' }}>Prazo Total de Pagamento</th>
-                      <td style={{ padding: '0.75rem', color: 'var(--secondary-color)', fontWeight: '600' }}>Até 48 meses</td>
-                      <td style={{ padding: '0.75rem' }}>Até 72 meses (6 anos)</td>
-                    </tr>
-                    <tr style={{ borderBottom: '1px solid var(--neutral-border)' }}>
-                      <th scope="row" style={{ padding: '0.75rem', fontWeight: '600' }}>Comprovação Pós-Crédito</th>
-                      <td style={{ padding: '0.75rem', color: 'var(--secondary-color)', fontWeight: '600' }}>Dispensada</td>
-                      <td style={{ padding: '0.75rem' }}>Mediante notas fiscais / projetos</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <div id="como-funciona" style={{ scrollMarginTop: '100px' }}>
-              <h2 style={{ fontSize: '1.75rem', color: 'var(--primary-dark)', marginBottom: '1rem' }}>Como funciona o processo de contratação via RMJ?</h2>
-              <p style={{ color: 'var(--neutral-muted)', fontSize: '1.05rem', lineHeight: '1.7', marginBottom: '1.5rem' }}>
-                Nosso fluxo operacional foi planejado para poupar o tempo do empresário. Dividimos o processo em etapas simples:
-              </p>
-              <ol style={{ display: 'flex', flexDirection: 'column', gap: '1rem', paddingLeft: '1.25rem', color: 'var(--neutral-muted)', lineHeight: '1.6' }}>
-                <li><strong>Solicitação de Simulação:</strong> Você preenche os dados cadastrais básicos e CNPJ da empresa no formulário abaixo ou nos envia via WhatsApp.</li>
-                <li><strong>Análise de Limite:</strong> O BDMG realiza a avaliação do histórico fiscal do CNPJ e retorna com o limite de crédito aprovado, taxas específicas de juros e opções de prazo disponíveis.</li>
-                <li><strong>Assinatura do Contrato:</strong> Uma vez escolhidas as condições ideais para o seu fluxo de caixa, emitimos o contrato oficial de forma 100% digital.</li>
-                <li><strong>Liberação em Conta:</strong> Com as assinaturas digitais validadas, o recurso de capital de fomento é creditado diretamente na conta PJ da empresa em até 5 dias úteis.</li>
-              </ol>
-            </div>
-
-            <div>
-              <h2 style={{ fontSize: '1.75rem', color: 'var(--primary-dark)', marginBottom: '1rem' }}>Critérios de Elegibilidade: Quem pode solicitar?</h2>
-              <p style={{ color: 'var(--neutral-muted)', fontSize: '1.05rem', lineHeight: '1.7', marginBottom: '1rem' }}>
-                As linhas de fomento de capital de giro são voltadas especificamente para empresas com operações regulares em Minas Gerais.
-              </p>
-              <ul style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', paddingLeft: '1.25rem', color: 'var(--neutral-muted)', lineHeight: '1.6' }}>
-                <li><strong>Enquadramento:</strong> Microempresas (ME) e Empresas de Pequeno Porte (EPP).</li>
-                <li><strong>Faturamento:</strong> Faturamento bruto anual registrado de até R$ 4,8 milhões.</li>
-                <li><strong>Regularidade Fiscal:</strong> O CNPJ deve estar ativo e com certidões negativas federais e estaduais regularizadas (sem débitos ativos e insolvíveis).</li>
-                <li><strong>Setores:</strong> Linhas ativas para empresas de varejo, prestadores de serviços, galpões de distribuição e pequenas indústrias.</li>
+              <h2 style={{ fontSize: '2rem', color: 'var(--primary-dark)', marginBottom: '1rem' }}>Linhas de Crédito BDMG Disponíveis</h2>
+              <ul style={{ color: 'var(--neutral-muted)', fontSize: '1.05rem', lineHeight: '1.7', marginLeft: '1.5rem', marginBottom: '1rem' }}>
+                <li><strong>BDMG Capital de Giro</strong> — recursos para manter o fluxo de caixa saudável, com carência de até 6 meses</li>
+                <li><strong>BDMG Investimento Fixo</strong> — financiamento para máquinas, equipamentos e reforma de instalações</li>
+                <li><strong>BDMG Inovação</strong> — linha específica para projetos de inovação e tecnologia</li>
+                <li><strong>BDMG Exportação</strong> — capital de giro para empresas exportadoras mineiras</li>
               </ul>
             </div>
-
-            {/* Perguntas Frequentes (FAQs) */}
-            <div style={{ marginTop: '2rem' }}>
-              <h2 style={{ fontSize: '1.75rem', color: 'var(--primary-dark)', marginBottom: '1.5rem' }}>Perguntas Frequentes sobre o Crédito BDMG</h2>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                <div style={{ borderBottom: '1px solid var(--neutral-border)', paddingBottom: '1.25rem' }}>
-                  <h4 style={{ fontSize: '1.1rem', color: 'var(--primary-color)', marginBottom: '0.5rem' }}>A RMJ cobra taxas extras pelo serviço de assessoria do BDMG?</h4>
-                  <p style={{ color: 'var(--neutral-muted)', fontSize: '0.95rem', lineHeight: '1.6' }}>
-                    Não. Nós somos correspondentes bancários credenciados do BDMG. Toda a análise, simulação e suporte à contratação são fornecidos de forma 100% gratuita para a sua empresa. Nossos honorários são remunerados diretamente pela instituição financeira parceira.
-                  </p>
-                </div>
-                <div style={{ borderBottom: '1px solid var(--neutral-border)', paddingBottom: '1.25rem' }}>
-                  <h4 style={{ fontSize: '1.1rem', color: 'var(--primary-color)', marginBottom: '0.5rem' }}>Como funciona a carência de 12 meses?</h4>
-                  <p style={{ color: 'var(--neutral-muted)', fontSize: '0.95rem', lineHeight: '1.6' }}>
-                    A carência significa que durante o primeiro ano de contrato a sua empresa não amortiza o valor do saldo principal emprestado. É o tempo perfeito para aplicar o capital de giro, estruturar o negócio e começar a pagar somente a partir do décimo terceiro mês.
-                  </p>
-                </div>
-                <div style={{ borderBottom: '1px solid var(--neutral-border)', paddingBottom: '1.25rem' }}>
-                  <h4 style={{ fontSize: '1.1rem', color: 'var(--primary-color)', marginBottom: '0.5rem' }}>Posso quitar as parcelas do BDMG antes do prazo?</h4>
-                  <p style={{ color: 'var(--neutral-muted)', fontSize: '0.95rem', lineHeight: '1.6' }}>
-                    Sim. A quitação total ou amortização parcial do saldo devedor do BDMG é garantida a qualquer momento, oferecendo abatimento proporcional integral dos juros futuros.
-                  </p>
-                </div>
-              </div>
+            
+            <div>
+              <h2 style={{ fontSize: '2rem', color: 'var(--primary-dark)', marginBottom: '1rem' }}>Por Que Solicitar Crédito BDMG pela RMJ?</h2>
+              <ul style={{ color: 'var(--neutral-muted)', fontSize: '1.05rem', lineHeight: '1.7', marginLeft: '1.5rem', marginBottom: '1rem' }}>
+                <li>Taxas a partir de 1,2% a.m. — abaixo da média dos bancos comerciais</li>
+                <li>Prazos de até 60 meses para pagamento</li>
+                <li>Carência de até 12 meses em algumas linhas</li>
+                <li>Atendimento presencial em Itajubá e região (200 km)</li>
+                <li>Análise de crédito gratuita e sem compromisso</li>
+                <li>Suporte completo na documentação</li>
+              </ul>
             </div>
-
           </article>
 
           {/* Barra Lateral (Sidebar de Navegação de Serviços Relacionados) */}

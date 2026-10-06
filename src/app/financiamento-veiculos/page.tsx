@@ -4,13 +4,41 @@ import styles from "./page.module.css";
 import LeadForm from "@/components/LeadForm";
 
 export const metadata = {
-  title: "Financiamento de Veículos em Itajubá e Sul de Minas | RMJ Soluções de Crédito",
-  description: "A melhor opção de financiamento de veículos para você e sua empresa em Itajubá e Sul de Minas. Simule agora com a RMJ Soluções de Crédito.",
-};
+  title: "Financiamento de Veículos em Itajubá | Taxas desde 0,99% a.m. | RMJ",
+  description: "Financiamento de carros, motos e caminhões com as menores taxas do Sul de Minas. Parceiros BV, Santander, Itaú, Bradesco e Safra. Simulação grátis na RMJ.",
+};;
 
 export default function FinanciamentoVeiculos() {
   return (
     <>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "Qual a menor taxa de financiamento de veículos em Itajubá?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "A RMJ Soluções consegue taxas a partir de 0,99% a.m. comparando condições de BV, Santander, Itaú, Bradesco e Safra. Faça uma simulação gratuita."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Quais documentos preciso para financiar um veículo?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Documentos básicos: RG, CPF, comprovante de renda e comprovante de residência. Para PJ: contrato social, CNPJ e último balanço. A RMJ orienta todo o processo documental."
+                }
+              }
+            ]
+          })
+        }}
+      />
 
       <script
         type="application/ld+json"
@@ -43,12 +71,10 @@ export default function FinanciamentoVeiculos() {
               <li style={{ color: '#fff' }}>Financiamento de Veículos</li>
             </ol>
           </nav>
-          <h1 className={styles.title}>
-            Financiamento de <span className={styles.italicTitle}>Veículos</span> em Itajubá
-          </h1>
-          <p className={styles.leadText}>
-            Adquira o seu carro novo ou seminovo com taxas diferenciadas e parcelas sob medida. A RMJ pesquisa e negocia as melhores taxas de financiamento de veículos junto às maiores financeiras do mercado.
-          </p>
+          <h1 className={styles.title}>Financiamento de Veículos com as Melhores Taxas do Sul de Minas</h1>
+          <div className={styles.leadText}>
+            <p style={{marginBottom: "1rem"}}>A RMJ Soluções de Crédito trabalha com 5 dos maiores bancos do Brasil — BV, Santander, Itaú, Bradesco e Safra — para garantir que você consiga o financiamento ideal para seu veículo. Comparamos taxas e condições em tempo real para encontrar a melhor opção, seja para carro, moto, caminhão ou máquina agrícola.</p>
+          </div>
         </div>
       </section>
 

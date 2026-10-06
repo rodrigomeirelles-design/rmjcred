@@ -296,7 +296,7 @@ export default function Home() {
         <div className={`${styles.simulatorContainer} container`}>
           <div className={styles.simulatorInfo}>
             <span className={styles.sectionSubtitle}>Simulador Grátis</span>
-            <h2 className={styles.sectionTitle}>Por Que Mais de 500 Clientes Confiam na RMJ</h2>
+            <h2 className={styles.sectionTitle}>Por Que Milhares de Clientes Confiam na RMJ</h2>
             <p>Atendimento personalizado e consultivo — não somos um correspondente bancário comum. Acesso a mais de 20 instituições financeiras parceiras. Especialistas certificados com anos de experiência no mercado de crédito. Atendimento presencial em Itajubá e remoto para todo o Sul de Minas e Brasil. Transparência total: sem custos ocultos.</p>
             <div className={styles.infoCard}>
               <h4>Atendimento Humano</h4>

@@ -72,7 +72,17 @@ export default function CadastroImovelPage() {
       </div>
 
       <p className="text-center text-xs mt-8" style={{ color: "#5A6E88" }}>
-        Tem dúvidas? Entre em contato conosco pelo WhatsApp antes de preencher.
+        Tem dúvidas?{" "}
+        <a
+          href="https://wa.me/5535991084513"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-semibold underline"
+          style={{ color: "#234469" }}
+        >
+          Entre em contato conosco pelo WhatsApp
+        </a>{" "}
+        antes de preencher.
       </p>
     </div>
   );

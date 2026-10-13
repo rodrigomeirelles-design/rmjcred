@@ -114,7 +114,9 @@ export default function CadastroVeiculoPage() {
       <p className="text-center text-xs mt-8 px-4" style={{ color: "#5A6E88" }}>
         Tem dúvidas?{" "}
         <a
-          href="https://wa.me/5535999999999"
+          href="https://wa.me/5535991084513"
+          target="_blank"
+          rel="noopener noreferrer"
           className="font-semibold underline"
           style={{ color: "#234469" }}
         >

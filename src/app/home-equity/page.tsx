@@ -15,8 +15,8 @@ import {
 } from "lucide-react";
 
 export const metadata = {
-  title: "Home Equity em Itajubá e Sul de Minas | Empréstimo com Garantia de Imóvel | RMJ",
-  description: "Home Equity em Itajubá e Sul de Minas — taxas a partir de 1,0% ao mês. Simule seu empréstimo com garantia de imóvel com a RMJ Soluções de Crédito.",
+  title: "Home Equity | Empréstimo com Garantia de Imóvel | RMJ Soluções de Crédito",
+  description: "Home Equity — empréstimo com garantia de imóvel com taxas a partir de 1,0% ao mês e até 20 anos para pagar. Simule gratuitamente com a RMJ Soluções de Crédito.",
 };
 
 export default function HomeEquity() {
@@ -101,10 +101,10 @@ export default function HomeEquity() {
             "provider": {
               "@id": "https://rmjcred.com.br/#organizacao"
             },
-            "areaServed": [
-              { "@type": "City", "name": "Itajubá" },
-              { "@type": "AdministrativeArea", "name": "Sul de Minas Gerais" }
-            ]
+            "areaServed": {
+              "@type": "Country",
+              "name": "Brasil"
+            }
           })
         }}
       />
@@ -125,7 +125,7 @@ export default function HomeEquity() {
           <h1 className={styles.title}>Home Equity: Empréstimo com Garantia de Imóvel com as Menores Taxas do Mercado</h1>
           <div className={styles.leadText}>
             <p style={{marginBottom: "1rem"}}>O Home Equity é a modalidade de crédito que mais cresce no Brasil. Com crescimento de 25% só no primeiro trimestre de 2026, essa linha permite que você use seu imóvel quitado ou financiado como garantia para acessar empréstimos com as menores taxas do mercado — muito abaixo do crédito pessoal ou do cheque especial.</p>
-            <p>Na RMJ Soluções de Crédito, somos especialistas em Home Equity e ajudamos dezenas de clientes em Itajubá e no Sul de Minas a transformar o patrimônio imobiliário em capital de trabalho, investimento ou reestruturação financeira.</p>
+            <p>Na RMJ Soluções de Crédito, somos especialistas em Home Equity e ajudamos clientes em todo o Brasil a transformar o patrimônio imobiliário em capital de trabalho, investimento ou reestruturação financeira.</p>
           </div>
         </div>
       </section>

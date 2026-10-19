@@ -42,9 +42,13 @@
 
 .leadText {
   font-size: 1.1rem;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.95);
   max-width: 600px;
   line-height: 1.6;
+}
+
+.leadText p {
+  color: rgba(255, 255, 255, 0.95);
 }
 
 .orangeTitle {

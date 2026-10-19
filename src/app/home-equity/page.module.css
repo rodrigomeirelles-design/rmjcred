@@ -1,6 +1,6 @@
 .headerSection {
   position: relative;
-  background-image: linear-gradient(rgba(11, 26, 48, 0.85), rgba(11, 26, 48, 0.85)), url('/assets/real_estate_handover.png');
+  background-image: linear-gradient(rgba(11, 26, 48, 0.88), rgba(11, 26, 48, 0.92)), url('/assets/real_estate_handover.png');
   background-size: cover;
   background-position: center;
   padding: 8rem 0 6rem 0;
@@ -34,9 +34,13 @@
 
 .leadText {
   font-size: 1.2rem;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.95);
   max-width: 800px;
   line-height: 1.6;
+}
+
+.leadText p {
+  color: rgba(255, 255, 255, 0.95);
 }
 
 /* Detalhes de Produtos */

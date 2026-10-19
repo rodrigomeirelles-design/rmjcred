@@ -27,25 +27,28 @@ export async function generateMetadata({ params }: PageProps) {
   const post = blogPosts.find((p) => p.slug === slug);
   if (!post) return {};
 
+  const metaTitle = post.seoTitle || `${post.title} — Blog RMJ Crédito`;
+  const imgAlt = post.imageAlt || post.title;
+
   return {
-    title: `${post.title} — Blog RMJ Crédito`,
+    title: metaTitle,
     description: post.description,
     keywords: post.seoKeywords.join(", "),
     openGraph: {
-      title: post.title,
+      title: metaTitle,
       description: post.description,
       url: `https://rmjcred.com.br/blog/${post.slug}`,
       type: "article",
       images: [
         {
           url: post.image,
-          alt: post.title,
+          alt: imgAlt,
         }
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title: post.title,
+      title: metaTitle,
       description: post.description,
       images: [post.image],
     }
@@ -106,7 +109,8 @@ export default async function BlogPostPage({ params }: PageProps) {
     "@type": "Article",
     "headline": post.title,
     "description": post.description,
-    "datePublished": post.slug === "capital-de-giro-bdmg-itajuba" || post.slug === "home-equity-itajuba-minas-gerais" || post.slug === "home-equity-unificar-dividas" || post.slug === "financiamento-imovel-itajuba" || post.slug === "programa-contador-parceiro-rmj" ? "2026-06-11" : "2026-06-02",
+    "image": `https://rmjcred.com.br${post.image}`,
+    "datePublished": post.slug === "emprestimo-cpf-ou-cnpj" ? "2026-10-19" : (post.slug === "capital-de-giro-bdmg-itajuba" || post.slug === "home-equity-itajuba-minas-gerais" || post.slug === "home-equity-unificar-dividas" || post.slug === "financiamento-imovel-itajuba" || post.slug === "programa-contador-parceiro-rmj" ? "2026-06-11" : "2026-06-02"),
     "author": {
       "@type": "Organization",
       "name": "RMJ Soluções de Crédito",
@@ -150,6 +154,19 @@ export default async function BlogPostPage({ params }: PageProps) {
     };
   }
 
+  const faqSchema = post.faq ? {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": post.faq.map((item) => ({
+      "@type": "Question",
+      "name": item.question,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": item.answer
+      }
+    }))
+  } : null;
+
   const fullMarkdownContent = post.content.join("\n\n");
 
   return (
@@ -162,6 +179,12 @@ export default async function BlogPostPage({ params }: PageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
       />
+      {faqSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      )}
       {/* 1. Header do Artigo */}
       <header className={styles.postHeader}>
         <div className={`${styles.headerContainer} container`}>
@@ -188,7 +211,7 @@ export default async function BlogPostPage({ params }: PageProps) {
             <div className={styles.postImageWrapper}>
               <Image
                 src={post.image}
-                alt={post.title}
+                alt={post.imageAlt || post.title}
                 fill
                 style={{ objectFit: "cover" }}
                 priority

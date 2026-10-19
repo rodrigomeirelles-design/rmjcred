@@ -1,17 +1,113 @@
 export interface BlogPost {
   slug: string;
   title: string;
+  seoTitle?: string;
   subtitle: string;
   description: string;
   date: string;
   readTime: string;
   category: "Veículos" | "Capital de Giro BDMG" | "Crédito Imobiliário" | "Home Equity" | "Consórcios" | "B2B";
   image: string;
+  imageAlt?: string;
   content: string[]; // Parágrafos do artigo
   seoKeywords: string[];
+  faq?: { question: string; answer: string }[];
 }
 
 export const blogPosts: BlogPost[] = [
+  {
+    "slug": "emprestimo-cpf-ou-cnpj",
+    "title": "Empréstimo no CPF ou no CNPJ? Qual é o melhor para sua empresa",
+    "seoTitle": "Empréstimo no CPF ou CNPJ? Qual o Melhor para sua Empresa",
+    "subtitle": "Pegar empréstimo no CPF ou no CNPJ? Compare taxas, prazos, garantias e riscos e descubra o caminho mais seguro para o crédito da sua empresa.",
+    "description": "Pegar empréstimo no CPF ou no CNPJ? Compare taxas, prazos, garantias e riscos e descubra o caminho mais seguro para o crédito da sua empresa.",
+    "date": "19 de Outubro de 2026",
+    "readTime": "7 min de leitura",
+    "category": "B2B",
+    "image": "/assets/blog/blog_cpf_ou_cnpj.jpg",
+    "imageAlt": "empresário decidindo entre empréstimo no CPF ou no CNPJ",
+    "seoKeywords": [
+      "empréstimo no CPF ou CNPJ",
+      "crédito para empresa",
+      "capital de giro",
+      "empréstimo para MEI",
+      "separar finanças pessoais e da empresa",
+      "Pronampe",
+      "crédito empresarial Sul de Minas"
+    ],
+    "faq": [
+      {
+        "question": "É melhor pegar empréstimo no CPF ou CNPJ?",
+        "answer": "Para necessidades da empresa, o CNPJ é quase sempre o melhor caminho: prazos maiores, linhas específicas e separação entre patrimônio pessoal e do negócio."
+      },
+      {
+        "question": "Empréstimo no CNPJ protege meus bens pessoais?",
+        "answer": "Em parte. A dívida é da empresa, mas se você assinar como avalista, pode ser cobrado caso ela não pague. No MEI, o patrimônio pessoal responde pelas dívidas do negócio."
+      },
+      {
+        "question": "Posso usar um empréstimo pessoal para pagar contas da empresa?",
+        "answer": "Pode, mas o valor deve ser registrado pela contabilidade como aporte ou empréstimo do sócio. Sem isso, as finanças se misturam e a empresa perde histórico de crédito."
+      },
+      {
+        "question": "Por que o banco não aprova crédito para minha empresa?",
+        "answer": "Os motivos mais comuns são faturamento fora da conta PJ, contabilidade desatualizada, restrições cadastrais e falta de histórico. Quase todos podem ser corrigidos com organização."
+      },
+      {
+        "question": "MEI pode pegar empréstimo no CNPJ?",
+        "answer": "Sim. Existem linhas próprias para MEI, inclusive em programas como o ProCred 360, geralmente com condições melhores que o crédito pessoal comum."
+      },
+      {
+        "question": "Qual o empréstimo mais barato para empresa?",
+        "answer": "Costumam ser as linhas com garantia ou com apoio público, como Pronampe e as de bancos de desenvolvimento. A melhor opção depende do porte, do faturamento e das garantias de cada empresa."
+      }
+    ],
+    "content": [
+      "## A resposta curta",
+      "O caixa apertou, o fornecedor quer receber e o banco já ofereceu um empréstimo pessoal \"rapidinho\" no aplicativo. A pergunta aparece na hora: devo pegar o **empréstimo no meu CPF ou no CNPJ** da empresa?",
+      "**Na grande maioria dos casos, o crédito para a empresa deve ser tomado no CNPJ.** O empréstimo no CNPJ costuma ter prazos maiores, linhas com taxas subsidiadas e mantém separados o patrimônio da família e o risco do negócio. O CPF só faz sentido em situações pontuais, que você vai ver abaixo.",
+      "Neste artigo, explicamos a diferença na prática: taxas, prazos, garantias, riscos e o que fazer para que sua empresa consiga crédito no próprio nome. Tudo com a visão de quem trabalha todos os dias estruturando crédito para empresários.",
+      "## Por que tantos empresários pegam empréstimo no CPF",
+      "O empréstimo no CPF parece o caminho mais fácil, e muitas vezes é mesmo o mais rápido. Os motivos mais comuns são:",
+      "- **Crédito pré-aprovado no aplicativo:** o banco oferece, o dinheiro cai em minutos e ninguém pede documento da empresa.\\n- **Empresa sem histórico bancário:** CNPJ novo, faturamento que não passa pela conta PJ ou contabilidade desatualizada.\\n- **Restrição no CNPJ:** dívidas em atraso, protestos ou impostos pendentes fecham a porta do crédito empresarial.\\n- **Falta de orientação:** o empresário não sabe que existem linhas específicas para empresas, mais baratas e mais longas.",
+      "O problema é que a facilidade de hoje costuma virar o aperto de amanhã. Crédito pessoal sem garantia é, em geral, uma das modalidades mais caras do mercado, e o prazo curto pressiona justamente o caixa que você queria aliviar.",
+      "## Empréstimo no CPF ou CNPJ: comparativo lado a lado",
+      "A tabela resume as diferenças que mais pesam na decisão.",
+      "| Critério | Empréstimo no CPF | Empréstimo no CNPJ |\\n| :--- | :--- | :--- |\\n| **Taxa de juros** | Geralmente mais alta no crédito pessoal sem garantia | Pode ser bem menor, sobretudo em linhas com garantia ou programas como o [Pronampe](/pronampe) |\\n| **Prazo** | Curto, com parcelas pesadas | Mais longo, muitas vezes com carência para começar a pagar |\\n| **Valor disponível** | Limitado à renda da pessoa física | Calculado sobre o faturamento da empresa |\\n| **Finalidade** | Livre, sem planejamento | Ligada ao negócio: [capital de giro](/credito-bdmg), investimento, máquinas |\\n| **Impacto no seu nome** | Compromete sua renda e seu score pessoal | Fica no CNPJ (atenção ao aval do sócio, explicado abaixo) |\\n| **Contabilidade** | Dinheiro pessoal entrando na empresa sem registro correto | Entra no caixa e no balanço da empresa |\\n| **Histórico de crédito** | Não constrói histórico para a empresa | Cada contrato pago fortalece o CNPJ para o próximo crédito |",
+      "**O ponto que poucos explicam: o aval.** Em muitas operações no CNPJ, o banco pede que o sócio seja avalista. Isso significa que, se a empresa não pagar, o sócio pode ser cobrado. Mesmo assim, a dívida nasce na empresa, com prazo e custo de empresa, e o planejamento é feito sobre o faturamento dela, não sobre o seu salário.",
+      "**Atenção, MEI:** no Microempreendedor Individual, CPF e CNPJ têm uma ligação muito mais próxima e o patrimônio pessoal responde pelas dívidas do negócio. Ainda assim, vale usar linhas próprias para MEI, que costumam ter condições melhores que o crédito pessoal comum.",
+      "## O risco escondido: misturar o dinheiro da casa com o da empresa",
+      "Pegar empréstimo no CPF para cobrir a empresa quase sempre leva a um problema maior: a mistura das finanças. Na prática, isso gera quatro efeitos:",
+      "1. **Você perde a noção do lucro real.** Se o dinheiro pessoal tapa buracos da empresa, fica impossível saber se o negócio dá resultado ou se está sendo sustentado pela família.\\n2. **Seu orçamento pessoal vira garantia do negócio.** Uma parcela que deveria sair do faturamento passa a disputar espaço com escola, casa e saúde.\\n3. **A empresa continua \"invisível\" para os bancos.** Sem movimentação e contratos no CNPJ, ela não constrói histórico e o próximo crédito será tão difícil quanto o primeiro.\\n4. **O efeito bola de neve.** Juros altos e prazo curto levam a um novo empréstimo para pagar o anterior, agora com seu nome cada vez mais comprometido.",
+      "Separar CPF e CNPJ não é burocracia. É o que permite enxergar o caixa, planejar e negociar com o banco de igual para igual.",
+      "## Quando o empréstimo no CPF pode fazer sentido",
+      "Existem situações em que usar o CPF é uma decisão racional, desde que planejada:",
+      "- **Crédito com garantia de imóvel ([Home Equity](/home-equity)) ou [veículo](/credito-garantia-veiculo):** quando o bem está no nome do sócio, a operação pode sair na pessoa física com taxa baixa e prazo longo. O dinheiro entra na empresa como aporte do sócio, devidamente registrado pela contabilidade.\\n- **Empresa recém-aberta, sem faturamento comprovado:** enquanto o CNPJ ainda não tem histórico, o sócio pode precisar usar seu perfil de crédito por um período curto, com plano para migrar para o CNPJ.\\n- **Valor pequeno e pontual:** quando a necessidade é baixa, de curtíssimo prazo e a taxa da pessoa física é competitiva.",
+      "**A regra de ouro:** se for usar o CPF, registre o dinheiro como aporte ou empréstimo do sócio para a empresa e tenha um plano para que as próximas operações sejam feitas no CNPJ.",
+      "## Quando o CNPJ é a escolha certa (quase sempre)",
+      "Se o dinheiro vai para o negócio, o crédito deve estar no nome do negócio. Isso vale para:",
+      "- **[Capital de giro](/credito-bdmg):** pagar fornecedores, folha e estoque enquanto as vendas a prazo não entram.\\n- **Investimento:** máquinas, reforma, ampliação, veículos de trabalho.\\n- **Reorganização de dívidas:** trocar várias dívidas caras e curtas por uma operação mais longa e barata.",
+      "E é no CNPJ que estão as linhas mais vantajosas para pequenas e médias empresas:",
+      "- **[Pronampe](/pronampe):** programa federal para micro e pequenas empresas, com garantia pública e condições abaixo das linhas comuns de mercado.\\n- **[ProCred 360](/procred-360):** voltado a MEIs e microempresas de menor faturamento, com condições diferenciadas.\\n- **[BDMG](/credito-bdmg):** o banco de desenvolvimento de Minas Gerais oferece linhas de capital de giro e investimento para empresas mineiras, com prazos longos.\\n- **Linhas com garantia (FGI, [imóvel](/home-equity), recebíveis):** quanto melhor a garantia, menor tende a ser a taxa.",
+      "As condições de cada programa (limites, taxas e prazos) mudam ao longo do tempo. Por isso vale sempre confirmar as regras vigentes antes de contratar.",
+      "## Como deixar sua empresa pronta para conseguir crédito no CNPJ",
+      "Muitos empresários usam o CPF porque o banco \"não aprova\" a empresa. Na maior parte das vezes, o problema tem solução. Confira o checklist:",
+      "- ☐ Faturamento passando pela conta PJ (cartão, Pix e boletos no CNPJ)\\n- ☐ Contabilidade em dia, com faturamento declarado compatível com a movimentação\\n- ☐ Certidões negativas e impostos regularizados (ou parcelados)\\n- ☐ Pró-labore definido, sem retiradas aleatórias do caixa\\n- ☐ Contas pessoais pagas pela conta pessoal, nunca pela da empresa\\n- ☐ Fluxo de caixa simples, mostrando entradas, saídas e capacidade de pagamento\\n- ☐ Relacionamento com mais de uma instituição financeira",
+      "Com esses pontos organizados, a empresa passa a ser vista pelos bancos como um tomador confiável, e as portas para taxas melhores se abrem.",
+      "## Como a RMJ Soluções de Crédito ajuda sua empresa",
+      "Decidir entre **empréstimo no CPF ou CNPJ** não deveria ser um chute. A RMJ Soluções de Crédito atua como o *personal banker* do empresário: analisa a situação da empresa, organiza a documentação e busca a linha de crédito mais adequada no mercado.",
+      "Na prática, a RMJ:",
+      "- Faz o diagnóstico financeiro e de crédito do seu negócio\\n- Indica se a operação deve sair no CNPJ ou, em casos específicos, no CPF com garantia\\n- Prepara a empresa para acessar linhas como [Pronampe](/pronampe), [ProCred 360](/procred-360), [BDMG](/credito-bdmg) e capital de giro\\n- Acompanha todo o processo junto às instituições financeiras",
+      "São 20 anos de experiência em crédito, com passagem por grandes bancos e pelo BDMG, a serviço de empresas de Itajubá e de cidades do Sul de Minas num raio de 200 km.",
+      "**Quer saber qual é o melhor caminho para o crédito da sua empresa?** [Fale com a RMJ pelo WhatsApp](https://wa.me/5535991084513) ou acesse a [página de contato](/contato) e agende uma análise.",
+      "## Perguntas frequentes",
+      "**É melhor pegar empréstimo no CPF ou CNPJ?**\\nPara necessidades da empresa, o CNPJ é quase sempre o melhor caminho: prazos maiores, linhas específicas e separação entre patrimônio pessoal e do negócio.",
+      "**Empréstimo no CNPJ protege meus bens pessoais?**\\nEm parte. A dívida é da empresa, mas se você assinar como avalista, pode ser cobrado caso ela não pague. No MEI, o patrimônio pessoal responde pelas dívidas do negócio.",
+      "**Posso usar um empréstimo pessoal para pagar contas da empresa?**\\nPode, mas o valor deve ser registrado pela contabilidade como aporte ou empréstimo do sócio. Sem isso, as finanças se misturam e a empresa perde histórico de crédito.",
+      "**Por que o banco não aprova crédito para minha empresa?**\\nOs motivos mais comuns são faturamento fora da conta PJ, contabilidade desatualizada, restrições cadastrais e falta de histórico. Quase todos podem ser corrigidos com organização.",
+      "**MEI pode pegar empréstimo no CNPJ?**\\nSim. Existem linhas próprias para MEI, inclusive em programas como o [ProCred 360](/procred-360), geralmente com condições melhores que o crédito pessoal comum.",
+      "**Qual o empréstimo mais barato para empresa?**\\nCostumam ser as linhas com garantia ou com apoio público, como [Pronampe](/pronampe) e as de [bancos de desenvolvimento (BDMG)](/credito-bdmg). A melhor opção depende do porte, do faturamento e das garantias de cada empresa."
+    ]
+  },
   {
       "slug": "capital-de-giro-bdmg-itajuba",
       "title": "Capital de Giro BDMG em Itajubá: Guia Completo 2026 para Micro e Pequenas Empresas",

@@ -34,7 +34,7 @@ export default function BlogHome() {
                 <div className={styles.cardImageWrapper}>
                   <Image
                     src={post.image}
-                    alt={post.title}
+                    alt={post.imageAlt || post.title}
                     fill
                     style={{ objectFit: "cover" }}
                   />

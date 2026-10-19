@@ -36,7 +36,7 @@ export default function CreditoGarantiaVeiculo() {
           <Link href="/" className={styles.backLink}>
             &larr; Voltar para a Página Inicial
           </Link>
-          <h1 className={styles.title}>Crédito com Garantia de <span className={styles.italicTitle}>Veículo</span> <br/><span style={fontSize: "0.5em", fontWeight: "normal"}>em Itajubá e Sul de Minas</span></h1>
+          <h1 className={styles.title}>Crédito com Garantia de <span className={styles.italicTitle}>Veículo</span> <br/><span style={{ fontSize: "0.5em", fontWeight: "normal" }}>em Itajubá e Sul de Minas</span></h1>
           <p className={styles.leadText}>
             Use seu veículo quitado ou financiado como garantia para obter dinheiro em mãos de forma rápida, mantendo a posse e o uso do carro. A RMJ garante taxas baixas e prazos flexíveis.
           </p>

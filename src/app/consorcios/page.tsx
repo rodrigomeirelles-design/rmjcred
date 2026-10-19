@@ -6,11 +6,6 @@ import styles from "./page.module.css";
 import LeadForm from "@/components/LeadForm";
 import { useState } from "react";
 
-export const metadata = {
-  title: "Consórcios em Itajubá e Sul de Minas | RMJ Soluções de Crédito",
-  description: "A melhor opção de consórcios para você e sua empresa em Itajubá e Sul de Minas. Simule agora com a RMJ Soluções de Crédito.",
-};
-
 export default function Consorcios() {
   // --- FAQ State ---
   const [openFaq, setOpenFaq] = useState<string | null>(null);

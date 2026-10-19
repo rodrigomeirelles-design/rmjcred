@@ -1,6 +1,6 @@
 .headerSection {
   position: relative;
-  background-image: linear-gradient(rgba(11, 26, 48, 0.85), rgba(11, 26, 48, 0.85)), url('/assets/home_equity_hero_bg_v2.png');
+  background-image: linear-gradient(rgba(11, 26, 48, 0.85), rgba(11, 26, 48, 0.85)), url('/assets/real_estate_handover.png');
   background-size: cover;
   background-position: center;
   padding: 8rem 0 6rem 0;
@@ -197,3 +197,303 @@
     line-height: 1.2;
   }
 }
+
+/* Vantagens com Ícones */
+.advantagesList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+
+.advantageItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  color: var(--neutral-muted);
+  line-height: 1.6;
+}
+
+.advantageItem strong {
+  color: var(--primary-dark);
+}
+
+.advantageIconWrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background-color: rgba(30, 73, 138, 0.08);
+  color: var(--primary-color);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* Seção Documentos Necessários */
+.docsSectionBox {
+  background-color: var(--neutral-light);
+  border: 1px solid var(--neutral-border);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.docsHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.docsHeaderIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background-color: var(--primary-color);
+  color: var(--neutral-white);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.docsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .docsGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.docGroupCard {
+  background-color: var(--neutral-white);
+  border: 1px solid var(--neutral-border);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.docGroupTitle {
+  font-size: 1.15rem;
+  color: var(--primary-dark);
+  font-weight: 700;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.docGroupIcon {
+  color: var(--secondary-color);
+  flex-shrink: 0;
+}
+
+.docChecklist {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.docChecklist li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  font-size: 0.95rem;
+  color: var(--neutral-dark);
+  line-height: 1.5;
+}
+
+.docCheckIcon {
+  color: var(--secondary-color);
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+.docsFooter {
+  border-top: 1px solid var(--neutral-border);
+  padding-top: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+@media (min-width: 768px) {
+  .docsFooter {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.docsFooterText {
+  font-size: 0.9rem;
+  color: var(--secondary-color);
+  font-weight: 600;
+  margin: 0;
+}
+
+/* FAQ Accordion */
+.faqAccordionList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.faqItem {
+  border: 1px solid var(--neutral-border);
+  border-radius: var(--radius-md);
+  background-color: var(--neutral-white);
+  overflow: hidden;
+  transition: var(--transition-smooth);
+}
+
+.faqItem[open] {
+  border-color: rgba(30, 73, 138, 0.25);
+  box-shadow: var(--shadow-sm);
+}
+
+.faqQuestion {
+  list-style: none;
+  cursor: pointer;
+  padding: 1.1rem 1.25rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.faqQuestion::-webkit-details-marker {
+  display: none;
+}
+
+.faqChevron {
+  flex-shrink: 0;
+  color: var(--secondary-color);
+  transition: transform 0.2s ease;
+}
+
+.faqItem[open] .faqChevron {
+  transform: rotate(180deg);
+}
+
+.faqAnswer {
+  padding: 0 1.25rem 1.25rem 1.25rem;
+  margin: 0;
+  color: var(--neutral-muted);
+  font-size: 0.95rem;
+  line-height: 1.65;
+  border-top: 1px solid var(--neutral-light);
+  padding-top: 0.85rem;
+}
+
+/* Seção Saiba Mais (Artigos do Blog) */
+.blogSection {
+  background-color: var(--neutral-light);
+  border-top: 1px solid var(--neutral-border);
+}
+
+.blogHeader {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.blogSectionTitle {
+  font-size: 2rem;
+  color: var(--primary-dark);
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+
+.blogSectionSubtitle {
+  font-size: 1.05rem;
+  color: var(--neutral-muted);
+  margin: 0;
+}
+
+.blogCardsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.75rem;
+}
+
+@media (min-width: 768px) {
+  .blogCardsGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.blogCard {
+  background-color: var(--neutral-white);
+  border: 1px solid var(--neutral-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  transition: var(--transition-smooth);
+}
+
+.blogCard:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: rgba(30, 73, 138, 0.2);
+}
+
+.blogCardImage {
+  position: relative;
+  width: 100%;
+  height: 185px;
+}
+
+.blogCardBody {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 0.65rem;
+}
+
+.blogCardTitle {
+  font-size: 1.15rem;
+  color: var(--primary-dark);
+  font-weight: 700;
+  line-height: 1.35;
+  margin: 0;
+}
+
+.blogCardDesc {
+  font-size: 0.92rem;
+  color: var(--neutral-muted);
+  line-height: 1.5;
+  margin: 0;
+  flex: 1;
+}
+
+.blogCardLink {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--secondary-color);
+  margin-top: 0.35rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+

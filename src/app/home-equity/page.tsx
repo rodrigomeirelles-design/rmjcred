@@ -435,7 +435,7 @@ export default function HomeEquity() {
             <Link href="/blog/o-que-e-home-equity-e-como-funciona" className={styles.blogCard}>
               <div className={styles.blogCardImage}>
                 <Image
-                  src="/assets/blog/blog_home_equity.png"
+                  src="/assets/blog/blog_o_que_e_home_equity_v2.jpg"
                   alt="O que é Home Equity e Como Funciona"
                   fill
                   style={{ objectFit: "cover" }}
@@ -454,7 +454,7 @@ export default function HomeEquity() {
             <Link href="/blog/home-equity-vs-emprestimo-pessoal" className={styles.blogCard}>
               <div className={styles.blogCardImage}>
                 <Image
-                  src="/assets/blog/blog_home_equity_pessoal.png"
+                  src="/assets/blog/blog_home_equity_pessoal_v2.png"
                   alt="Home Equity vs Empréstimo Pessoal: Qual Tem as Menores Taxas?"
                   fill
                   style={{ objectFit: "cover" }}
@@ -473,7 +473,7 @@ export default function HomeEquity() {
             <Link href="/blog/regras-imovel-garantia-home-equity" className={styles.blogCard}>
               <div className={styles.blogCardImage}>
                 <Image
-                  src="/assets/blog/blog_imovel_garantia.png"
+                  src="/assets/blog/blog_imovel_garantia_v2.png"
                   alt="Quais Imóveis Podem Ser Usados como Garantia?"
                   fill
                   style={{ objectFit: "cover" }}

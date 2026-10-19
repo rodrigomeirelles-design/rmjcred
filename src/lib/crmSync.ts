@@ -64,6 +64,7 @@ export async function syncGoogleSheetsToCrm(): Promise<void> {
     const leads = parseSheet(valueRanges[1]);
     const bancos = parseSheet(valueRanges[2]);
     const socios = parseSheet(valueRanges[3]);
+    const imobiliario: any[] = [];
 
     // Run inside a database transaction
     const transaction = db.transaction(() => {

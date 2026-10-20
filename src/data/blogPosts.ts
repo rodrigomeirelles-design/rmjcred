@@ -289,7 +289,7 @@ export const blogPosts: BlogPost[] = [
   'date': '10 de Maio de 2026',
   'readTime': '4 min de leitura',
   'category': 'Veículos',
-  'image': '/assets/blog/blog_documentos_veiculos.png',
+  'image': '/assets/blog/blog_documentos_veiculos_v2.jpg',
   'seoKeywords': ['documentos financiamento veiculo', 'documentacao aprovar carro', 'comprovante de renda financiamento', 'crlv financiamento veicular'],
   'content': ['A agilidade de um financiamento de veículo depende quase que integralmente da organização dos documentos exigidos pelas instituições financeiras. Entregar pastas de documentos completas e corretas elimina idas e vindas de análise e pode garantir a liberação do crédito no mesmo dia.',
               'Para o comprador, a lista básica de documentos pessoais inclui: 1) RG ou CNH válida; 2) CPF; 3) Comprovante de residência atualizado (últimos 90 dias); 4) Comprovante de renda. Autônomos e empresários podem apresentar extratos bancários dos últimos três meses ou declaração de imposto de renda.',

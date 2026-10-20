@@ -241,8 +241,8 @@ export default function HomeEquity() {
               <div className={styles.splitSection}>
                 <div className={styles.splitImageBox}>
                   <Image
-                    src="/assets/he_etapas_notebook.jpg"
-                    alt="Cliente contratando Home Equity de forma digital pelo notebook e celular no sofá de casa"
+                    src="/assets/he_etapas_celular.jpg"
+                    alt="Cliente acompanhando a liberação do Home Equity pelo celular no sofá de casa"
                     width={600}
                     height={750}
                     loading="lazy"

@@ -406,7 +406,7 @@ export const blogPosts: BlogPost[] = [
   'date': '19 de Maio de 2026',
   'readTime': '4 min de leitura',
   'category': 'Crédito Imobiliário',
-  'image': '/assets/blog/blog_fgts_imovel.png',
+  'image': '/assets/blog/blog_fgts_imovel_v2.jpg',
   'seoKeywords': ['usar FGTS financiamento imobiliario', 'FGTS entrada casa propria', 'regras saque FGTS imovel', 'amortizar financiamento FGTS'],
   'content': ['O saldo das contas ativas e inativas do Fundo de Garantia do Tempo de Serviço (FGTS) é um dos recursos mais eficientes para viabilizar a aquisição da casa própria. Utilizado de forma inteligente, ele acelera a conquista do imóvel e diminui os custos dos juros.',
               'O FGTS pode ser usado de três maneiras no crédito imobiliário: 1) Como valor de entrada na compra do imóvel; 2) Na amortização ou quitação do saldo devedor existente; 3) No pagamento de parte do valor das prestações mensais (com limite de tempo anual).',

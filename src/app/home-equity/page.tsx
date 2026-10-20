@@ -182,54 +182,82 @@ export default function HomeEquity() {
               </div>
             </div>
 
-            {/* Vantagens com ícones */}
+            {/* Vantagens com ícones e imagem lateral */}
             <div>
               <h2 style={{ fontSize: '1.75rem', color: 'var(--primary-dark)', marginBottom: '1.25rem' }}>As principais vantagens do Home Equity com a RMJ</h2>
-              <ul className={styles.advantagesList}>
-                <li className={styles.advantageItem}>
-                  <span className={styles.advantageIconWrap}>
-                    <Percent size={22} />
-                  </span>
-                  <div>
-                    <strong>Os menores juros do mercado:</strong> Como o banco tem a segurança da garantia física do imóvel, o risco da operação despenca e, por consequência, as taxas de juros nominais cobradas são extremamente baixas.
-                  </div>
-                </li>
-                <li className={styles.advantageItem}>
-                  <span className={styles.advantageIconWrap}>
-                    <CalendarClock size={22} />
-                  </span>
-                  <div>
-                    <strong>Prazos estendidos de até 20 anos:</strong> Dilua o valor contratado em parcelas que não pesam na folha de pagamentos ou no orçamento familiar, com prazos de amortização de até 240 meses.
-                  </div>
-                </li>
-                <li className={styles.advantageItem}>
-                  <span className={styles.advantageIconWrap}>
-                    <Home size={22} />
-                  </span>
-                  <div>
-                    <strong>Manutenção de Posse do Bem:</strong> O imóvel é alienado fiduciariamente no contrato, mas o direito de uso, moradia ou locação comercial permanece 100% com você.
-                  </div>
-                </li>
-                <li className={styles.advantageItem}>
-                  <span className={styles.advantageIconWrap}>
-                    <BadgeDollarSign size={22} />
-                  </span>
-                  <div>
-                    <strong>Crédito de até 60% do valor do imóvel:</strong> Obtenha valores expressivos em dinheiro de forma rápida e segura (linhas que vão de R$ 50 mil até múltiplos milhões de reais).
-                  </div>
-                </li>
-              </ul>
+              <div className={styles.splitSection}>
+                <div className={styles.splitImageBox}>
+                  <Image
+                    src="/assets/he_sala_estar.jpg"
+                    alt="Interior de sala de estar brasileira moderna e acolhedora com luz natural"
+                    width={600}
+                    height={750}
+                    loading="lazy"
+                    className={styles.contextualImage}
+                  />
+                </div>
+                <div className={styles.splitContentBox}>
+                  <ul className={styles.advantagesList}>
+                    <li className={styles.advantageItem}>
+                      <span className={styles.advantageIconWrap}>
+                        <Percent size={22} />
+                      </span>
+                      <div>
+                        <strong>Os menores juros do mercado:</strong> Como o banco tem a segurança da garantia física do imóvel, o risco da operação despenca e, por consequência, as taxas de juros nominais cobradas são extremamente baixas.
+                      </div>
+                    </li>
+                    <li className={styles.advantageItem}>
+                      <span className={styles.advantageIconWrap}>
+                        <CalendarClock size={22} />
+                      </span>
+                      <div>
+                        <strong>Prazos estendidos de até 20 anos:</strong> Dilua o valor contratado em parcelas que não pesam na folha de pagamentos ou no orçamento familiar, com prazos de amortização de até 240 meses.
+                      </div>
+                    </li>
+                    <li className={styles.advantageItem}>
+                      <span className={styles.advantageIconWrap}>
+                        <Home size={22} />
+                      </span>
+                      <div>
+                        <strong>Manutenção de Posse do Bem:</strong> O imóvel é alienado fiduciariamente no contrato, mas o direito de uso, moradia ou locação comercial permanece 100% com você.
+                      </div>
+                    </li>
+                    <li className={styles.advantageItem}>
+                      <span className={styles.advantageIconWrap}>
+                        <BadgeDollarSign size={22} />
+                      </span>
+                      <div>
+                        <strong>Crédito de até 60% do valor do imóvel:</strong> Obtenha valores expressivos em dinheiro de forma rápida e segura (linhas que vão de R$ 50 mil até múltiplos milhões de reais).
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
             </div>
 
-            {/* Etapas do processo */}
+            {/* Etapas do processo com imagem lateral */}
             <div>
-              <h2 style={{ fontSize: '1.75rem', color: 'var(--primary-dark)', marginBottom: '1rem' }}>Como funciona o processo de liberação?</h2>
-              <ol style={{ display: 'flex', flexDirection: 'column', gap: '1rem', paddingLeft: '1.25rem', color: 'var(--neutral-muted)', lineHeight: '1.6' }}>
-                <li><strong>Simulação Cadastral:</strong> Analisamos os dados do seu imóvel e a sua renda familiar ou faturamento PJ para enquadrar a melhor proposta de juros.</li>
-                <li><strong>Avaliação Técnica do Imóvel:</strong> Um perito avaliador de engenharia realiza o laudo físico de mercado do seu imóvel.</li>
-                <li><strong>Emissão de Contrato:</strong> Emitimos o contrato de alienação fiduciária com as maiores instituições e fintechs de crédito do país.</li>
-                <li><strong>Depósito em Conta:</strong> Com o registro do contrato efetuado em cartório imobiliário, o dinheiro é liberado à vista em conta em poucos dias.</li>
-              </ol>
+              <h2 style={{ fontSize: '1.75rem', color: 'var(--primary-dark)', marginBottom: '1.25rem' }}>Como funciona o processo de liberação?</h2>
+              <div className={styles.splitSection}>
+                <div className={styles.splitImageBox}>
+                  <Image
+                    src="/assets/he_etapas_notebook.jpg"
+                    alt="Cliente contratando Home Equity de forma digital pelo notebook e celular no sofá de casa"
+                    width={600}
+                    height={750}
+                    loading="lazy"
+                    className={styles.contextualImage}
+                  />
+                </div>
+                <div className={styles.splitContentBox}>
+                  <ol style={{ display: 'flex', flexDirection: 'column', gap: '1rem', paddingLeft: '1.25rem', color: 'var(--neutral-muted)', lineHeight: '1.6', margin: 0 }}>
+                    <li><strong>Simulação Cadastral:</strong> Analisamos os dados do seu imóvel e a sua renda familiar ou faturamento PJ para enquadrar a melhor proposta de juros.</li>
+                    <li><strong>Avaliação Técnica do Imóvel:</strong> Um perito avaliador de engenharia realiza o laudo físico de mercado do seu imóvel.</li>
+                    <li><strong>Emissão de Contrato:</strong> Emitimos o contrato de alienação fiduciária com as maiores instituições e fintechs de crédito do país.</li>
+                    <li><strong>Depósito em Conta:</strong> Com o registro do contrato efetuado em cartório imobiliário, o dinheiro é liberado à vista em conta em poucos dias.</li>
+                  </ol>
+                </div>
+              </div>
             </div>
 
             {/* NOVA SEÇÃO: Documentos Necessários */}
@@ -317,8 +345,18 @@ export default function HomeEquity() {
               </div>
             </div>
 
-            {/* FAQs Expansíveis (7 Perguntas) */}
+            {/* FAQs Expansíveis (7 Perguntas) com imagem decorativa acima */}
             <div style={{ marginTop: '0.5rem' }}>
+              <div className={styles.faqBannerWrapper}>
+                <Image
+                  src="/assets/he_faq_chaves.jpg"
+                  alt="Close de mãos segurando as chaves de um imóvel com entrada acolhedora ao fundo"
+                  width={720}
+                  height={405}
+                  loading="lazy"
+                  className={styles.faqBannerImage}
+                />
+              </div>
               <h2 style={{ fontSize: '1.75rem', color: 'var(--primary-dark)', marginBottom: '1.25rem' }}>Perguntas Frequentes sobre Home Equity</h2>
               <div className={styles.faqAccordionList}>
                 <details className={styles.faqItem} open>

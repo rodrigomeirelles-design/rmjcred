@@ -1,6 +1,6 @@
 .headerSection {
   position: relative;
-  background-image: linear-gradient(rgba(11, 26, 48, 0.88), rgba(11, 26, 48, 0.92)), url('/assets/real_estate_handover.png');
+  background-image: linear-gradient(rgba(11, 26, 48, 0.72), rgba(11, 26, 48, 0.82)), url('/assets/he_hero_casal.jpg');
   background-size: cover;
   background-position: center;
   padding: 8rem 0 6rem 0;
@@ -500,4 +500,65 @@
   align-items: center;
   gap: 0.25rem;
 }
+
+/* Imagens Contextuais e Layouts Divididos */
+.splitSection {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.75rem;
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .splitSection {
+    grid-template-columns: 0.44fr 0.56fr;
+    gap: 2.25rem;
+  }
+}
+
+.splitImageBox {
+  width: 100%;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--neutral-border);
+}
+
+.contextualImage {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  display: block;
+  border-radius: var(--radius-md);
+}
+
+.splitContentBox {
+  width: 100%;
+}
+
+.faqBannerWrapper {
+  width: 100%;
+  max-width: 65%;
+  margin: 0 auto 1.5rem auto;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--neutral-border);
+}
+
+@media (max-width: 768px) {
+  .faqBannerWrapper {
+    max-width: 100%;
+  }
+}
+
+.faqBannerImage {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  display: block;
+}
+
 

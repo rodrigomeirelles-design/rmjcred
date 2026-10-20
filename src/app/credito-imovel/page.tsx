@@ -69,65 +69,148 @@ export default function CreditoImovel() {
               </p>
             </div>
 
-            {/* Comparativo de Sistemas de Amortização */}
+            {/* Comparativo de Sistemas de Amortização com Imagem Lateral */}
             <div className="comparison-card">
               <h3 style={{ fontSize: '1.4rem', color: 'var(--primary-color)', marginBottom: '1.5rem' }}>SAC vs Price: Escolha o Modelo Ideal</h3>
-              <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-                  <thead>
-                    <tr style={{ borderBottom: '2px solid var(--neutral-border)' }}>
-                      <th style={{ padding: '0.75rem', fontWeight: 'bold' }}>Característica</th>
-                      <th style={{ padding: '0.75rem', fontWeight: 'bold', color: 'var(--secondary-color)' }}>Tabela SAC (Sistema de Amortização Constante)</th>
-                      <th style={{ padding: '0.75rem', fontWeight: 'bold' }}>Tabela PRICE (Sistema Francês)</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr style={{ borderBottom: '1px solid var(--neutral-border)' }}>
-                      <td style={{ padding: '0.75rem' }}><strong>Comportamento das Parcelas</strong></td>
-                      <td style={{ padding: '0.75rem', color: 'var(--secondary-color)', fontWeight: '600' }}>Decrescentes (iniciam maiores e diminuem)</td>
-                      <td style={{ padding: '0.75rem' }}>Constantes (fixas do início ao fim)</td>
-                    </tr>
-                    <tr style={{ borderBottom: '1px solid var(--neutral-border)' }}>
-                      <td style={{ padding: '0.75rem' }}><strong>Amortização do Saldo Devedor</strong></td>
-                      <td style={{ padding: '0.75rem', color: 'var(--secondary-color)', fontWeight: '600' }}>Rápida desde o início do financiamento</td>
-                      <td style={{ padding: '0.75rem' }}>Lenta nos primeiros anos</td>
-                    </tr>
-                    <tr style={{ borderBottom: '1px solid var(--neutral-border)' }}>
-                      <td style={{ padding: '0.75rem' }}><strong>Custo Total de Juros</strong></td>
-                      <td style={{ padding: '0.75rem', color: 'var(--secondary-color)', fontWeight: '600' }}>Menor custo financeiro total de juros acumulados</td>
-                      <td style={{ padding: '0.75rem' }}>Maior custo de juros ao fim do prazo</td>
-                    </tr>
-                    <tr style={{ borderBottom: '1px solid var(--neutral-border)' }}>
-                      <td style={{ padding: '0.75rem' }}><strong>Recomendação</strong></td>
-                      <td style={{ padding: '0.75rem', color: 'var(--secondary-color)', fontWeight: '600' }}>Para quem busca economia a longo prazo</td>
-                      <td style={{ padding: '0.75rem' }}>Para quem precisa de parcelas iniciais menores</td>
-                    </tr>
-                  </tbody>
-                </table>
+              <div className={styles.sacPriceSplit}>
+                <div className={styles.sacPriceImageBox}>
+                  <Image
+                    src="/assets/blog/blog_sac_price_v2.png"
+                    alt="Casal planejando financiamento imobiliário e comparando tabelas SAC e Price na mesa de casa"
+                    width={500}
+                    height={500}
+                    loading="lazy"
+                    className={styles.squareImage}
+                  />
+                </div>
+                <div style={{ overflowX: 'auto' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                    <thead>
+                      <tr style={{ borderBottom: '2px solid var(--neutral-border)' }}>
+                        <th style={{ padding: '0.75rem', fontWeight: 'bold' }}>Característica</th>
+                        <th style={{ padding: '0.75rem', fontWeight: 'bold', color: 'var(--secondary-color)' }}>Tabela SAC (Sistema de Amortização Constante)</th>
+                        <th style={{ padding: '0.75rem', fontWeight: 'bold' }}>Tabela PRICE (Sistema Francês)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr style={{ borderBottom: '1px solid var(--neutral-border)' }}>
+                        <td style={{ padding: '0.75rem' }}><strong>Comportamento das Parcelas</strong></td>
+                        <td style={{ padding: '0.75rem', color: 'var(--secondary-color)', fontWeight: '600' }}>Decrescentes (iniciam maiores e diminuem)</td>
+                        <td style={{ padding: '0.75rem' }}>Constantes (fixas do início ao fim)</td>
+                      </tr>
+                      <tr style={{ borderBottom: '1px solid var(--neutral-border)' }}>
+                        <td style={{ padding: '0.75rem' }}><strong>Amortização do Saldo Devedor</strong></td>
+                        <td style={{ padding: '0.75rem', color: 'var(--secondary-color)', fontWeight: '600' }}>Rápida desde o início do financiamento</td>
+                        <td style={{ padding: '0.75rem' }}>Lenta nos primeiros anos</td>
+                      </tr>
+                      <tr style={{ borderBottom: '1px solid var(--neutral-border)' }}>
+                        <td style={{ padding: '0.75rem' }}><strong>Custo Total de Juros</strong></td>
+                        <td style={{ padding: '0.75rem', color: 'var(--secondary-color)', fontWeight: '600' }}>Menor custo financeiro total de juros acumulados</td>
+                        <td style={{ padding: '0.75rem' }}>Maior custo de juros ao fim do prazo</td>
+                      </tr>
+                      <tr style={{ borderBottom: '1px solid var(--neutral-border)' }}>
+                        <td style={{ padding: '0.75rem' }}><strong>Recomendação</strong></td>
+                        <td style={{ padding: '0.75rem', color: 'var(--secondary-color)', fontWeight: '600' }}>Para quem busca economia a longo prazo</td>
+                        <td style={{ padding: '0.75rem' }}>Para quem precisa de parcelas iniciais menores</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
 
+            {/* Modalidades de Crédito Imobiliário com Imagens nos Cards */}
             <div>
               <h2 style={{ fontSize: '1.75rem', color: 'var(--primary-dark)', marginBottom: '1rem' }}>Modalidades de Crédito Imobiliário Atendidas</h2>
-              <p style={{ color: 'var(--neutral-muted)', fontSize: '1.05rem', lineHeight: '1.7', marginBottom: '1rem' }}>
+              <p style={{ color: 'var(--neutral-muted)', fontSize: '1.05rem', lineHeight: '1.7', marginBottom: '1.5rem' }}>
                 Seja qual for o seu objetivo de aquisição, possuímos linhas de fomento adequadas para cada cenário:
               </p>
-              <ul style={{ display: 'flex', flexDirection: 'column', gap: '1rem', paddingLeft: '1.25rem', color: 'var(--neutral-muted)', lineHeight: '1.6' }}>
-                <li><strong>Financiamento Residencial:</strong> Compra de casas ou apartamentos novos ou usados com a possibilidade de financiar até 80% do valor avaliado do imóvel.</li>
-                <li><strong>Imóvel Comercial:</strong> Crédito dedicado a profissionais liberais, médicos, advogados e comerciantes para aquisição de escritórios, consultórios ou galpões comerciais.</li>
-                <li><strong>Lotes e Terrenos Urbanos:</strong> Financiamento do lote desejado em loteamentos ou condomínios fechados, inclusive com planos associados para financiamento da construção.</li>
-                <li><strong>Uso do FGTS:</strong> Suporte completo para utilização de saldos de FGTS para amortizar parcelas, quitar contratos ou compor o valor exigido de entrada.</li>
-              </ul>
+              <div className={styles.modalidadesGrid}>
+                <div className={styles.modalidadeCard}>
+                  <div className={styles.modalidadeImageWrap}>
+                    <Image
+                      src="/assets/ci_tipo_residencial.jpg"
+                      alt="Fachada de casa residencial brasileira moderna com jardim"
+                      fill
+                      loading="lazy"
+                      style={{ objectFit: "cover" }}
+                    />
+                  </div>
+                  <div className={styles.modalidadeCardBody}>
+                    <strong>Financiamento Residencial:</strong> Compra de casas ou apartamentos novos ou usados com a possibilidade de financiar até 80% do valor avaliado do imóvel.
+                  </div>
+                </div>
+
+                <div className={styles.modalidadeCard}>
+                  <div className={styles.modalidadeImageWrap}>
+                    <Image
+                      src="/assets/ci_tipo_comercial.jpg"
+                      alt="Fachada de sala comercial e clínica moderna com vidro e madeira"
+                      fill
+                      loading="lazy"
+                      style={{ objectFit: "cover" }}
+                    />
+                  </div>
+                  <div className={styles.modalidadeCardBody}>
+                    <strong>Imóvel Comercial:</strong> Crédito dedicado a profissionais liberais, médicos, advogados e comerciantes para aquisição de escritórios, consultórios ou galpões comerciais.
+                  </div>
+                </div>
+
+                <div className={styles.modalidadeCard}>
+                  <div className={styles.modalidadeImageWrap}>
+                    <Image
+                      src="/assets/ci_tipo_lotes.jpg"
+                      alt="Vista de loteamento residencial e condomínio fechado no Sul de Minas"
+                      fill
+                      loading="lazy"
+                      style={{ objectFit: "cover" }}
+                    />
+                  </div>
+                  <div className={styles.modalidadeCardBody}>
+                    <strong>Lotes e Terrenos Urbanos:</strong> Financiamento do lote desejado em loteamentos ou condomínios fechados, inclusive com planos associados para financiamento da construção.
+                  </div>
+                </div>
+
+                <div className={styles.modalidadeCard}>
+                  <div className={styles.modalidadeImageWrap}>
+                    <Image
+                      src="/assets/ci_tipo_planta.jpg"
+                      alt="Edifício residencial moderno em construção e uso do FGTS"
+                      fill
+                      loading="lazy"
+                      style={{ objectFit: "cover" }}
+                    />
+                  </div>
+                  <div className={styles.modalidadeCardBody}>
+                    <strong>Uso do FGTS:</strong> Suporte completo para utilização de saldos de FGTS para amortizar parcelas, quitar contratos ou compor o valor exigido de entrada.
+                  </div>
+                </div>
+              </div>
             </div>
 
+            {/* Passo a Passo da Aprovação com Imagem Lateral */}
             <div>
-              <h2 style={{ fontSize: '1.75rem', color: 'var(--primary-dark)', marginBottom: '1rem' }}>Passo a Passo da Aprovação do Imóvel</h2>
-              <ol style={{ display: 'flex', flexDirection: 'column', gap: '1rem', paddingLeft: '1.25rem', color: 'var(--neutral-muted)', lineHeight: '1.6' }}>
-                <li><strong>Simulação Comparada:</strong> Enviamos uma estimativa detalhada das parcelas e taxas comparadas dos maiores bancos com base na sua renda familiar.</li>
-                <li><strong>Aprovação de Crédito:</strong> Submetemos a pasta digital com seus documentos aos bancos escolhidos para aprovação de carta de crédito.</li>
-                <li><strong>Avaliação do Imóvel:</strong> Um engenheiro credenciado pelo banco faz a vistoria física e laudo do imóvel pretendido.</li>
-                <li><strong>Escritura e Liberação:</strong> Com a documentação validada jurídica e fisicamente, o contrato é emitido para assinatura e registro em cartório, efetuando o pagamento ao vendedor.</li>
-              </ol>
+              <h2 style={{ fontSize: '1.75rem', color: 'var(--primary-dark)', marginBottom: '1.25rem' }}>Passo a Passo da Aprovação do Imóvel</h2>
+              <div className={styles.processoSplit}>
+                <div className={styles.processoImageBox}>
+                  <Image
+                    src="/assets/ci_processo_sala.jpg"
+                    alt="Interior de casa brasileira moderna e aconchegante com sofá, violão e escada contemporânea"
+                    width={600}
+                    height={750}
+                    loading="lazy"
+                    className={styles.processoImage}
+                  />
+                </div>
+                <div>
+                  <ol style={{ display: 'flex', flexDirection: 'column', gap: '1rem', paddingLeft: '1.25rem', color: 'var(--neutral-muted)', lineHeight: '1.6', margin: 0 }}>
+                    <li><strong>Simulação Comparada:</strong> Enviamos uma estimativa detalhada das parcelas e taxas comparadas dos maiores bancos com base na sua renda familiar.</li>
+                    <li><strong>Aprovação de Crédito:</strong> Submetemos a pasta digital com seus documentos aos bancos escolhidos para aprovação de carta de crédito.</li>
+                    <li><strong>Avaliação do Imóvel:</strong> Um engenheiro credenciado pelo banco faz a vistoria física e laudo do imóvel pretendido.</li>
+                    <li><strong>Escritura e Liberação:</strong> Com a documentação validada jurídica e fisicamente, o contrato é emitido para assinatura e registro em cartório, efetuando o pagamento ao vendedor.</li>
+                  </ol>
+                </div>
+              </div>
             </div>
 
             {/* FAQs */}
@@ -182,6 +265,73 @@ export default function CreditoImovel() {
         </div>
       </section>
 
+      {/* Seção de Artigos do Blog ("Saiba Mais") */}
+      <section className={`${styles.contentsSection} section`}>
+        <div className="container">
+          <div style={{ textAlign: "center", maxWidth: "700px", margin: "0 auto" }}>
+            <h2 style={{ fontSize: "2rem", color: "var(--primary-dark)", fontWeight: 800, marginBottom: "0.5rem" }}>
+              Saiba Mais sobre Financiamento Imobiliário
+            </h2>
+            <p style={{ color: "var(--neutral-muted)", fontSize: "1.05rem", margin: 0 }}>
+              Artigos do nosso blog para você planejar a conquista do seu imóvel com segurança.
+            </p>
+          </div>
+
+          <div className={styles.contentsGrid}>
+            <Link href="/blog/diferenca-sac-price-financiamento-imobiliario" className={styles.contentCard} style={{ textDecoration: "none", color: "inherit" }}>
+              <div className={styles.cardImageWrapper}>
+                <Image
+                  src="/assets/blog/blog_sac_price_v2.png"
+                  alt="Tabela SAC ou Tabela Price no financiamento imobiliário"
+                  fill
+                  loading="lazy"
+                  style={{ objectFit: "cover" }}
+                />
+              </div>
+              <div className={styles.cardBody}>
+                <h4>Tabela SAC ou Tabela Price: Qual a Melhor Opção?</h4>
+                <p>Compare os sistemas de amortização de parcelas decrescentes e fixas para o seu orçamento.</p>
+                <span className={styles.cardLink}>Leia mais &rarr;</span>
+              </div>
+            </Link>
+
+            <Link href="/blog/usar-fgts-no-financiamento-imobiliario" className={styles.contentCard} style={{ textDecoration: "none", color: "inherit" }}>
+              <div className={styles.cardImageWrapper}>
+                <Image
+                  src="/assets/blog/blog_fgts_imovel_v2.jpg"
+                  alt="Como usar o FGTS no financiamento de imóveis com chaves de casa sobre a mesa"
+                  fill
+                  loading="lazy"
+                  style={{ objectFit: "cover" }}
+                />
+              </div>
+              <div className={styles.cardBody}>
+                <h4>Como Usar o FGTS no Financiamento de Imóveis</h4>
+                <p>Transforme o saldo do seu Fundo de Garantia na entrada da casa própria ou reduza suas parcelas.</p>
+                <span className={styles.cardLink}>Leia mais &rarr;</span>
+              </div>
+            </Link>
+
+            <Link href="/blog/passo-a-passo-comprar-imovel-financiado" className={styles.contentCard} style={{ textDecoration: "none", color: "inherit" }}>
+              <div className={styles.cardImageWrapper}>
+                <Image
+                  src="/assets/blog/blog_passo_imovel_v2.jpg"
+                  alt="Família realizando o sonho da casa própria financiada com segurança"
+                  fill
+                  loading="lazy"
+                  style={{ objectFit: "cover" }}
+                />
+              </div>
+              <div className={styles.cardBody}>
+                <h4>Passo a Passo para Comprar seu Imóvel Financiado</h4>
+                <p>Entenda todas as fases da aquisição habitacional, da simulação até o registro no Cartório.</p>
+                <span className={styles.cardLink}>Leia mais &rarr;</span>
+              </div>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* 3. Seção de Simulação */}
       <section className={`${styles.ctaSection} section`} id="simular">
         <div className={`${styles.ctaContainer} container`}>
@@ -200,3 +350,4 @@ export default function CreditoImovel() {
     </>
   );
 }
+

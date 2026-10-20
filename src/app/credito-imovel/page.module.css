@@ -1,6 +1,6 @@
 .headerSection {
   position: relative;
-  background-image: linear-gradient(rgba(11, 26, 48, 0.85), rgba(11, 26, 48, 0.85)), url('/assets/happy_family_car.png');
+  background-image: linear-gradient(rgba(11, 26, 48, 0.72), rgba(11, 26, 48, 0.82)), url('/assets/ci_hero_chaves.jpg');
   background-size: cover;
   background-position: center;
   padding: 8rem 0 6rem 0;
@@ -42,9 +42,13 @@
 
 .leadText {
   font-size: 1.2rem;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.95);
   max-width: 800px;
   line-height: 1.6;
+}
+
+.leadText p {
+  color: rgba(255, 255, 255, 0.95);
 }
 
 /* Detalhes de Produtos */
@@ -405,3 +409,115 @@
     line-height: 1.2;
   }
 }
+
+/* SAC vs Price Split Layout */
+.sacPriceSplit {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.75rem;
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .sacPriceSplit {
+    grid-template-columns: 0.38fr 0.62fr;
+    gap: 2rem;
+  }
+}
+
+.sacPriceImageBox {
+  width: 100%;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--neutral-border);
+}
+
+.squareImage {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  display: block;
+}
+
+/* Modalidades Cards Grid */
+.modalidadesGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 576px) {
+  .modalidadesGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.modalidadeCard {
+  background-color: var(--neutral-light);
+  border: 1px solid var(--neutral-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  transition: var(--transition-smooth);
+}
+
+.modalidadeCard:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.modalidadeImageWrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+}
+
+.modalidadeCardBody {
+  padding: 1.25rem;
+  font-size: 0.96rem;
+  color: var(--neutral-muted);
+  line-height: 1.6;
+}
+
+.modalidadeCardBody strong {
+  color: var(--primary-dark);
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 1.05rem;
+}
+
+/* Passo a Passo Split Layout */
+.processoSplit {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.75rem;
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .processoSplit {
+    grid-template-columns: 0.45fr 0.55fr;
+    gap: 2.25rem;
+  }
+}
+
+.processoImageBox {
+  width: 100%;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--neutral-border);
+}
+
+.processoImage {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  display: block;
+}
+

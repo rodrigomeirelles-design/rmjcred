@@ -201,7 +201,7 @@ export const blogPosts: BlogPost[] = [
         "A maioria das pessoas vai em **1 banco** e aceita a taxa que dizem.",
         "**ERRO.**",
         "Diferentes bancos oferecem **taxas MUITO diferentes** para o mesmo perfil de comprador. Uma pequena variação na taxa pode representar dezenas de milhares de reais de diferença ao longo do financiamento.",
-        "Por isso, comparar propostas é essencial. A RMJ tem **relacionamento com 20+ instituições** e consegue:\\n- ✅ Comparar taxas de todos ao mesmo tempo\\n- ✅ Escolher a melhor para o seu perfil\\n- ✅ Negociar condições especiais\\n- ✅ Aproveitar linhas especiais (FGTS, SBPE, etc.)",
+        "Por isso, comparar propostas é essencial. A RMJ tem **acesso a mais de 150 instituições financeiras** e consegue:\\n- ✅ Comparar taxas de todos ao mesmo tempo\\n- ✅ Escolher a melhor para o seu perfil\\n- ✅ Negociar condições especiais\\n- ✅ Aproveitar linhas especiais (FGTS, SBPE, etc.)",
         "As condições do financiamento imobiliário — como taxa de juros, prazo, entrada mínima e limite — variam conforme o banco, o imóvel e o perfil do comprador. Entre em contato com a RMJ para simular as condições ideais para você.",
         "- Renda comprovada\\n- Documentos pessoais\\n- Comprovante do imóvel\\n- Avaliação do imóvel\\n- Comprovante de entrada (se tiver)",
         "(Detalhe completo no checklist)",

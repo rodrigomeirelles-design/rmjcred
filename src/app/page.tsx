@@ -297,7 +297,7 @@ export default function Home() {
           <div className={styles.simulatorInfo}>
             <span className={styles.sectionSubtitle}>Simulador Grátis</span>
             <h2 className={styles.sectionTitle}>Por Que Milhares de Clientes Confiam na RMJ</h2>
-            <p>Atendimento personalizado e consultivo — não somos um correspondente bancário comum. Acesso a mais de 20 instituições financeiras parceiras. Especialistas certificados com anos de experiência no mercado de crédito. Atendimento presencial em Itajubá e remoto para todo o Sul de Minas e Brasil. Transparência total: sem custos ocultos.</p>
+            <p>Não somos um correspondente bancário comum — atuamos como o seu <strong>hub estratégico de crédito</strong>. Conectamos você e sua empresa a <strong>mais de 150 instituições financeiras, bancos de fomento e fintechs</strong> para colocar o mercado para disputar a menor taxa para o seu perfil. Com mais de 20 anos de experiência bancária, oferecemos atendimento consultivo presencial em Itajubá e digital para todo o Sul de Minas e Brasil, com <strong>transparência total e sem custos ocultos</strong>.</p>
             <div className={styles.infoCard}>
               <h4>Atendimento Humano</h4>
               <p>Trabalhamos com transparência e clareza, desmistificando o processo de contratação e garantindo suporte total do início ao fim.</p>

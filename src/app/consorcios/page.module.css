@@ -1,10 +1,16 @@
 /* ── HERO ───────────────────────────────────────────────────── */
 .headerSection {
-  background-image: linear-gradient(rgba(11, 26, 48, 0.85), rgba(11, 26, 48, 0.85)), url('/assets/consorcio_hero_bg.jpg');
+  background-image: linear-gradient(rgba(11, 26, 48, 0.82), rgba(11, 26, 48, 0.85)), url('/assets/consorcio_hero_bg.jpg');
   background-size: cover;
-  background-position: center;
-  padding: 6rem 0 4rem 0;
+  background-position: center 25%;
+  padding: 8rem 0 5rem 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 768px) {
+  .headerSection {
+    padding: 6.5rem 0 3.75rem 0;
+  }
 }
 
 .titleContainer {
@@ -19,7 +25,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  color: rgba(255, 255, 255, 0.65);
+  color: rgba(255, 255, 255, 0.75);
   text-decoration: none;
   transition: color 0.2s;
 }
@@ -29,17 +35,21 @@
 }
 
 .title {
-  font-size: 2.75rem;
+  font-size: clamp(1.85rem, 4vw, 2.75rem);
   color: #ffffff;
   font-weight: 800;
   line-height: 1.2;
 }
 
 .leadText {
-  font-size: 1.1rem;
-  color: rgba(255, 255, 255, 0.85);
-  max-width: 700px;
+  font-size: clamp(1rem, 1.8vw, 1.15rem);
+  color: rgba(255, 255, 255, 0.92);
+  max-width: 720px;
   line-height: 1.7;
+}
+
+.leadText p {
+  color: rgba(255, 255, 255, 0.92);
 }
 
 /* ── VANTAGENS ──────────────────────────────────────────────── */
@@ -49,13 +59,14 @@
 
 .detailsGrid {
   display: grid;
-  gap: 4rem;
-  align-items: flex-start;
+  gap: 3rem;
+  align-items: center;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 992px) {
   .detailsGrid {
     grid-template-columns: 1fr 1fr;
+    gap: 4rem;
   }
 }
 
@@ -111,13 +122,14 @@
 
 .chartGrid {
   display: grid;
-  gap: 4rem;
+  gap: 3rem;
   align-items: center;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 992px) {
   .chartGrid {
     grid-template-columns: 1fr 1fr;
+    gap: 4rem;
   }
 }
 
@@ -126,6 +138,7 @@
   flex-direction: column;
   align-items: center;
   gap: 1rem;
+  width: 100%;
 }
 
 .chartTitle {
@@ -139,11 +152,19 @@
 .chartBars {
   display: flex;
   align-items: flex-end;
-  gap: 4rem;
+  gap: 2rem;
   justify-content: center;
-  min-height: 280px;
+  min-height: 260px;
   padding-bottom: 0.5rem;
   border-bottom: 2px solid #E2E8F0;
+  width: 100%;
+}
+
+@media (min-width: 576px) {
+  .chartBars {
+    gap: 4rem;
+    min-height: 280px;
+  }
 }
 
 .chartCategory {
@@ -164,7 +185,13 @@
   flex-direction: column;
   align-items: center;
   gap: 0.25rem;
-  width: 60px;
+  width: 52px;
+}
+
+@media (min-width: 576px) {
+  .barGroup {
+    width: 60px;
+  }
 }
 
 .barLabelTop {
@@ -199,8 +226,9 @@
 .chartLegend {
   display: flex;
   gap: 1.5rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
 .legendConsorcio {
@@ -247,7 +275,7 @@
 }
 
 .chartHeading {
-  font-size: 2rem;
+  font-size: clamp(1.6rem, 3.5vw, 2rem);
   color: #162F4B;
   font-weight: 800;
   line-height: 1.2;
@@ -302,6 +330,7 @@
   flex-direction: column;
   gap: 0.75rem;
   transition: background 0.2s;
+  height: 100%;
 }
 
 .stepCard:hover {
@@ -413,13 +442,15 @@
 
 .ctaContainer {
   display: grid;
-  gap: 3rem;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
   align-items: flex-start;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 992px) {
   .ctaContainer {
     grid-template-columns: 1fr 1fr;
+    gap: 3.5rem;
   }
 }
 

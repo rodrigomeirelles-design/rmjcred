@@ -6,6 +6,31 @@ import LeadForm from "@/components/LeadForm";
 export const metadata = {
   title: "Crédito BDMG para Empresas em MG | Até R$ 500 mil | RMJ Soluções",
   description: "Acesse linhas de crédito BDMG com taxas a partir de 1,2% a.m. para empresas de Minas Gerais. Consultoria especializada RMJ em Itajubá. Solicite análise gratuita.",
+  alternates: {
+    canonical: "https://rmjcred.com.br/credito-bdmg",
+  },
+  openGraph: {
+    title: "Crédito BDMG para Empresas em MG | Até R$ 500 mil | RMJ Soluções",
+    description: "Acesse linhas de crédito BDMG com taxas a partir de 1,2% a.m. para empresas de Minas Gerais. Consultoria especializada RMJ em Itajubá. Solicite análise gratuita.",
+    url: "https://rmjcred.com.br/credito-bdmg",
+    siteName: "RMJ Soluções de Crédito",
+    locale: "pt_BR",
+    type: "website",
+    images: [
+      {
+        url: "/og-rmj.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Crédito BDMG para Empresas em MG | Até R$ 500 mil | RMJ Soluções",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Crédito BDMG para Empresas em MG | Até R$ 500 mil | RMJ Soluções",
+    description: "Acesse linhas de crédito BDMG com taxas a partir de 1,2% a.m. para empresas de Minas Gerais. Consultoria especializada RMJ em Itajubá. Solicite análise gratuita.",
+    images: ["/og-rmj.jpg"],
+  },
 };;
 
 export default function CreditoBdmg() {

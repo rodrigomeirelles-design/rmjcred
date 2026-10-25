@@ -17,6 +17,31 @@ import {
 export const metadata = {
   title: "Home Equity | Empréstimo com Garantia de Imóvel | RMJ Soluções de Crédito",
   description: "Home Equity — empréstimo com garantia de imóvel com taxas a partir de 1,0% ao mês e até 20 anos para pagar. Simule gratuitamente com a RMJ Soluções de Crédito.",
+  alternates: {
+    canonical: "https://rmjcred.com.br/home-equity",
+  },
+  openGraph: {
+    title: "Home Equity | Empréstimo com Garantia de Imóvel | RMJ Soluções de Crédito",
+    description: "Home Equity — empréstimo com garantia de imóvel com taxas a partir de 1,0% ao mês e até 20 anos para pagar. Simule gratuitamente com a RMJ Soluções de Crédito.",
+    url: "https://rmjcred.com.br/home-equity",
+    siteName: "RMJ Soluções de Crédito",
+    locale: "pt_BR",
+    type: "website",
+    images: [
+      {
+        url: "/og-rmj.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Home Equity | Empréstimo com Garantia de Imóvel | RMJ Soluções de Crédito",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Home Equity | Empréstimo com Garantia de Imóvel | RMJ Soluções de Crédito",
+    description: "Home Equity — empréstimo com garantia de imóvel com taxas a partir de 1,0% ao mês e até 20 anos para pagar. Simule gratuitamente com a RMJ Soluções de Crédito.",
+    images: ["/og-rmj.jpg"],
+  },
 };
 
 export default function HomeEquity() {

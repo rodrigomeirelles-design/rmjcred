@@ -6,6 +6,31 @@ import LeadForm from "@/components/LeadForm";
 export const metadata = {
   title: "Financiamento de Veículos em Itajubá | Taxas desde 0,99% a.m. | RMJ",
   description: "Financiamento de carros, motos e caminhões com as menores taxas do Sul de Minas. Parceiros BV, Santander, Itaú, Bradesco e Safra. Simulação grátis na RMJ.",
+  alternates: {
+    canonical: "https://rmjcred.com.br/financiamento-veiculos",
+  },
+  openGraph: {
+    title: "Financiamento de Veículos em Itajubá | Taxas desde 0,99% a.m. | RMJ",
+    description: "Financiamento de carros, motos e caminhões com as menores taxas do Sul de Minas. Parceiros BV, Santander, Itaú, Bradesco e Safra. Simulação grátis na RMJ.",
+    url: "https://rmjcred.com.br/financiamento-veiculos",
+    siteName: "RMJ Soluções de Crédito",
+    locale: "pt_BR",
+    type: "website",
+    images: [
+      {
+        url: "/og-rmj.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Financiamento de Veículos em Itajubá | Taxas desde 0,99% a.m. | RMJ",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Financiamento de Veículos em Itajubá | Taxas desde 0,99% a.m. | RMJ",
+    description: "Financiamento de carros, motos e caminhões com as menores taxas do Sul de Minas. Parceiros BV, Santander, Itaú, Bradesco e Safra. Simulação grátis na RMJ.",
+    images: ["/og-rmj.jpg"],
+  },
 };;
 
 export default function FinanciamentoVeiculos() {

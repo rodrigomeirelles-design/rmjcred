@@ -70,7 +70,7 @@ export default function Consorcios() {
           <Link href="/" className={styles.backLink}>
             &larr; Voltar para a Página Inicial
           </Link>
-          <h1 className={styles.title} style={{ maxWidth: '800px', fontSize: '2.5rem', lineHeight: '1.2' }}>Segurança patrimonial e planejamento sob medida para o seu próximo grande passo. em Itajubá e Sul de Minas</h1>
+          <h1 className={styles.title} style={{ maxWidth: '800px', fontSize: '2.5rem', lineHeight: '1.2' }}>Consórcio em Itajubá e Sul de Minas: planejamento sob medida para seu próximo grande passo</h1>
           <p className={styles.leadText}>
             Consórcios imobiliários e automotivos estruturados sob medida por quem entende de estratégia financeira.
           </p>

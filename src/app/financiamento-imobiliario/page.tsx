@@ -6,6 +6,31 @@ import LeadForm from "@/components/LeadForm";
 export const metadata = {
   title: "Financiamento Imobiliário — RMJ Soluções de Crédito",
   description: "Compare taxas de juros de diversos bancos e consiga o melhor financiamento para imóveis residenciais, comerciais ou terrenos com a RMJ.",
+  alternates: {
+    canonical: "https://rmjcred.com.br/financiamento-imobiliario",
+  },
+  openGraph: {
+    title: "Financiamento Imobiliário — RMJ Soluções de Crédito",
+    description: "Compare taxas de juros de diversos bancos e consiga o melhor financiamento para imóveis residenciais, comerciais ou terrenos com a RMJ.",
+    url: "https://rmjcred.com.br/financiamento-imobiliario",
+    siteName: "RMJ Soluções de Crédito",
+    locale: "pt_BR",
+    type: "website",
+    images: [
+      {
+        url: "/og-rmj.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Financiamento Imobiliário — RMJ Soluções de Crédito",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Financiamento Imobiliário — RMJ Soluções de Crédito",
+    description: "Compare taxas de juros de diversos bancos e consiga o melhor financiamento para imóveis residenciais, comerciais ou terrenos com a RMJ.",
+    images: ["/og-rmj.jpg"],
+  },
 };
 
 export default function FinanciamentoImobiliario() {

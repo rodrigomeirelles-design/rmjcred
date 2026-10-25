@@ -3,6 +3,31 @@ import Link from "next/link";
 export const metadata = {
   title: "Política de Privacidade — RMJ Soluções de Crédito",
   description: "Leia a política de privacidade e conformidade com a LGPD da RMJ Soluções de Crédito, sediada em Itajubá - MG.",
+  alternates: {
+    canonical: "https://rmjcred.com.br/politica-de-privacidade",
+  },
+  openGraph: {
+    title: "Política de Privacidade — RMJ Soluções de Crédito",
+    description: "Leia a política de privacidade e conformidade com a LGPD da RMJ Soluções de Crédito, sediada em Itajubá - MG.",
+    url: "https://rmjcred.com.br/politica-de-privacidade",
+    siteName: "RMJ Soluções de Crédito",
+    locale: "pt_BR",
+    type: "website",
+    images: [
+      {
+        url: "/og-rmj.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Política de Privacidade — RMJ Soluções de Crédito",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Política de Privacidade — RMJ Soluções de Crédito",
+    description: "Leia a política de privacidade e conformidade com a LGPD da RMJ Soluções de Crédito, sediada em Itajubá - MG.",
+    images: ["/og-rmj.jpg"],
+  },
 };
 
 export default function PoliticaPrivacidade() {

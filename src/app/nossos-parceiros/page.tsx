@@ -5,6 +5,31 @@ import styles from "./page.module.css";
 export const metadata = {
   title: "Nossos Parceiros — RMJ Soluções de Crédito",
   description: "Trabalhamos com mais de 150 das principais instituições financeiras e bancos do país para levar até você as melhores taxas de fomento e crédito.",
+  alternates: {
+    canonical: "https://rmjcred.com.br/nossos-parceiros",
+  },
+  openGraph: {
+    title: "Nossos Parceiros — RMJ Soluções de Crédito",
+    description: "Trabalhamos com mais de 150 das principais instituições financeiras e bancos do país para levar até você as melhores taxas de fomento e crédito.",
+    url: "https://rmjcred.com.br/nossos-parceiros",
+    siteName: "RMJ Soluções de Crédito",
+    locale: "pt_BR",
+    type: "website",
+    images: [
+      {
+        url: "/og-rmj.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Nossos Parceiros — RMJ Soluções de Crédito",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Nossos Parceiros — RMJ Soluções de Crédito",
+    description: "Trabalhamos com mais de 150 das principais instituições financeiras e bancos do país para levar até você as melhores taxas de fomento e crédito.",
+    images: ["/og-rmj.jpg"],
+  },
 };
 
 export default function NossosParceiros() {

@@ -14,6 +14,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/admin', '/api/', '/*?*'],
       }
     ],
-    sitemap: 'https://www.rmjcred.com.br/sitemap.xml',
+    sitemap: 'https://rmjcred.com.br/sitemap.xml',
   };
 }

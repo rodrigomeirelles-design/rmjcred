@@ -30,28 +30,37 @@ export async function generateMetadata({ params }: PageProps) {
   const metaTitle = post.seoTitle || `${post.title} — Blog RMJ Crédito`;
   const imgAlt = post.imageAlt || post.title;
 
+  const pageUrl = `https://rmjcred.com.br/blog/${post.slug}`;
+
   return {
     title: metaTitle,
     description: post.description,
     keywords: post.seoKeywords.join(", "),
+    alternates: {
+      canonical: pageUrl,
+    },
     openGraph: {
       title: metaTitle,
       description: post.description,
-      url: `https://rmjcred.com.br/blog/${post.slug}`,
+      url: pageUrl,
+      siteName: "RMJ Soluções de Crédito",
+      locale: "pt_BR",
       type: "article",
       images: [
         {
-          url: post.image,
+          url: "/og-rmj.jpg",
+          width: 1200,
+          height: 630,
           alt: imgAlt,
-        }
+        },
       ],
     },
     twitter: {
       card: "summary_large_image",
       title: metaTitle,
       description: post.description,
-      images: [post.image],
-    }
+      images: ["/og-rmj.jpg"],
+    },
   };
 }
 

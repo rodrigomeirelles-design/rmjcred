@@ -5,6 +5,31 @@ import styles from "./page.module.css";
 export const metadata = {
   title: "Sobre a RMJ Soluções de Crédito | Consultoria em Itajubá, MG",
   description: "Conheça a RMJ Soluções de Crédito. Consultoria especializada em crédito empresarial e pessoal em Itajubá, sul de Minas Gerais. Atendimento personalizado e sem burocracia.",
+  alternates: {
+    canonical: "https://rmjcred.com.br/sobre-nos",
+  },
+  openGraph: {
+    title: "Sobre a RMJ Soluções de Crédito | Consultoria em Itajubá, MG",
+    description: "Conheça a RMJ Soluções de Crédito. Consultoria especializada em crédito empresarial e pessoal em Itajubá, sul de Minas Gerais. Atendimento personalizado e sem burocracia.",
+    url: "https://rmjcred.com.br/sobre-nos",
+    siteName: "RMJ Soluções de Crédito",
+    locale: "pt_BR",
+    type: "website",
+    images: [
+      {
+        url: "/og-rmj.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Sobre a RMJ Soluções de Crédito | Consultoria em Itajubá, MG",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Sobre a RMJ Soluções de Crédito | Consultoria em Itajubá, MG",
+    description: "Conheça a RMJ Soluções de Crédito. Consultoria especializada em crédito empresarial e pessoal em Itajubá, sul de Minas Gerais. Atendimento personalizado e sem burocracia.",
+    images: ["/og-rmj.jpg"],
+  },
 };;
 
 export default function SobreNos() {

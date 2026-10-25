@@ -6,6 +6,31 @@ import LeadForm from "@/components/LeadForm";
 export const metadata = {
   title: "Pronampe 2026 em Itajubá e Sul de Minas | Crédito para MPEs | RMJ",
   description: "Solicite o Pronampe 2026 com acompanhamento completo. Taxas a partir de Selic + 6% a.a., até R$ 150 mil para micro e pequenas empresas. Consultoria RMJ em Itajubá.",
+  alternates: {
+    canonical: "https://rmjcred.com.br/pronampe",
+  },
+  openGraph: {
+    title: "Pronampe 2026 em Itajubá e Sul de Minas | Crédito para MPEs | RMJ",
+    description: "Solicite o Pronampe 2026 com acompanhamento completo. Taxas a partir de Selic + 6% a.a., até R$ 150 mil para micro e pequenas empresas. Consultoria RMJ em Itajubá.",
+    url: "https://rmjcred.com.br/pronampe",
+    siteName: "RMJ Soluções de Crédito",
+    locale: "pt_BR",
+    type: "website",
+    images: [
+      {
+        url: "/og-rmj.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Pronampe 2026 em Itajubá e Sul de Minas | Crédito para MPEs | RMJ",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Pronampe 2026 em Itajubá e Sul de Minas | Crédito para MPEs | RMJ",
+    description: "Solicite o Pronampe 2026 com acompanhamento completo. Taxas a partir de Selic + 6% a.a., até R$ 150 mil para micro e pequenas empresas. Consultoria RMJ em Itajubá.",
+    images: ["/og-rmj.jpg"],
+  },
 };;
 
 export default function Pronampe() {

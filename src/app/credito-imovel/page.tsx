@@ -6,6 +6,31 @@ import LeadForm from "@/components/LeadForm";
 export const metadata = {
   title: "Crédito Imobiliário em Itajubá e Sul de Minas | RMJ Soluções de Crédito",
   description: "A melhor opção de crédito imobiliário para você e sua empresa em Itajubá e Sul de Minas. Simule agora com a RMJ Soluções de Crédito.",
+  alternates: {
+    canonical: "https://rmjcred.com.br/credito-imovel",
+  },
+  openGraph: {
+    title: "Crédito Imobiliário em Itajubá e Sul de Minas | RMJ Soluções de Crédito",
+    description: "A melhor opção de crédito imobiliário para você e sua empresa em Itajubá e Sul de Minas. Simule agora com a RMJ Soluções de Crédito.",
+    url: "https://rmjcred.com.br/credito-imovel",
+    siteName: "RMJ Soluções de Crédito",
+    locale: "pt_BR",
+    type: "website",
+    images: [
+      {
+        url: "/og-rmj.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Crédito Imobiliário em Itajubá e Sul de Minas | RMJ Soluções de Crédito",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Crédito Imobiliário em Itajubá e Sul de Minas | RMJ Soluções de Crédito",
+    description: "A melhor opção de crédito imobiliário para você e sua empresa em Itajubá e Sul de Minas. Simule agora com a RMJ Soluções de Crédito.",
+    images: ["/og-rmj.jpg"],
+  },
 };
 
 export default function CreditoImovel() {

@@ -5,6 +5,31 @@ import LeadForm from "@/components/LeadForm";
 export const metadata = {
   title: "Contato — RMJ Soluções de Crédito",
   description: "Fale com a RMJ Soluções de Crédito em Itajubá - MG. Atendimento via WhatsApp, telefone ou e-mail. Solicite sua simulação grátis.",
+  alternates: {
+    canonical: "https://rmjcred.com.br/contato",
+  },
+  openGraph: {
+    title: "Contato — RMJ Soluções de Crédito",
+    description: "Fale com a RMJ Soluções de Crédito em Itajubá - MG. Atendimento via WhatsApp, telefone ou e-mail. Solicite sua simulação grátis.",
+    url: "https://rmjcred.com.br/contato",
+    siteName: "RMJ Soluções de Crédito",
+    locale: "pt_BR",
+    type: "website",
+    images: [
+      {
+        url: "/og-rmj.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Contato — RMJ Soluções de Crédito",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Contato — RMJ Soluções de Crédito",
+    description: "Fale com a RMJ Soluções de Crédito em Itajubá - MG. Atendimento via WhatsApp, telefone ou e-mail. Solicite sua simulação grátis.",
+    images: ["/og-rmj.jpg"],
+  },
 };
 
 export default function Contato() {

@@ -17,18 +17,35 @@ export const metadata: Metadata = {
   title: "RMJ Soluções de Crédito — Inteligência e Fomento Financeiro",
   description: "Com mais de 20 anos de experiência, a RMJ é o seu hub financeiro completo. Crédito BDMG, Financiamento Imobiliário, Home Equity, Veículos e Consórcios em Itajubá e região.",
   authors: [{ name: "RMJ Soluções de Crédito" }],
+  alternates: {
+    canonical: "https://rmjcred.com.br",
+  },
   icons: {
     icon: "/assets/ea111fdf9358a37c013843e46181e048.png",
     shortcut: "/assets/82a0558dcc302ec4d795b5e25bf80899.png",
     apple: "/assets/48b891dd6e65f9c7e893c3fa2fcccf82.png",
   },
   openGraph: {
-    title: "RMJ Soluções de Crédito | 20 Anos de Mercado",
-    description: "Expertise e atendimento estratégico para impulsionar negócios e viabilizar conquistas financeiras.",
+    title: "RMJ Soluções de Crédito — Inteligência e Fomento Financeiro",
+    description: "Com mais de 20 anos de experiência, a RMJ é o seu hub financeiro completo. Crédito BDMG, Financiamento Imobiliário, Home Equity, Veículos e Consórcios em Itajubá e região.",
     url: "https://rmjcred.com.br",
     siteName: "RMJ Soluções de Crédito",
     locale: "pt_BR",
     type: "website",
+    images: [
+      {
+        url: "/og-rmj.jpg",
+        width: 1200,
+        height: 630,
+        alt: "RMJ Soluções de Crédito",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "RMJ Soluções de Crédito — Inteligência e Fomento Financeiro",
+    description: "Com mais de 20 anos de experiência, a RMJ é o seu hub financeiro completo. Crédito BDMG, Financiamento Imobiliário, Home Equity, Veículos e Consórcios em Itajubá e região.",
+    images: ["/og-rmj.jpg"],
   },
 };
 

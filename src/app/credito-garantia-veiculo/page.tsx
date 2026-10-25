@@ -16,6 +16,31 @@ import {
 export const metadata = {
   title: "Crédito com Garantia de Veículo (Auto Equity) | RMJ Soluções de Crédito",
   description: "Crédito com garantia de veículo (Auto Equity) — libere até 90% da Tabela FIPE com taxas baixas, até 60 meses para pagar e continue usando seu carro. Simule grátis com a RMJ.",
+  alternates: {
+    canonical: "https://rmjcred.com.br/credito-garantia-veiculo",
+  },
+  openGraph: {
+    title: "Crédito com Garantia de Veículo (Auto Equity) | RMJ Soluções de Crédito",
+    description: "Crédito com garantia de veículo (Auto Equity) — libere até 90% da Tabela FIPE com taxas baixas, até 60 meses para pagar e continue usando seu carro. Simule grátis com a RMJ.",
+    url: "https://rmjcred.com.br/credito-garantia-veiculo",
+    siteName: "RMJ Soluções de Crédito",
+    locale: "pt_BR",
+    type: "website",
+    images: [
+      {
+        url: "/og-rmj.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Crédito com Garantia de Veículo (Auto Equity) | RMJ Soluções de Crédito",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Crédito com Garantia de Veículo (Auto Equity) | RMJ Soluções de Crédito",
+    description: "Crédito com garantia de veículo (Auto Equity) — libere até 90% da Tabela FIPE com taxas baixas, até 60 meses para pagar e continue usando seu carro. Simule grátis com a RMJ.",
+    images: ["/og-rmj.jpg"],
+  },
 };
 
 export default function CreditoGarantiaVeiculo() {

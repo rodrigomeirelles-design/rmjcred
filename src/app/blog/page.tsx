@@ -6,6 +6,31 @@ import styles from "./page.module.css";
 export const metadata = {
   title: "Blog RMJ | Dicas de Crédito, Financiamento e Gestão Financeira",
   description: "Artigos sobre crédito empresarial, financiamento de veículos, Home Equity e gestão financeira para empresas e pessoas físicas no sul de Minas.",
+  alternates: {
+    canonical: "https://rmjcred.com.br/blog",
+  },
+  openGraph: {
+    title: "Blog RMJ | Dicas de Crédito, Financiamento e Gestão Financeira",
+    description: "Artigos sobre crédito empresarial, financiamento de veículos, Home Equity e gestão financeira para empresas e pessoas físicas no sul de Minas.",
+    url: "https://rmjcred.com.br/blog",
+    siteName: "RMJ Soluções de Crédito",
+    locale: "pt_BR",
+    type: "website",
+    images: [
+      {
+        url: "/og-rmj.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Blog RMJ | Dicas de Crédito, Financiamento e Gestão Financeira",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Blog RMJ | Dicas de Crédito, Financiamento e Gestão Financeira",
+    description: "Artigos sobre crédito empresarial, financiamento de veículos, Home Equity e gestão financeira para empresas e pessoas físicas no sul de Minas.",
+    images: ["/og-rmj.jpg"],
+  },
 };;
 
 export default function BlogHome() {

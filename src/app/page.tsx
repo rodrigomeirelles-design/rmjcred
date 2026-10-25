@@ -8,6 +8,31 @@ import HeroCarousel from "@/components/HeroCarousel";
 export const metadata = {
   title: "Consultoria de Crédito em Itajubá | RMJ Soluções de Crédito",
   description: "Consultoria especializada em crédito empresarial e pessoal em Itajubá e Sul de Minas. Pronampe, BDMG, Home Equity e financiamentos com as melhores taxas.",
+  alternates: {
+    canonical: "https://rmjcred.com.br",
+  },
+  openGraph: {
+    title: "Consultoria de Crédito em Itajubá | RMJ Soluções de Crédito",
+    description: "Consultoria especializada em crédito empresarial e pessoal em Itajubá e Sul de Minas. Pronampe, BDMG, Home Equity e financiamentos com as melhores taxas.",
+    url: "https://rmjcred.com.br",
+    siteName: "RMJ Soluções de Crédito",
+    locale: "pt_BR",
+    type: "website",
+    images: [
+      {
+        url: "/og-rmj.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Consultoria de Crédito em Itajubá | RMJ Soluções de Crédito",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Consultoria de Crédito em Itajubá | RMJ Soluções de Crédito",
+    description: "Consultoria especializada em crédito empresarial e pessoal em Itajubá e Sul de Minas. Pronampe, BDMG, Home Equity e financiamentos com as melhores taxas.",
+    images: ["/og-rmj.jpg"],
+  },
 };
 
 export default function Home() {

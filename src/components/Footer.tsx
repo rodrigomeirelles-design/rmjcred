@@ -81,7 +81,9 @@ export default function Footer() {
             </li>
             <li className={styles.contactItem}>
               <span className={styles.contactText}>
-                (35) 99108-4513
+                <a href="tel:+5535991084513" className={styles.link}>
+                  (35) 99108-4513
+                </a>
               </span>
             </li>
             <li className={styles.contactItem}>
@@ -99,15 +101,11 @@ export default function Footer() {
       <div className={styles.bottomBar}>
         <div className={`${styles.bottomContainer} container`}>
           <p className={styles.copyright}>
-            &copy; {currentYear} RMJ Soluções de Crédito. Todos os direitos reservados.
+            &copy; {currentYear} RMJ Soluções de Crédito — CNPJ 57.115.632/0001-18. Todos os direitos reservados.
           </p>
           <div className={styles.bottomLinks}>
             <Link href="/politica-de-privacidade" className={styles.link}>
               Política de Privacidade (LGPD)
-            </Link>
-            <span style={{ margin: "0 0.5rem", color: "rgba(255,255,255,0.3)" }}>|</span>
-            <Link href="/admin" className={styles.link}>
-              Área da Empresa
             </Link>
           </div>
         </div>

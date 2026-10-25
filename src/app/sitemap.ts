@@ -33,7 +33,7 @@ function parsePtBrDate(dateStr: string): Date {
 
 function getPageLastModified(route: string, fallbackIso: string): Date {
   try {
-    const relPath = route === '' ? 'src/app/page.tsx' : `src/app${route}/page.tsx`;
+    const relPath = route === '/' ? 'src/app/page.tsx' : `src/app${route}/page.tsx`;
     const fullPath = path.join(process.cwd(), relPath);
     const stat = fs.statSync(fullPath);
     return stat.mtime;
@@ -46,12 +46,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://rmjcred.com.br';
 
   const pages: { route: string; priority: number; changeFrequency: 'weekly' | 'monthly'; fallback: string }[] = [
-    { route: '', priority: 1.0, changeFrequency: 'weekly', fallback: '2026-10-25T00:00:00.000Z' },
+    { route: '/', priority: 1.0, changeFrequency: 'weekly', fallback: '2026-10-25T00:00:00.000Z' },
     { route: '/credito-bdmg', priority: 0.9, changeFrequency: 'monthly', fallback: '2026-10-21T00:00:00.000Z' },
     { route: '/credito-imovel', priority: 0.9, changeFrequency: 'monthly', fallback: '2026-10-21T00:00:00.000Z' },
     { route: '/financiamento-imobiliario', priority: 0.8, changeFrequency: 'monthly', fallback: '2026-10-21T00:00:00.000Z' },
     { route: '/home-equity', priority: 0.9, changeFrequency: 'monthly', fallback: '2026-10-21T00:00:00.000Z' },
     { route: '/consorcios', priority: 0.9, changeFrequency: 'monthly', fallback: '2026-10-25T00:00:00.000Z' },
+    { route: '/consorcio-imobiliario', priority: 0.9, changeFrequency: 'monthly', fallback: '2026-10-25T00:00:00.000Z' },
+    { route: '/consorcio-de-veiculos', priority: 0.9, changeFrequency: 'monthly', fallback: '2026-10-25T00:00:00.000Z' },
     { route: '/financiamento-veiculos', priority: 0.9, changeFrequency: 'monthly', fallback: '2026-10-21T00:00:00.000Z' },
     { route: '/credito-garantia-veiculo', priority: 0.9, changeFrequency: 'monthly', fallback: '2026-10-21T00:00:00.000Z' },
     { route: '/procred-360', priority: 0.9, changeFrequency: 'monthly', fallback: '2026-10-21T00:00:00.000Z' },

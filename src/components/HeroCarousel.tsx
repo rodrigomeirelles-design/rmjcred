@@ -46,7 +46,7 @@ const slides = [
     highlight: 'planejamento sob medida',
     description: 'Consórcios imobiliários e automotivos estruturados sob medida por quem entende de estratégia financeira.',
     bgImage: '/assets/consorcio_hero_bg.jpg',
-    primaryLink: '/consorcios#simular',
+    primaryLink: '/consorcios',
     secondaryLink: '/consorcios',
     secondaryText: 'Ver Planos'
   }

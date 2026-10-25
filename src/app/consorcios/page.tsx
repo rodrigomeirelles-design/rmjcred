@@ -43,9 +43,33 @@ export default function Consorcios() {
     },
   ];
 
+  const allFaqItems = faqGroups.flatMap((g) => g.items);
+
+  const relatedPosts = [
+    {
+      href: "/blog/como-funciona-consorcio-de-imovel",
+      title: "Como Funciona o Consórcio de Imóvel: Vale a Pena Esperar pela Contemplação?",
+    },
+    {
+      href: "/blog/diferenca-consorcio-vs-financiamento",
+      title: "Consórcio vs Financiamento: Qual Escolha Favorece Seu Planejamento?",
+    },
+    {
+      href: "/blog/como-ser-contemplado-mais-rapido-consorcio",
+      title: "Como Ser Contemplado Mais Rápido no Consórcio: Estratégias de Lance",
+    },
+    {
+      href: "/blog/consorcio-de-carros-como-funciona",
+      title: "Consórcio de Carros: Como Adquirir seu Veículo sem Pagar Juros",
+    },
+    {
+      href: "/blog/consorcio-como-investimento-patrimonial",
+      title: "Consórcio como Investimento: Como Funciona a Compra de Cotas para Patrimônio",
+    },
+  ];
+
   return (
     <>
-
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -63,6 +87,23 @@ export default function Consorcios() {
           })
         }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": allFaqItems.map((item) => ({
+              "@type": "Question",
+              "name": item.q,
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": item.a,
+              },
+            })),
+          }),
+        }}
+      />
     
       {/* ── 1. HERO ─────────────────────────────────────────── */}
       <section className={styles.headerSection}>
@@ -74,6 +115,79 @@ export default function Consorcios() {
           <p className={styles.leadText}>
             Consórcios imobiliários e automotivos estruturados sob medida por quem entende de estratégia financeira.
           </p>
+        </div>
+      </section>
+
+      {/* ── 1.5. CARDS DAS MODALIDADES (PÁGINA-MÃE) ──────────── */}
+      <section className={`${styles.hubCardsSection} section`}>
+        <div className="container">
+          <div className={styles.hubCardsHeader}>
+            <span className={styles.chartBadge}>Modalidades Especializadas</span>
+            <h2 className={styles.chartHeading} style={{ marginTop: "0.75rem" }}>
+              Escolha a Linha de Consórcio Ideal para o Seu Projeto
+            </h2>
+            <p className={styles.hubCardsSubtitle}>
+              Com sede em Itajubá e atendimento consultivo em um raio de 200 km no Sul de Minas, estruturamos cotas de consórcio imobiliário e de veículos para pessoas físicas, famílias, produtores rurais e empresas.
+            </p>
+          </div>
+
+          <div className={styles.hubCardsGrid}>
+            {/* Card 1: Consórcio Imobiliário */}
+            <div className={styles.hubCard}>
+              <div className={styles.hubCardTop}>
+                <span className={styles.chartBadge}>Patrimônio e Imóveis</span>
+                <h3 className={styles.hubCardTitle}>Consórcio Imobiliário</h3>
+                <p className={styles.hubCardDesc}>
+                  Planejamento estruturado sem cobrança de juros para compra de casa ou apartamento (pronto ou na planta), aquisição de terreno, construção, reforma ou sede comercial para sua empresa. Entenda como usar o FGTS em lances e amortizações e como funcionam as regras de reajuste pelo INCC.
+                </p>
+                <ul className={styles.featureList}>
+                  <li className={styles.featureItem}>
+                    <span className={styles.featureBullet}>✓</span>
+                    <span>Uso do FGTS para ofertar lances, complementar a carta ou amortizar saldo</span>
+                  </li>
+                  <li className={styles.featureItem}>
+                    <span className={styles.featureBullet}>✓</span>
+                    <span>Estratégias de lance livre, lance fixo e lance embutido conforme o grupo</span>
+                  </li>
+                  <li className={styles.featureItem}>
+                    <span className={styles.featureBullet}>✓</span>
+                    <span>Imóveis residenciais, comerciais, galpões, terrenos, obras e reformas</span>
+                  </li>
+                </ul>
+              </div>
+              <Link href="/consorcio-imobiliario" className={styles.hubCardBtn}>
+                Acessar Guia Completo de Consórcio Imobiliário &rarr;
+              </Link>
+            </div>
+
+            {/* Card 2: Consórcio de Veículos */}
+            <div className={styles.hubCard}>
+              <div className={styles.hubCardTop}>
+                <span className={styles.chartBadge}>Automóveis, Pesados e Frota</span>
+                <h3 className={styles.hubCardTitle}>Consórcio de Veículos</h3>
+                <p className={styles.hubCardDesc}>
+                  Renove ou amplie seus veículos sem pagar juros bancários. Planos sob medida para carros zero-quilômetro ou seminovos, motocicletas, caminhões, utilitários, máquinas agrícolas e renovação programada de frota corporativa, com poder de negociação à vista na concessionária ou com particular.
+                </p>
+                <ul className={styles.featureList}>
+                  <li className={styles.featureItem}>
+                    <span className={styles.featureBullet}>✓</span>
+                    <span>Carros novos e seminovos, motos, caminhões e implementos agrícolas</span>
+                  </li>
+                  <li className={styles.featureItem}>
+                    <span className={styles.featureBullet}>✓</span>
+                    <span>Planejamento de renovação de frota para empresas sem descapitalizar o caixa</span>
+                  </li>
+                  <li className={styles.featureItem}>
+                    <span className={styles.featureBullet}>✓</span>
+                    <span>Opção de lance embutido e análise segura de cartas contempladas</span>
+                  </li>
+                </ul>
+              </div>
+              <Link href="/consorcio-de-veiculos" className={styles.hubCardBtn}>
+                Acessar Guia Completo de Consórcio de Veículos &rarr;
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -114,6 +228,11 @@ export default function Consorcios() {
                   <span><strong>Administradoras de Confiança:</strong> Trabalhamos apenas com administradoras consolidadas no mercado brasileiro, autorizadas e fiscalizadas pelo Banco Central.</span>
                 </li>
               </ul>
+              <div className={styles.meetTeamWrapper}>
+                <Link href="/sobre-nos" className={styles.meetTeamLink}>
+                  Conheça quem vai te atender &rarr;
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -163,6 +282,9 @@ export default function Consorcios() {
                 </div>
 
               </div>
+              <p className={styles.chartNote}>
+                Fonte: [PREENCHER fonte e data]. Taxa de administração convertida para valor anual equivalente.
+              </p>
             </div>
 
             {/* Texto ao lado */}
@@ -173,7 +295,7 @@ export default function Consorcios() {
                 <Image src="/assets/ademicon.svg" alt="Ademicon - Maior administradora independente do Brasil" width={220} height={45} />
               </div>
               <p>Venha realizar com a maior administradora independente do Brasil em créditos ativos. Não perca essa oportunidade!</p>
-              <p style={{ marginTop: "1rem" }}>Fonte: Comparativo realizado com base no relatório geral das taxas de juros praticadas pelos bancos disponíveis no site do Banco Central do Brasil.</p>
+              <p style={{ marginTop: "1rem" }}>Fonte: [PREENCHER fonte e data]. Taxa de administração convertida para valor anual equivalente.</p>
             </div>
           </div>
         </div>
@@ -236,6 +358,35 @@ export default function Consorcios() {
               ))}
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* ── 5.5. LEIA TAMBÉM (BLOG) ───────────────────────────── */}
+      <section className={`${styles.relatedSection} section`}>
+        <div className="container">
+          <div className={styles.howHeader} style={{ marginBottom: "2rem" }}>
+            <span className={styles.chartBadge}>Conteúdo Educativo</span>
+            <h2 className={styles.howTitle} style={{ color: "var(--primary-dark)", marginTop: "0.5rem" }}>
+              Leia também
+            </h2>
+            <p className={styles.howSubtitle} style={{ color: "var(--neutral-muted)" }}>
+              Aprofunde seu planejamento com os artigos do nosso blog sobre consórcio imobiliário, veículos e estratégias de contemplação
+            </p>
+          </div>
+
+          <div className={styles.relatedGrid}>
+            {relatedPosts.map((post) => (
+              <Link key={post.href} href={post.href} className={styles.relatedCard}>
+                <div>
+                  <span className={styles.relatedTag}>Artigo do Blog</span>
+                  <h3 className={styles.relatedTitle} style={{ marginTop: "0.4rem" }}>
+                    {post.title}
+                  </h3>
+                </div>
+                <span className={styles.relatedReadMore}>Ler artigo completo &rarr;</span>
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
 

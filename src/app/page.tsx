@@ -9,12 +9,12 @@ export const metadata = {
   title: "Consultoria de Crédito em Itajubá | RMJ Soluções de Crédito",
   description: "Consultoria especializada em crédito empresarial e pessoal em Itajubá e Sul de Minas. Pronampe, BDMG, Home Equity e financiamentos com as melhores taxas.",
   alternates: {
-    canonical: "https://rmjcred.com.br",
+    canonical: "https://rmjcred.com.br/",
   },
   openGraph: {
     title: "Consultoria de Crédito em Itajubá | RMJ Soluções de Crédito",
     description: "Consultoria especializada em crédito empresarial e pessoal em Itajubá e Sul de Minas. Pronampe, BDMG, Home Equity e financiamentos com as melhores taxas.",
-    url: "https://rmjcred.com.br",
+    url: "https://rmjcred.com.br/",
     siteName: "RMJ Soluções de Crédito",
     locale: "pt_BR",
     type: "website",

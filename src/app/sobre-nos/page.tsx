@@ -2,6 +2,8 @@ import Link from "next/link";
 import Image from "next/image";
 import styles from "./page.module.css";
 
+export const revalidate = 86400;
+
 export const metadata = {
   title: "Sobre a RMJ Soluções de Crédito | Consultoria em Itajubá, MG",
   description: "Conheça a RMJ Soluções de Crédito. Consultoria especializada em crédito empresarial e pessoal em Itajubá, sul de Minas Gerais. Atendimento personalizado e sem burocracia.",

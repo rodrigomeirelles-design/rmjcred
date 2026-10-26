@@ -3,6 +3,8 @@ import Image from "next/image";
 import styles from "./page.module.css";
 import LeadForm from "@/components/LeadForm";
 
+export const revalidate = 86400;
+
 export const metadata = {
   title: "Crédito Imobiliário em Itajubá e Sul de Minas | RMJ Soluções de Crédito",
   description: "A melhor opção de crédito imobiliário para você e sua empresa em Itajubá e Sul de Minas. Simule agora com a RMJ Soluções de Crédito.",

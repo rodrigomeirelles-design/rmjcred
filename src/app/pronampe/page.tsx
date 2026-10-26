@@ -3,6 +3,8 @@ import Image from "next/image";
 import styles from "./page.module.css";
 import LeadForm from "@/components/LeadForm";
 
+export const revalidate = 86400;
+
 export const metadata = {
   title: "Pronampe 2026 em Itajubá e Sul de Minas | Crédito para MPEs | RMJ",
   description: "Solicite o Pronampe 2026 com acompanhamento completo. Taxas a partir de Selic + 6% a.a., até R$ 150 mil para micro e pequenas empresas. Consultoria RMJ em Itajubá.",

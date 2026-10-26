@@ -3,6 +3,8 @@ import Image from "next/image";
 import styles from "./page.module.css";
 import LeadForm from "@/components/LeadForm";
 
+export const revalidate = 86400;
+
 export const metadata = {
   title: "Financiamento Imobiliário — RMJ Soluções de Crédito",
   description: "Compare taxas de juros de diversos bancos e consiga o melhor financiamento para imóveis residenciais, comerciais ou terrenos com a RMJ.",

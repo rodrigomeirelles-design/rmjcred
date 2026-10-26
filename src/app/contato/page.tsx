@@ -2,6 +2,8 @@ import Link from "next/link";
 import styles from "./page.module.css";
 import LeadForm from "@/components/LeadForm";
 
+export const revalidate = 86400;
+
 export const metadata = {
   title: "Contato — RMJ Soluções de Crédito",
   description: "Fale com a RMJ Soluções de Crédito em Itajubá - MG. Atendimento via WhatsApp, telefone ou e-mail. Solicite sua simulação grátis.",

@@ -3,6 +3,8 @@ import Image from "next/image";
 import styles from "./page.module.css";
 import LeadForm from "@/components/LeadForm";
 
+export const revalidate = 86400;
+
 export const metadata = {
   title: "Crédito BDMG para Empresas em MG | Até R$ 500 mil | RMJ Soluções",
   description: "Acesse linhas de crédito BDMG com taxas a partir de 1,2% a.m. para empresas de Minas Gerais. Consultoria especializada RMJ em Itajubá. Solicite análise gratuita.",

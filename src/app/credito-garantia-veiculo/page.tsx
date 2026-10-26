@@ -13,6 +13,8 @@ import {
   ChevronDown,
 } from "lucide-react";
 
+export const revalidate = 86400;
+
 export const metadata = {
   title: "Crédito com Garantia de Veículo (Auto Equity) | RMJ Soluções de Crédito",
   description: "Crédito com garantia de veículo (Auto Equity) — libere até 90% da Tabela FIPE com taxas baixas, até 60 meses para pagar e continue usando seu carro. Simule grátis com a RMJ.",

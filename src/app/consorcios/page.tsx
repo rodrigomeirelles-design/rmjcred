@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import styles from "./page.module.css";
 import LeadForm from "@/components/LeadForm";
+import Testimonials from "@/components/Testimonials";
 import { useState } from "react";
 
 export default function Consorcios() {
@@ -115,6 +116,11 @@ export default function Consorcios() {
           <p className={styles.leadText}>
             Consórcios imobiliários e automotivos estruturados sob medida por quem entende de estratégia financeira.
           </p>
+          <div style={{ marginTop: "0.75rem" }}>
+            <Link href="/simulador-consorcio" className="btn btn-primary">
+              Abrir Simulador de Consórcio em Etapas &rarr;
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -361,6 +367,9 @@ export default function Consorcios() {
         </div>
       </section>
 
+      {/* ── 5.2. DEPOIMENTOS ─────────────────────────────────── */}
+      <Testimonials />
+
       {/* ── 5.5. LEIA TAMBÉM (BLOG) ───────────────────────────── */}
       <section className={`${styles.relatedSection} section`}>
         <div className="container">
@@ -397,8 +406,13 @@ export default function Consorcios() {
             <span className={styles.simBadge}>Simulação Gratuita</span>
             <h2 className={styles.simHeading}>Simule seu Consórcio</h2>
             <p className={styles.leadText}>
-              Em dois passos rápidos, nosso time apresentará as melhores opções de grupos, prazos e lances para o seu planejamento.
+              Em poucos passos, nosso simulador interativo identifica as melhores opções de grupos, prazos e lances para o seu planejamento.
             </p>
+            <div style={{ marginTop: "1rem" }}>
+              <Link href="/simulador-consorcio" className={styles.simBtn} style={{ display: "inline-block", textAlign: "center", textDecoration: "none" }}>
+                Acessar Simulador de Consórcio Completo →
+              </Link>
+            </div>
 
             {simStep === 1 && (
               <div className={styles.simCard}>

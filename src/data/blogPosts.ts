@@ -12,6 +12,7 @@ export interface BlogPost {
   content: string[]; // Parágrafos do artigo
   seoKeywords: string[];
   faq?: { question: string; answer: string }[];
+  draft?: boolean;
 }
 
 export const blogPosts: BlogPost[] = [
@@ -541,4 +542,121 @@ export const blogPosts: BlogPost[] = [
   'category': 'Consórcios',
   'image': '/assets/blog/blog_consorcio_imovel.png',
   'seoKeywords': ['consorcio como investimento', 'alavancagem patrimonial consorcio', 'investir em cotas de imovel', 'renda passiva aluguel'],
-  'content': ['Muitos encaram o consórcio puramente como uma alternativa ao financiamento. Contudo, planejadores e investidores financeiros enxergam a cota de consórcio imobiliário como uma poderosa ferramenta de alavancagem de patrimônio.', 'A estratégia consiste em contratar cotas de consórcio para aquisição de imóveis destinados à locação. Quando contemplado por sorteio ou lance, o investidor adquire o imóvel e utiliza o próprio valor do aluguel gerado mensalmente para quitar as parcelas restantes do consórcio.', 'Com isso, constrói-se um ativo físico de alto valor (o imóvel) com pouquíssimo capital próprio aportado, gerando patrimônio sólido de longo prazo e estabelecendo uma fonte futura e estável de renda passiva.', 'A consultoria financeira da RMJ auxilia você a desenhar estratégias de alavancagem patrimonial utilizando cotas de consórcio de forma estruturada e em harmonia com seu portfólio de investimentos.', '**Quer estruturar sua alavancagem imobiliária com segurança?** Confira todos os detalhes na nossa página de [Consórcio Imobiliário em Itajubá e Sul de Minas](/consorcio-imobiliario).']}];
+  'content': ['Muitos encaram o consórcio puramente como uma alternativa ao financiamento. Contudo, planejadores e investidores financeiros enxergam a cota de consórcio imobiliário como uma poderosa ferramenta de alavancagem de patrimônio.', 'A estratégia consiste em contratar cotas de consórcio para aquisição de imóveis destinados à locação. Quando contemplado por sorteio ou lance, o investidor adquire o imóvel e utiliza o próprio valor do aluguel gerado mensalmente para quitar as parcelas restantes do consórcio.', 'Com isso, constrói-se um ativo físico de alto valor (o imóvel) com pouquíssimo capital próprio aportado, gerando patrimônio sólido de longo prazo e estabelecendo uma fonte futura e estável de renda passiva.', 'A consultoria financeira da RMJ auxilia você a desenhar estratégias de alavancagem patrimonial utilizando cotas de consórcio de forma estruturada e em harmonia com seu portfólio de investimentos.', '**Quer estruturar sua alavancagem imobiliária com segurança?** Confira todos os detalhes na nossa página de [Consórcio Imobiliário em Itajubá e Sul de Minas](/consorcio-imobiliario).']},
+  {
+    "slug": "consorcio-para-empresas-frota-maquinas-imovel-comercial",
+    "title": "Consórcio para empresas: como usar para frota, máquinas e imóvel comercial",
+    "seoTitle": "Consórcio para Empresas: Frota, Máquinas e Imóvel Comercial | RMJ",
+    "subtitle": "Descubra como pequenas, médias e grandes empresas utilizam o consórcio corporativo para renovar frota, adquirir maquinário e construir sede própria sem comprometer o capital de giro.",
+    "description": "Entenda como funciona o consórcio para empresas (CNPJ) na renovação de frota, compra de máquinas e aquisição de imóvel comercial sem pagar juros bancários.",
+    "date": "25 de Outubro de 2026",
+    "readTime": "7 min de leitura",
+    "category": "Consórcios",
+    "image": "/assets/blog/blog_consorcio_imovel.png",
+    "imageAlt": "Empresários planejando expansão de frota e sede comercial com consórcio empresarial",
+    "seoKeywords": [
+      "consórcio para empresas",
+      "consórcio empresarial CNPJ",
+      "renovação de frota consórcio",
+      "consórcio imóvel comercial",
+      "consórcio de máquinas",
+      "planejamento financeiro empresarial Sul de Minas"
+    ],
+    "draft": true,
+    "content": [
+      "## Por que empresas estão trocando o financiamento tradicional pelo consórcio corporativo",
+      "Crescer sem descapitalizar o caixa é um dos maiores desafios de qualquer gestor. Quando uma empresa precisa renovar seus veículos comerciais, adquirir novas máquinas produtivas ou sair do aluguel comprando uma sede própria, recorrer imediatamente a linhas bancárias de curto prazo pode pressionar o fluxo de caixa por causa dos juros compostos e do comprometimento de limites de crédito.",
+      "É nesse cenário que o **consórcio para empresas (CNPJ)** ganha protagonismo como instrumento de planejamento estratégico. Ao substituir os juros bancários por uma taxa de administração fixa e diluída ao longo de todo o prazo do grupo, a pessoa jurídica consegue programar investimentos estruturais mantendo a liquidez preservada para a operação diária.",
+      "## 1. Renovação e ampliação programada de frota",
+      "Empresas de distribuição, prestadoras de serviços técnicos, representantes comerciais e transportadoras de Itajubá e do Sul de Minas convivem com um custo silencioso: o envelhecimento da frota. Veículos com alta quilometragem aumentam drasticamente os gastos com manutenção corretiva, combustível, seguro e tempo de frota parada.",
+      "Com o [Consórcio de Veículos](/consorcio-de-veiculos), a empresa pode contratar cotas escalonadas para substituir utilitários, carros comerciais, furgões e caminhões a cada 24 ou 36 meses. Enquanto os veículos atuais seguem rodando e gerando receita, as cotas participam das assembleias mensais por sorteio e lance. No momento da contemplação, o próprio veículo usado da frota pode servir como recurso para ofertar lance ou complementar a compra do modelo zero-quilômetro ou seminovo — tudo com poder de negociação à vista diretamente com montadoras, concessionárias ou frotistas.",
+      "## 2. Compra de máquinas e equipamentos industriais",
+      "Indústrias, oficinas especializadas, clínicas médicas e empresas de engenharia também podem utilizar grupos de bens móveis e pesados para modernizar seu parque tecnológico. A carta de crédito contemplada permite adquirir equipamentos nacionais novos ou seminovos conforme as regras da administradora, sem exigir que a empresa consuma suas linhas de capital de giro bancário.",
+      "Além disso, o planejamento por meio de consórcio evita a cobrança de IOF (Imposto sobre Operações Financeiras), que incide sobre operações de crédito tradicionais para pessoas jurídicas.",
+      "## 3. Sede própria, galpões logísticos e reforma comercial",
+      "Pagar aluguel comercial por décadas transfere parte relevante da margem operacional da empresa para terceiros sem construir patrimônio no balanço. Com o [Consórcio Imobiliário](/consorcio-imobiliario), o CNPJ pode planejar:",
+      "- **Compra de salas comerciais, lojas de rua, clínicas ou escritórios prontos**;\n- **Aquisição de terrenos industriais ou lotes comerciais** em polos estratégicos do Sul de Minas;\n- **Construção ou ampliação de galpões logísticos e plantas industriais**, com liberação dos recursos conforme o cronograma físico-financeiro da obra;\n- **Reforma estrutural de imóvel próprio** já registrado em nome da empresa ou dos sócios.",
+      "## Estratégia de lance para CNPJ: previsibilidade sem travar o caixa",
+      "Um receio comum do empresário é não saber exatamente quando a carta será contemplada. Embora nenhuma consultoria séria prometa contemplação garantida em data fixa, a análise técnica do grupo antes da adesão permite estruturar três caminhos:",
+      "- **Lance embutido:** utiliza parte da própria carta de crédito (por exemplo, de 20% a 30%, conforme regulamento do grupo) para ofertar o lance sem retirar recursos do capital de giro da empresa;\n- **Lance fixo:** a empresa concorre em uma faixa percentual predeterminada pelo grupo, disputando apenas com cotistas daquela modalidade;\n- **Lance livre planejado:** utiliza reservas sazonais de caixa ou a venda de um ativo antigo para acelerar a contemplação.",
+      "## Como a RMJ estrutura o consórcio para a sua empresa",
+      "Sediada em Itajubá e atendendo empresas em um raio de 200 km no Sul de Minas Gerais, a **RMJ Soluções de Crédito** avalia o balanço, a necessidade de investimento e o horizonte de tempo do seu negócio para comparar grupos nas principais administradoras fiscalizadas pelo Banco Central.",
+      "**Quer desenhar um plano de consórcio corporativo para frota, máquinas ou sede própria?** Conheça nossa página principal de [Consórcios em Itajubá e Sul de Minas](/consorcios), explore os detalhes de [Consórcio Imobiliário](/consorcio-imobiliario) e [Consórcio de Veículos](/consorcio-de-veiculos), ou faça agora mesmo uma simulação no [Simulador de Consórcio da RMJ](/simulador-consorcio)."
+    ]
+  },
+  {
+    "slug": "consorcio-maquinas-agricolas-sul-de-minas",
+    "title": "Consórcio de máquinas agrícolas no Sul de Minas",
+    "seoTitle": "Consórcio de Máquinas Agrícolas no Sul de Minas | RMJ Crédito",
+    "subtitle": "Como produtores rurais, cafeicultores e cooperados do Sul de Minas utilizam o consórcio para adquirir tratores, implementos e utilitários sem juros.",
+    "description": "Saiba como funciona o consórcio de máquinas agrícolas, tratores e caminhões no Sul de Minas com planejamento adaptado ao calendário da safra.",
+    "date": "25 de Outubro de 2026",
+    "readTime": "6 min de leitura",
+    "category": "Consórcios",
+    "image": "/assets/happy_family_car.png",
+    "imageAlt": "Planejamento de consórcio de máquinas agrícolas e utilitários no Sul de Minas",
+    "seoKeywords": [
+      "consórcio máquinas agrícolas Sul de Minas",
+      "consórcio de tratores",
+      "consórcio implementos agrícolas",
+      "crédito produtor rural Itajubá",
+      "consórcio pesado agronegócio"
+    ],
+    "draft": true,
+    "content": [
+      "## O desafio da mecanização no agronegócio do Sul de Minas",
+      "A força do agronegócio no Sul de Minas Gerais — da cafeicultura de montanha e pecuária leiteira à produção de grãos, hortifrúti e silvicultura — exige constante atualização tecnológica no campo. Tratores, pulverizadores, colheitadeiras, adubadoras, secadores e caminhões de escoamento são determinantes para reduzir o custo operacional por hectare e aumentar a produtividade da lavoura.",
+      "Contudo, as linhas tradicionais de financiamento rural nem sempre estão disponíveis com recursos subvencionados no momento em que o produtor precisa, ou exigem reciprocidades bancárias que encarecem o Custo Efetivo Total. Nesse contexto, o **consórcio de máquinas agrícolas e veículos pesados** consolidou-se como uma ferramenta de compra programada sem cobrança de juros.",
+      "## O que pode ser adquirido com o consórcio agrícola e de pesados",
+      "Por meio dos grupos de veículos pesados e maquinário das administradoras parceiras da RMJ, produtores rurais (Pessoa Física com inscrição de produtor ou Pessoa Jurídica) podem adquirir:",
+      "- **Tratores agrícolas** de pequeno, médio e grande porte (inclusive modelos estreitos/cafeeiros muito utilizados nas regiões serranas da Mantiqueira e Sul de Minas);\n- **Colheitadeiras, pulverizadores automotrizes, plantadeiras e implementos agrícolas**;\n- **Caminhões, caminhonetes 4x4 e utilitários** para transporte de insumos e escoamento de produção;\n- **Equipamentos e estruturas imobiliárias rurais** (por meio de grupos imobiliários específicos para compra ou benfeitoria em propriedade, conforme regras da administradora).",
+      "## Planejamento alinhado ao fluxo da safra e estratégias de lance",
+      "Diferentemente do comércio urbano, o produtor rural recebe grande parte de sua receita concentrada no período de comercialização da safra. O consórcio permite planejar essa dinâmica com inteligência:",
+      "1. **Adesão com parcela reduzida ou diluída:** o produtor ingressa no grupo pagando prestações mensais sem juros, compostas apenas pelo fundo comum e taxa administrativa diluída;\n2. **Oferta de lance no período pós-colheita:** quando comercializa a produção de café, leite ou grãos, o produtor pode utilizar parte da receita da safra para ofertar um **lance livre**, ou combiná-lo com o **lance embutido** (usando percentual da própria carta de crédito), acelerando a contemplação sem precisar se endividar a juros altos;\n3. **Poder de compra à vista na concessionária agrícola:** com a carta contemplada em mãos, o produtor negocia o trator ou implemento como comprador à vista em qualquer revenda autorizada.",
+      "## Reajuste da carta e segurança na contratação",
+      "Ao longo do plano, o valor da carta de crédito é atualizado anualmente conforme o índice contratual do grupo, preservando o poder de compra diante da valorização dos maquinários e implementos. Além disso, é possível adquirir máquinas novas ou seminovas (respeitando o tempo máximo de fabricação previsto no regulamento de cada grupo).",
+      "Na **RMJ Soluções de Crédito**, atendemos produtores rurais, cooperados e empresas do agronegócio em **Itajubá e em todas as cidades num raio de 200 km no Sul de Minas**, realizando um estudo técnico dos grupos de pesados para encontrar a relação mais equilibrada entre prazo, taxa administrativa e média histórica de lances.",
+      "**Quer planejar a compra do seu trator, caminhão ou implemento sem juros?** Acesse nossa página de [Consórcio de Veículos e Pesados em Itajubá e Sul de Minas](/consorcio-de-veiculos), confira também a página geral de [Consórcios](/consorcios) ou faça sua simulação no [Simulador de Consórcio RMJ](/simulador-consorcio)."
+    ]
+  },
+  {
+    "slug": "como-funciona-assembleia-do-consorcio",
+    "title": "Como funciona a assembleia do consórcio",
+    "seoTitle": "Como Funciona a Assembleia do Consórcio: Sorteio e Lances | RMJ",
+    "subtitle": "Entenda passo a passo o que acontece nas assembleias mensais de consórcio, como são auditados os sorteios pela Loteria Federal e como funcionam os critérios de desempate nos lances.",
+    "description": "Guia prático sobre como funciona a assembleia geral ordinária do consórcio: sorteio pela Loteria Federal, apuração de lance livre, fixo e embutido e etapas após a contemplação.",
+    "date": "25 de Outubro de 2026",
+    "readTime": "6 min de leitura",
+    "category": "Consórcios",
+    "image": "/assets/blog/blog_contemplado_rapido.png",
+    "imageAlt": "Explicação passo a passo de como funciona a assembleia mensal de consórcio",
+    "seoKeywords": [
+      "como funciona assembleia do consórcio",
+      "sorteio consórcio Loteria Federal",
+      "lance fixo lance livre assembleia",
+      "contemplação consórcio passo a passo",
+      "consórcio Itajubá Sul de Minas"
+    ],
+    "draft": true,
+    "content": [
+      "## O que é a Assembleia Geral Ordinária (AGO) no consórcio?",
+      "Para quem está pesquisando sobre compra planejada ou acabou de adquirir uma cota, a **assembleia do consórcio** costuma despertar muitas dúvidas. Na prática, a Assembleia Geral Ordinária (AGO) é o evento mensal oficial — hoje realizado de forma 100% digital e auditável pelas grandes administradoras — em que o saldo arrecadado pelo grupo naquele mês é distribuído aos participantes por meio das **contemplações por sorteio e por lance**.",
+      "Compreender exatamente as regras da assembleia é essencial para participar de forma ativa, não perder prazos de oferta de lance e planejar com realismo o momento de retirar a sua carta de crédito.",
+      "## 1. Quem participa da assembleia mensal?",
+      "Para que a sua cota concorra tanto ao sorteio quanto aos lances na assembleia do mês, existe uma regra básica indispensável: **o pagamento da parcela mensal até a data de vencimento**. Cotas com pagamento em atraso na data da assembleia ficam temporariamente impedidas de concorrer à contemplação naquele mês específico, voltando a participar normalmente assim que regularizadas para as assembleias seguintes.",
+      "## 2. Como funciona a contemplação por sorteio",
+      "Toda assembleia mensal contempla, obrigatoriamente, ao menos uma cota por sorteio (podendo contemplar mais, conforme o saldo de caixa do grupo). Para garantir transparência absoluta e imparcialidade, as principais administradoras fiscalizadas pelo Banco Central vinculam a apuração do sorteio aos números extraídos pela **Loteria Federal** na data prevista no calendário do grupo.",
+      "Cada consorciado possui o número da sua cota (ou pedra) dentro do grupo. A partir de uma regra matemática contratual pública aplicada ao primeiro prêmio da Loteria Federal, identifica-se a cota contemplada. Caso a cota sorteada já tenha sido contemplada anteriormente ou esteja inadimplente no mês, aplica-se o critério de aproximação previsto no regulamento (cota imediatamente superior ou inferior).",
+      "## 3. Como funciona a apuração dos lances na assembleia",
+      "Após a definição do contemplado por sorteio, a administradora utiliza o restante do saldo disponível no fundo comum do grupo naquele mês para contemplar os participantes que ofertaram **lances**. O registro do lance pode ser feito pelo aplicativo da administradora ou com o suporte da sua assessoria até o horário-limite anterior à assembleia.",
+      "- **Lance Livre:** vence quem ofertar o maior percentual de antecipação em relação ao valor da categoria/cota. Se houver saldo suficiente no grupo, mais de um lance livre é contemplado na mesma assembleia, seguindo a ordem decrescente dos percentuais ofertados;\n- **Lance Fixo:** todos os participantes que ofertam o percentual fixo definido pelo grupo (por exemplo, 25% ou 30%) entram em uma apuração específica, na qual o vencedor é definido pelo número mais próximo ao sorteado na Loteria Federal;\n- **Critério de desempate:** quando dois ou mais participantes ofertam exatamente o mesmo percentual no lance livre, o desempate também segue a proximidade numérica em relação à pedra sorteada no mês.",
+      "Vale destacar que **você só paga o lance se for efetivamente contemplado**. Se a sua oferta não for vencedora naquela assembleia, nenhum valor é cobrado e você pode registrar uma nova oferta no mês seguinte.",
+      "## 4. Fui contemplado na assembleia: quais são os próximos passos?",
+      "Quando sua cota é contemplada na assembleia, a administradora envia o comunicado oficial e inicia o fluxo de liberação do crédito:",
+      "1. **Pagamento do lance (se a contemplação ocorreu por lance):** o consorciado tem um prazo determinado em contrato (geralmente de 2 a 5 dias úteis após a confirmação) para quitar o boleto do lance com recursos próprios, autorizar o desconto do **lance embutido** da própria carta ou formalizar o uso do FGTS (no caso de imóvel residencial elegível);\n2. **Análise de crédito e garantias:** apresentação dos documentos pessoais ou empresariais para validação cadastral;\n3. **Escolha e vistoria do bem:** indicação do imóvel ou veículo desejado (novo ou seminovo, de concessionária, construtora ou particular), seguida da avaliação técnica e emissão do contrato para pagamento direto ao vendedor.",
+      "## Acompanhamento consultivo das assembleias com a RMJ",
+      "Na **RMJ Soluções de Crédito**, nosso trabalho continua após a adesão: auxiliamos nossos clientes de **Itajubá e de todo o Sul de Minas (raio de 200 km)** no monitoramento do calendário de assembleias, na análise dos percentuais médios de corte de cada grupo e no registro estratégico dos lances.",
+      "**Quer planejar sua conquista com orientação técnica em cada assembleia?** Conheça nossas páginas de [Consórcios em Itajubá e Sul de Minas](/consorcios), [Consórcio Imobiliário](/consorcio-imobiliario) e [Consórcio de Veículos](/consorcio-de-veiculos), ou simule agora mesmo no [Simulador de Consórcio em Etapas](/simulador-consorcio)."
+    ]
+  }
+];

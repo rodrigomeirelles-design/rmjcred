@@ -14,6 +14,8 @@ import {
   ChevronDown,
 } from "lucide-react";
 
+export const revalidate = 86400;
+
 export const metadata = {
   title: "Home Equity | Empréstimo com Garantia de Imóvel | RMJ Soluções de Crédito",
   description: "Home Equity — empréstimo com garantia de imóvel com taxas a partir de 1,0% ao mês e até 20 anos para pagar. Simule gratuitamente com a RMJ Soluções de Crédito.",

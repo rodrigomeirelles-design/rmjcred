@@ -1,5 +1,7 @@
 import { Metadata } from "next";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
   title: "Consórcio de Veículos em Itajubá e Sul de Minas | RMJ",
   description: "Consórcio planejado sem juros para carros novos e seminovos, motos, caminhões, máquinas agrícolas e frota empresarial em Itajubá e num raio de 200 km.",

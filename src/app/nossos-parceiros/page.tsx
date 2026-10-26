@@ -2,6 +2,8 @@ import Link from "next/link";
 import Image from "next/image";
 import styles from "./page.module.css";
 
+export const revalidate = 86400;
+
 export const metadata = {
   title: "Nossos Parceiros — RMJ Soluções de Crédito",
   description: "Trabalhamos com mais de 150 das principais instituições financeiras e bancos do país para levar até você as melhores taxas de fomento e crédito.",

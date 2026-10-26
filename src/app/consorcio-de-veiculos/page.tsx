@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import styles from "../consorcios/page.module.css";
 import LeadForm from "@/components/LeadForm";
+import Testimonials from "@/components/Testimonials";
 import { useState } from "react";
 
 export default function ConsorcioDeVeiculos() {
@@ -119,6 +120,11 @@ export default function ConsorcioDeVeiculos() {
           <p className={styles.leadText}>
             Planeje a compra ou troca do seu veículo novo ou seminovo, motocicleta, caminhão, máquina agrícola ou frota empresarial com acompanhamento consultivo em Itajubá e em cidades num raio de 200 km.
           </p>
+          <div style={{ marginTop: "0.75rem" }}>
+            <Link href="/simulador-consorcio" className="btn btn-primary">
+              Simular Consórcio de Veículos Agora &rarr;
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -413,6 +419,9 @@ export default function ConsorcioDeVeiculos() {
         </div>
       </section>
 
+      {/* ── 6.5. DEPOIMENTOS ─────────────────────────────────── */}
+      <Testimonials />
+
       {/* ── 7. LEIA TAMBÉM (BLOG) ─────────────────────────────── */}
       <section className={`${styles.relatedSection} section`}>
         <div className="container">
@@ -451,6 +460,11 @@ export default function ConsorcioDeVeiculos() {
             <p className={styles.leadText} style={{ color: "#475569" }}>
               Selecione a categoria de veículo e o valor desejado da carta de crédito para receber uma análise personalizada de grupos e prazos.
             </p>
+            <div style={{ marginTop: "1rem" }}>
+              <Link href="/simulador-consorcio" className={styles.simBtn} style={{ display: "inline-block", textAlign: "center", textDecoration: "none" }}>
+                Abrir Simulador de Consórcio em Etapas →
+              </Link>
+            </div>
 
             {simStep === 1 && (
               <div className={styles.simCard}>

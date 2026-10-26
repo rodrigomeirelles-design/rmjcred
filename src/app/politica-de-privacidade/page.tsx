@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+export const revalidate = 86400;
+
 export const metadata = {
   title: "Política de Privacidade — RMJ Soluções de Crédito",
   description: "Leia a política de privacidade e conformidade com a LGPD da RMJ Soluções de Crédito, sediada em Itajubá - MG.",

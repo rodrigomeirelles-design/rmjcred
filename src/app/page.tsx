@@ -5,6 +5,8 @@ import LeadForm from "@/components/LeadForm";
 import HeroCarousel from "@/components/HeroCarousel";
 
 
+export const revalidate = 86400;
+
 export const metadata = {
   title: "Consultoria de Crédito em Itajubá | RMJ Soluções de Crédito",
   description: "Consultoria especializada em crédito empresarial e pessoal em Itajubá e Sul de Minas. Pronampe, BDMG, Home Equity e financiamentos com as melhores taxas.",
@@ -186,6 +188,7 @@ export default function Home() {
               <p className={styles.serviceDesc}>
                 Planeje a aquisição de bens com taxas administrativas reduzidas. Opções inteligentes para quem quer investir a médio e longo prazo.
               </p>
+              <Link href="/simulador-consorcio" className={styles.serviceLink} style={{ marginBottom: "0.35rem" }}>Simular Consórcio &rarr;</Link>
               <Link href="/consorcios" className={styles.serviceLink}>
                 Saber Mais &rarr;
               </Link>

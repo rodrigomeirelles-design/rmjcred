@@ -3,6 +3,8 @@ import Image from "next/image";
 import styles from "./page.module.css";
 import LeadForm from "@/components/LeadForm";
 
+export const revalidate = 86400;
+
 export const metadata = {
   title: "Financiamento de Veículos em Itajubá | Taxas desde 0,99% a.m. | RMJ",
   description: "Financiamento de carros, motos e caminhões com as menores taxas do Sul de Minas. Parceiros BV, Santander, Itaú, Bradesco e Safra. Simulação grátis na RMJ.",

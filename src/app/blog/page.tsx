@@ -3,6 +3,8 @@ import Image from "next/image";
 import { blogPosts } from "@/data/blogPosts";
 import styles from "./page.module.css";
 
+export const revalidate = 86400;
+
 export const metadata = {
   title: "Blog RMJ | Dicas de Crédito, Financiamento e Gestão Financeira",
   description: "Artigos sobre crédito empresarial, financiamento de veículos, Home Equity e gestão financeira para empresas e pessoas físicas no sul de Minas.",
@@ -54,13 +56,14 @@ export default function BlogHome() {
       <section className={`${styles.blogGridSection} section`}>
         <div className="container">
           <div className={styles.articlesGrid}>
-            {blogPosts.map((post) => (
+            {blogPosts.filter((post) => !post.draft).map((post) => (
               <article className={styles.articleCard} key={post.slug}>
                 <div className={styles.cardImageWrapper}>
                   <Image
                     src={post.image}
                     alt={post.imageAlt || post.title}
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     style={{ objectFit: "cover" }}
                   />
                   <span className={styles.categoryBadge}>{post.category}</span>

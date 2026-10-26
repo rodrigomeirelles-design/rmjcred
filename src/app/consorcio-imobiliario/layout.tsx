@@ -1,5 +1,7 @@
 import { Metadata } from "next";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
   title: "Consórcio Imobiliário em Itajubá e Sul de Minas | RMJ",
   description: "Planeje a compra, construção ou reforma do seu imóvel residencial ou comercial sem juros com assessoria consultiva da RMJ em Itajubá e num raio de 200 km.",

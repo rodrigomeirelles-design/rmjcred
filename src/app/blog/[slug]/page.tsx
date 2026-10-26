@@ -14,6 +14,8 @@ interface PageProps {
   }>;
 }
 
+export const revalidate = 86400;
+
 // Pre-renderização estática das rotas
 export async function generateStaticParams() {
   return blogPosts.map((post) => ({
@@ -39,6 +41,7 @@ export async function generateMetadata({ params }: PageProps) {
     alternates: {
       canonical: pageUrl,
     },
+    ...(post.draft ? { robots: { index: false, follow: false } } : {}),
     openGraph: {
       title: metaTitle,
       description: post.description,
@@ -202,6 +205,11 @@ export default async function BlogPostPage({ params }: PageProps) {
           </Link>
           <div className={styles.metaInfo}>
             <span className={styles.categoryBadge}>{post.category}</span>
+            {post.draft && (
+              <span className={styles.categoryBadge} style={{ backgroundColor: "#EE661C", color: "#fff" }}>
+                RASCUNHO PARA REVISÃO
+              </span>
+            )}
             <span>{post.date}</span>
             <span className={styles.metaDivider}>•</span>
             <span>{post.readTime}</span>
@@ -222,6 +230,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                 src={post.image}
                 alt={post.imageAlt || post.title}
                 fill
+                sizes="(max-width: 992px) 100vw, 800px"
                 style={{ objectFit: "cover" }}
                 priority
               />
@@ -276,6 +285,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                       src={relatedPost.image}
                       alt={relatedPost.title}
                       fill
+                sizes="(max-width: 992px) 100vw, 800px"
                       style={{ objectFit: "cover" }}
                     />
                   </div>

@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import styles from "../consorcios/page.module.css";
 import LeadForm from "@/components/LeadForm";
+import Testimonials from "@/components/Testimonials";
 import { useState } from "react";
 
 export default function ConsorcioImobiliario() {
@@ -119,6 +120,11 @@ export default function ConsorcioImobiliario() {
           <p className={styles.leadText}>
             Estruture a compra da casa própria, terreno, construção, reforma ou sede comercial da sua empresa com orientação consultiva, transparência técnica e atendimento presencial ou digital em Itajubá e em cidades num raio de 200 km.
           </p>
+          <div style={{ marginTop: "0.75rem" }}>
+            <Link href="/simulador-consorcio" className="btn btn-primary">
+              Simular Consórcio Imobiliário Agora &rarr;
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -467,6 +473,9 @@ export default function ConsorcioImobiliario() {
         </div>
       </section>
 
+      {/* ── 7.5. DEPOIMENTOS ─────────────────────────────────── */}
+      <Testimonials />
+
       {/* ── 8. LEIA TAMBÉM (BLOG) ─────────────────────────────── */}
       <section className={`${styles.relatedSection} section`}>
         <div className="container">
@@ -505,6 +514,11 @@ export default function ConsorcioImobiliario() {
             <p className={styles.leadText} style={{ color: "#475569" }}>
               Informe seu objetivo e o valor estimado da carta de crédito. Nossa equipe em Itajubá preparará um estudo comparativo de grupos, prazos e lances para o seu projeto.
             </p>
+            <div style={{ marginTop: "1rem" }}>
+              <Link href="/simulador-consorcio" className={styles.simBtn} style={{ display: "inline-block", textAlign: "center", textDecoration: "none" }}>
+                Abrir Simulador de Consórcio em Etapas →
+              </Link>
+            </div>
 
             {simStep === 1 && (
               <div className={styles.simCard}>

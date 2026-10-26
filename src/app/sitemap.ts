@@ -54,6 +54,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { route: '/consorcios', priority: 0.9, changeFrequency: 'monthly', fallback: '2026-10-25T00:00:00.000Z' },
     { route: '/consorcio-imobiliario', priority: 0.9, changeFrequency: 'monthly', fallback: '2026-10-25T00:00:00.000Z' },
     { route: '/consorcio-de-veiculos', priority: 0.9, changeFrequency: 'monthly', fallback: '2026-10-25T00:00:00.000Z' },
+    { route: '/simulador-consorcio', priority: 0.8, changeFrequency: 'monthly', fallback: '2026-10-25T00:00:00.000Z' },
+    { route: '/comparador', priority: 0.8, changeFrequency: 'monthly', fallback: '2026-10-25T00:00:00.000Z' },
     { route: '/financiamento-veiculos', priority: 0.9, changeFrequency: 'monthly', fallback: '2026-10-21T00:00:00.000Z' },
     { route: '/credito-garantia-veiculo', priority: 0.9, changeFrequency: 'monthly', fallback: '2026-10-21T00:00:00.000Z' },
     { route: '/procred-360', priority: 0.9, changeFrequency: 'monthly', fallback: '2026-10-21T00:00:00.000Z' },
@@ -74,12 +76,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: p.priority,
   }));
 
-  const blogRoutes: MetadataRoute.Sitemap = blogPosts.map((post) => ({
-    url: `${baseUrl}/blog/${post.slug}`,
-    lastModified: parsePtBrDate(post.date),
-    changeFrequency: 'monthly',
-    priority: 0.7,
-  }));
+  const blogRoutes: MetadataRoute.Sitemap = blogPosts
+    .filter((post) => !post.draft)
+    .map((post) => ({
+      url: `${baseUrl}/blog/${post.slug}`,
+      lastModified: parsePtBrDate(post.date),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    }));
 
   return [...routes, ...blogRoutes];
 }

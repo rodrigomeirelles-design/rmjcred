@@ -288,9 +288,6 @@ export default function Consorcios() {
                 </div>
 
               </div>
-              <p className={styles.chartNote}>
-                Fonte: [PREENCHER fonte e data]. Taxa de administração convertida para valor anual equivalente.
-              </p>
             </div>
 
             {/* Texto ao lado */}
@@ -301,7 +298,6 @@ export default function Consorcios() {
                 <Image src="/assets/ademicon.svg" alt="Ademicon - Maior administradora independente do Brasil" width={220} height={45} />
               </div>
               <p>Venha realizar com a maior administradora independente do Brasil em créditos ativos. Não perca essa oportunidade!</p>
-              <p style={{ marginTop: "1rem" }}>Fonte: [PREENCHER fonte e data]. Taxa de administração convertida para valor anual equivalente.</p>
             </div>
           </div>
         </div>

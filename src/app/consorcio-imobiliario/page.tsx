@@ -415,9 +415,6 @@ export default function ConsorcioImobiliario() {
                   <div className={styles.categoryLabel}>Veículo</div>
                 </div>
               </div>
-              <p className={styles.chartNote}>
-                Fonte: [PREENCHER fonte e data]. Taxa de administração convertida para valor anual equivalente.
-              </p>
             </div>
 
             <div className={styles.chartText}>
@@ -428,9 +425,6 @@ export default function ConsorcioImobiliario() {
               </div>
               <p>
                 Estruture seu consórcio imobiliário com administradoras sólidas e fiscalizadas pelo Banco Central, contando com acompanhamento próximo da RMJ em Itajubá e em todo o Sul de Minas (raio de 200 km).
-              </p>
-              <p style={{ marginTop: "1rem" }}>
-                Fonte: [PREENCHER fonte e data]. Taxa de administração convertida para valor anual equivalente.
               </p>
             </div>
           </div>

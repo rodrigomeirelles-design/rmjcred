@@ -361,9 +361,6 @@ export default function ConsorcioDeVeiculos() {
                   <div className={styles.categoryLabel}>Veículo</div>
                 </div>
               </div>
-              <p className={styles.chartNote}>
-                Fonte: [PREENCHER fonte e data]. Taxa de administração convertida para valor anual equivalente.
-              </p>
             </div>
 
             <div className={styles.chartText}>
@@ -374,9 +371,6 @@ export default function ConsorcioDeVeiculos() {
               </div>
               <p>
                 Conte com a assessoria consultiva da RMJ Soluções de Crédito em Itajubá e em cidades num raio de 200 km no Sul de Minas para comparar grupos de veículos leves, motos, caminhões e maquinário agrícola.
-              </p>
-              <p style={{ marginTop: "1rem" }}>
-                Fonte: [PREENCHER fonte e data]. Taxa de administração convertida para valor anual equivalente.
               </p>
             </div>
           </div>

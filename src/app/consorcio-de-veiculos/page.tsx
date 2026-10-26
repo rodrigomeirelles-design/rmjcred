@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import styles from "../consorcios/page.module.css";
 import LeadForm from "@/components/LeadForm";
-import Testimonials from "@/components/Testimonials";
+
 import { useState } from "react";
 
 export default function ConsorcioDeVeiculos() {
@@ -420,7 +420,7 @@ export default function ConsorcioDeVeiculos() {
       </section>
 
       {/* ── 6.5. DEPOIMENTOS ─────────────────────────────────── */}
-      <Testimonials />
+
 
       {/* ── 7. LEIA TAMBÉM (BLOG) ─────────────────────────────── */}
       <section className={`${styles.relatedSection} section`}>

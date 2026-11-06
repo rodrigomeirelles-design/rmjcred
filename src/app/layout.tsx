@@ -18,9 +18,9 @@ export const metadata: Metadata = {
   description: "Com mais de 20 anos de experiência, a RMJ é o seu hub financeiro completo. Crédito BDMG, Financiamento Imobiliário, Home Equity, Veículos e Consórcios em Itajubá e região.",
   authors: [{ name: "RMJ Soluções de Crédito" }],
   icons: {
-    icon: "/assets/ea111fdf9358a37c013843e46181e048.png",
-    shortcut: "/assets/82a0558dcc302ec4d795b5e25bf80899.png",
-    apple: "/assets/48b891dd6e65f9c7e893c3fa2fcccf82.png",
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/favicon.ico",
   },
   openGraph: {
     title: "RMJ Soluções de Crédito | 20 Anos de Mercado",

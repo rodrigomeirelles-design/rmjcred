@@ -90,6 +90,11 @@ export default function Navbar() {
                     Consórcios
                   </Link>
                 </li>
+                <li>
+                  <Link href="/cartas-contempladas" className={styles.dropdownLink} onClick={() => setIsOpen(false)}>
+                    Cartas Contempladas
+                  </Link>
+                </li>
               </ul>
             </li>
             <li>

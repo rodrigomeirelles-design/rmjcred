@@ -67,6 +67,7 @@ export default function Footer() {
             <li><Link href="/pronampe" className={styles.link}>Fomento PRONAMPE</Link></li>
             <li><Link href="/procred-360" className={styles.link}>ProCred 360 (Microempresas)</Link></li>
             <li><Link href="/consorcios" className={styles.link}>Consórcios</Link></li>
+            <li><Link href="/cartas-contempladas" className={styles.link}>Cartas Contempladas</Link></li>
           </ul>
         </div>
 

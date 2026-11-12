@@ -5,6 +5,7 @@ export interface BlogPost {
   subtitle: string;
   description: string;
   date: string;
+  datePublished?: string;
   readTime: string;
   category: "Veículos" | "Capital de Giro BDMG" | "Crédito Imobiliário" | "Home Equity" | "Consórcios" | "B2B";
   image: string;
@@ -15,6 +16,121 @@ export interface BlogPost {
 }
 
 export const blogPosts: BlogPost[] = [
+  {
+    "slug": "black-friday-2026-operacao-caixa-capital-de-giro",
+    "title": "Black Friday 2026 no Varejo: Como Preparar a Operação, o Caixa e o Capital de Giro",
+    "seoTitle": "Black Friday 2026 no Varejo: Guia de Operação, Caixa e Capital de Giro | RMJ",
+    "subtitle": "A Black Friday 2026 acontece em 27 de novembro. Veja o roteiro prático para preparar a operação, calcular a necessidade de recursos e avaliar quando o crédito para reforçar o capital de giro pode ser considerado.",
+    "description": "Roteiro prático para preparar sua loja para a Black Friday 2026: ofertas, estoque, logística, projeção de fluxo de caixa e linhas de capital de giro BDMG.",
+    "date": "12 de Novembro de 2026",
+    "datePublished": "2026-11-12",
+    "readTime": "9 min de leitura",
+    "category": "Capital de Giro BDMG",
+    "image": "/assets/blog/blog_black_friday_2026.jpg",
+    "imageAlt": "Lojista planejando estoque, fluxo de caixa e capital de giro para a Black Friday 2026",
+    "seoKeywords": [
+      "Black Friday 2026 varejo",
+      "capital de giro Black Friday",
+      "planejamento financeiro Black Friday",
+      "estoque Black Friday",
+      "crédito BDMG capital de giro",
+      "fluxo de caixa varejo"
+    ],
+    "faq": [
+      {
+        "question": "Com quanta antecedência o varejo deve começar a se preparar?",
+        "answer": "A preparação comercial e de estoque costuma começar de 60 a 90 dias antes, porque envolve negociação com fornecedores e prazo de entrega. A projeção de caixa deve ser feita no mesmo momento, já que ela define o volume de compra que a empresa consegue sustentar."
+      },
+      {
+        "question": "Como calcular a necessidade de capital de giro para a Black Friday?",
+        "answer": "Monte uma projeção semanal com todas as saídas previstas, incluindo compra de estoque, despesas operacionais extras e mídia, e todas as entradas previstas por meio de pagamento, respeitando o prazo de recebimento de cada modalidade. O maior saldo negativo acumulado indica a necessidade de capital de giro do período."
+      },
+      {
+        "question": "Quais empresas podem consultar as linhas de crédito do BDMG?",
+        "answer": "As linhas para micro e pequenas empresas são destinadas a negócios localizados em Minas Gerais, com faturamento bruto anual dentro dos limites de cada produto. Os critérios de enquadramento variam por linha e incluem tempo de existência da empresa, setor de atuação e situação cadastral."
+      },
+      {
+        "question": "Qual a diferença entre capital de giro e crédito para investimento?",
+        "answer": "Capital de giro cobre necessidades do ciclo operacional, como compra de estoque, pagamento de fornecedores e despesas correntes. Crédito com finalidade de investimento se destina à aquisição de máquinas, equipamentos, reforma ou ampliação da estrutura, com prazos normalmente mais longos."
+      },
+      {
+        "question": "É possível simular sem ser cliente do banco?",
+        "answer": "A simulação é feita pelo BDMG Digital e não exige conta no banco, já que o BDMG não trabalha com correntistas. O atendimento também pode ser feito por um correspondente bancário, sem custo adicional."
+      }
+    ],
+    "content": [
+      "A **Black Friday 2026** acontece em **27 de novembro**. Para o varejo, a preparação deve começar antes: definição das ofertas, negociação com fornecedores, dimensionamento do estoque, testes no site, organização da logística e projeção do caixa.",
+      "Essas decisões estão conectadas. O volume comprado influencia o desembolso; os meios de pagamento definem quando o dinheiro entra; e a estrutura adicional das campanhas promocionais concentram os principais impactos nas despesas no período.",
+      "Neste guia, você encontra um roteiro prático para preparar a operação, calcular a necessidade de recursos e avaliar quando o crédito para reforçar o capital de giro pode ser considerado.",
+      "## Por que a Black Friday é importante para o varejo",
+      "A data se firmou no calendário brasileiro como abertura da temporada de compras de fim de ano. Para o varejo, ela funciona como concentrador de demanda: consumidores que adiaram compras ao longo do ano usam o período para decidir, e negócios de todos os portes disputam essa atenção ao mesmo tempo.",
+      "O impacto vai além do volume de vendas do próprio dia. A Black Friday permite girar estoque parado antes da virada do ano, abrir espaço para as coleções de dezembro, atrair consumidores que ainda não conheciam a loja e gerar uma base de dados de comportamento de compra que orienta decisões nos meses seguintes.",
+      "Um cliente conquistado nesta data com boa experiência de entrega e atendimento tende a voltar no Natal, quando a margem costuma ser mais confortável.",
+      "A decisão de participar deve considerar concorrência, capacidade operacional, margem e disponibilidade de caixa.",
+      "## O que mudou no comportamento de compra da Black Friday",
+      "As tendências recentes mudam a forma como o varejista precisa se preparar, porque afetam diretamente estoque, prazo e custo operacional. Vale observar quatro movimentos consolidados:",
+      "- **Extensão do período:** A data começou como um evento de 24 horas e hoje muitos varejos operam campanhas de uma semana ou do mês inteiro. Isso alonga o tempo em que a empresa fica com estoque comprado e ainda não convertido em caixa, e aumenta a necessidade de recursos de giro no período.\\n- **Força do digital e do mobile:** A maior parte das buscas e boa parte da conversão acontece pelo celular, o que exige site estável, checkout simples e capacidade de suportar picos de acesso.\\n- **Integração entre canais:** Com retirada em loja e vitrines virtuais reduzindo a fronteira entre físico e online, exigindo estoque unificado e informação confiável de disponibilidade.\\n- **Diversificação dos meios de pagamento:** Carteiras digitais, parcelamento e pagamentos instantâneos convivem no mesmo carrinho, e cada modalidade tem um prazo de recebimento diferente.",
+      "Um varejo que vende bem no crédito parcelado registra a venda em novembro e recebe o valor ao longo dos meses seguintes, enquanto o fornecedor já foi pago. Esse descompasso é o ponto em que o planejamento comercial encosta no planejamento financeiro.",
+      "## Como preparar a operação para a Black Friday",
+      "A preparação operacional funciona melhor quando é tratada como sequência de decisões, e não como uma lista de tarefas soltas. Cada etapa abaixo define números que serão usados na etapa seguinte, até chegar à necessidade de recursos.",
+      "### Defina o objetivo e escolha as ofertas",
+      "O primeiro passo é decidir o que a campanha precisa entregar: aumento de faturamento, liquidação de estoque antigo, conquista de novos clientes ou defesa de participação de mercado. Objetivos diferentes levam a ofertas diferentes. Liquidar estoque parado admite desconto agressivo em itens específicos, enquanto conquistar clientes novos costuma pedir produtos de entrada com boa percepção de valor.",
+      "Definido o objetivo, monte a lista de itens em promoção com a margem de cada um calculada. Descontos aplicados de forma linear sobre o catálogo inteiro costumam impactar negativamente o resultado geral. É fundamental conhecer os limites de cada oferta e seu impacto sobre o conjunto da ação promocional.",
+      "Uma preparação antecipada ajuda a reduzir riscos operacionais e financeiros durante a campanha.",
+      "### Dimensione o estoque e negocie com fornecedores",
+      "O erro mais caro da data acontece nos extremos. Estoque insuficiente frustra o cliente no momento de maior disposição de compra e transfere a venda para o concorrente. Estoque excessivo trava recursos e leva a descontos maiores em janeiro, quando a demanda cai.",
+      "O dimensionamento deve partir do histórico da própria empresa, considerando as vendas do mesmo período em anos anteriores, o crescimento recente e o comportamento dos itens que serão promovidos.",
+      "Com o número definido, a negociação com fornecedores ganha peso: prazo de pagamento, volume mínimo e data de entrega influenciam tanto o custo do produto quanto o momento em que o dinheiro sai do caixa. Prazos mais longos de fornecedor reduzem a necessidade de recursos próprios no período e permitem vender com prazos maiores aos clientes, reforçando o apelo da sua oferta.",
+      "### Prepare a estrutura digital e o atendimento",
+      "A loja online precisa suportar picos de acesso sem lentidão ou queda. Vale testar a hospedagem com carga simulada, revisar o fluxo de checkout, verificar a integração com meios de pagamento e conferir se as informações de estoque estão atualizadas em todos os canais.",
+      "Falhas nesse ponto geram perda direta de venda em um período em que o consumidor tem alternativas a um clique de distância.",
+      "O atendimento acompanha o mesmo raciocínio. Volume maior de pedidos gera volume maior de dúvidas, trocas e reclamações. Reforço temporário de equipe, respostas prontas para as perguntas mais frequentes e uma política clara de troca reduzem o desgaste e protegem a reputação da loja.",
+      "Essa estrutura extra representa despesa concentrada no mês, e precisa entrar na conta.",
+      "### Cuidados com o Consumidor",
+      "- Preços e descontos devem ser informados com total clareza.\\n- A oferta anunciada e o prazo de entrega devem ser cumpridos rigorosamente.\\n- Garanta que sua política de trocas e o direito de arrependimento (nas compras online) estejam acessíveis.\\n- Evite qualquer prática que possa ser interpretada como maquiagem de preço.",
+      "### Organize logística, entrega e pós-venda",
+      "O descumprimento do prazo de entrega é o principal motivo de insatisfação após a data. Antes da campanha, confirme a capacidade das transportadoras, defina prazos realistas na página do produto e prepare o espaço físico para separação e expedição de um volume maior de pedidos.",
+      "O pós-venda define se a Black Friday gerou apenas uma transação ou um cliente recorrente. Confirmação de pedido, rastreio disponível, resolução rápida de trocas e uma comunicação de continuidade nas semanas seguintes aumentam a chance de recompra no Natal. Esse retorno é o que dilui o custo do desconto aplicado em novembro.",
+      "## Planejamento financeiro para a Black Friday",
+      "A parte financeira costuma ser a menos discutida e a que mais determina o resultado. Uma campanha com vendas relevantes pode pressionar o caixa se pagamentos e recebimentos ocorrerem em datas diferentes.",
+      "### O intervalo entre pagar o fornecedor e receber do cliente",
+      "A operação de Black Friday inverte temporariamente o ciclo financeiro do varejo. A compra de estoque acontece semanas antes, geralmente em setembro ou outubro.",
+      "As despesas extras de equipe, embalagem, frete e mídia se concentram em novembro. O recebimento, quando parte relevante das vendas ocorre no crédito parcelado, se distribui por dezembro, janeiro e meses seguintes.",
+      "Esse intervalo precisa ser calculado, e não estimado por percepção. O varejista deve montar uma projeção semana a semana com as saídas previstas, as entradas previstas por meio de pagamento e o saldo acumulado.",
+      "O ponto em que o saldo fica negativo é a necessidade real de capital de giro do período, e é esse número que orienta qualquer decisão sobre recursos externos.",
+      "### Margem, desconto e ponto de equilíbrio",
+      "Todo desconto precisa ser testado contra a margem do produto. Um item com margem de 30% que recebe 20% de desconto passa a operar com margem próxima de 10%, e exige um volume muito maior para gerar o mesmo resultado financeiro. Fazer essa conta por item, antes da campanha, evita a situação em que o faturamento cresce e o lucro encolhe.",
+      "Vale incluir na conta os custos que aparecem apenas nesse período: frete promocional, taxas de meio de pagamento, mídia paga, embalagem, horas extras e a provisão para devoluções. Com esses valores somados, o varejista chega ao ponto de equilíbrio da campanha e consegue definir até onde o desconto pode ir sem comprometer o caixa de dezembro.",
+      "### Reserva para o que sai do previsto",
+      "Uma parte do planejamento deve ficar reservada para o imprevisto: reposição de um item que vendeu acima do esperado, custo de frete acima do orçado, prorrogação da campanha para acompanhar a concorrência. Trabalhar com o caixa no limite exato da projeção retira do varejista a capacidade de reagir dentro da própria data, que é justamente quando a reação vale mais.",
+      "## Capital de giro e crédito para a preparação da Black Friday",
+      "Quando a projeção mostra que a necessidade de recursos antecede o recebimento das vendas, o varejista tem basicamente três caminhos: reduzir a ambição da campanha, alongar prazos com fornecedores ou buscar uma linha de crédito com finalidade de capital de giro. Os três podem ser combinados.",
+      "### Quando o crédito faz sentido nessa preparação",
+      "O crédito com finalidade de capital de giro é aplicável quando existe uma necessidade delimitada, com valor calculado e prazo de retorno visível. Na preparação para a Black Friday, as finalidades mais comuns são compra e reposição de estoque, reforço temporário da operação, cobertura de despesas concentradas do período e organização do fluxo de caixa entre a saída da compra e a entrada do recebimento.",
+      "A decisão fica mais consistente quando o varejista já tem em mãos o valor da necessidade, o mês em que ela ocorre e a projeção de quando o caixa volta a ficar positivo. Sem esses três números, qualquer contratação vira estimativa. Com eles, é possível avaliar valor, prazo e carência de forma objetiva.",
+      "### Linhas de crédito do BDMG com finalidade de capital de giro",
+      "**Crédito para preparar a operação:** Se a sua projeção financeira indicar necessidade de recursos antes do recebimento das vendas, a empresa pode consultar soluções de capital de giro do BDMG para compra de mercadorias, insumos ou organização do fluxo de caixa. [Faça uma simulação](https://rmjcred.com.br/credito-bdmg#simular) e conheça as condições aplicáveis ao seu CNPJ. Crédito sujeito à análise, disponibilidade da linha, documentação e enquadramento.",
+      "A simulação e a solicitação podem ser iniciadas pelo BDMG Digital nas linhas elegíveis. Também há atendimento por correspondentes bancários, conforme disponibilidade.",
+      "### O que observar antes de consultar uma linha",
+      "Antes da simulação, vale reunir as informações que definem o enquadramento: faturamento bruto anual da empresa, tempo de existência do CNPJ, município de operação, CNAE principal e situação cadastral dos sócios. Esses dados determinam quais linhas estão disponíveis para o negócio.",
+      "Na comparação entre opções, quatro pontos merecem atenção. A taxa e o Custo Efetivo Total mostram o custo real da operação, incluindo tarifas e encargos. O prazo define o tamanho da parcela. A carência define quando a primeira parcela vence, o que importa em uma operação de Black Friday, já que o recebimento das vendas parceladas ocorre nos meses seguintes. O limite da linha precisa ser confrontado com a necessidade calculada na projeção de caixa.",
+      "## Principais desafios da Black Friday e como reduzir riscos",
+      "Os obstáculos da data são previsíveis, o que permite tratá-los antes. O desequilíbrio de estoque, a instabilidade do site em horários de pico e o atraso na entrega respondem pela maior parte das perdas registradas pelo varejo no período, e todos os três dependem de decisões tomadas com semanas de antecedência.",
+      "A diferenciação em meio a um volume enorme de ofertas é outro desafio recorrente. Em um cenário em que praticamente todos os concorrentes anunciam desconto, condições de entrega, política de troca e clareza de comunicação pesam tanto quanto o percentual anunciado. Combos, brindes e frete diferenciado costumam sustentar margem melhor do que a redução direta de preço.",
+      "Há ainda o risco de expectativa mal calibrada. Metas construídas sobre o melhor cenário possível levam a compras de estoque acima da demanda real e a comprometimento de caixa desnecessário. Trabalhar com três cenários — conservador, provável e otimista — e dimensionar o estoque e os recursos pelo cenário provável, reduz a exposição sem abrir mão do resultado.",
+      "## Perguntas frequentes sobre preparação para a Black Friday",
+      "**Com quanta antecedência o varejo deve começar a se preparar?**\\nA preparação comercial e de estoque costuma começar de 60 a 90 dias antes, porque envolve negociação com fornecedores e prazo de entrega. A projeção de caixa deve ser feita no mesmo momento, já que ela define o volume de compra que a empresa consegue sustentar.",
+      "**Como calcular a necessidade de capital de giro para a Black Friday?**\\nMonte uma projeção semanal com todas as saídas previstas, incluindo compra de estoque, despesas operacionais extras e mídia, e todas as entradas previstas por meio de pagamento, respeitando o prazo de recebimento de cada modalidade. O maior saldo negativo acumulado indica a necessidade de capital de giro do período.",
+      "**Quais empresas podem consultar as linhas de crédito do BDMG?**\\nAs linhas para micro e pequenas empresas são destinadas a negócios localizados em Minas Gerais, com faturamento bruto anual dentro dos limites de cada produto. Os critérios de enquadramento variam por linha e incluem tempo de existência da empresa, setor de atuação e situação cadastral.",
+      "**Qual a diferença entre capital de giro e crédito para investimento?**\\nCapital de giro cobre necessidades do ciclo operacional, como compra de estoque, pagamento de fornecedores e despesas correntes. Crédito com finalidade de investimento se destina à aquisição de máquinas, equipamentos, reforma ou ampliação da estrutura, com prazos normalmente mais longos.",
+      "**É possível simular sem ser cliente do banco?**\\nA simulação é feita pelo BDMG Digital e não exige conta no banco, já que o BDMG não trabalha com correntistas. O atendimento também pode ser feito por um correspondente bancário, sem custo adicional.",
+      "## Prepare o caixa junto com a campanha",
+      "A Black Friday recompensa quem chega preparado nas duas frentes. A campanha define quanto a empresa pode vender, e o caixa define quanto ela consegue sustentar. Varejistas que fazem projeção financeira com a mesma atenção que dedicam ao mix de ofertas chegam a dezembro com estoque girado e operação em ordem.",
+      "Precisa de recursos para preparar sua empresa para a Black Friday? Consulte as condições das linhas de crédito do BDMG e verifique as opções disponíveis para sua empresa. [Faça uma simulação](https://rmjcred.com.br/credito-bdmg#simular).",
+      "*Produto sujeito à análise de crédito, enquadramento, disponibilidade de recursos, apresentação de documentação e vigência do produto ou programa. Taxas, prazos, carências e limites variam conforme a linha contratada e as condições vigentes na data da simulação.*"
+    ]
+  },
+
   {
     "slug": "emprestimo-cpf-ou-cnpj",
     "title": "Empréstimo no CPF ou no CNPJ? Qual é o melhor para sua empresa",

@@ -110,7 +110,7 @@ export default async function BlogPostPage({ params }: PageProps) {
     "headline": post.title,
     "description": post.description,
     "image": `https://rmjcred.com.br${post.image}`,
-    "datePublished": post.slug === "emprestimo-cpf-ou-cnpj" ? "2026-10-19" : (post.slug === "capital-de-giro-bdmg-itajuba" || post.slug === "home-equity-itajuba-minas-gerais" || post.slug === "home-equity-unificar-dividas" || post.slug === "financiamento-imovel-itajuba" || post.slug === "programa-contador-parceiro-rmj" ? "2026-06-11" : "2026-06-02"),
+    "datePublished": post.datePublished || (post.slug === "emprestimo-cpf-ou-cnpj" ? "2026-10-19" : (post.slug === "capital-de-giro-bdmg-itajuba" || post.slug === "home-equity-itajuba-minas-gerais" || post.slug === "home-equity-unificar-dividas" || post.slug === "financiamento-imovel-itajuba" || post.slug === "programa-contador-parceiro-rmj" ? "2026-06-11" : "2026-06-02")),
     "author": {
       "@type": "Organization",
       "name": "RMJ Soluções de Crédito",

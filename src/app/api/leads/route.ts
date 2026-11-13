@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { appendProposta, appendPropostaImovel } from "@/lib/sheets";
+import { appendProposta, appendPropostaImovel, getPropostas } from "@/lib/sheets";
 import { Proposta } from "@/types";
 import { PropostaImovel } from "@/types/imovel";
 import { randomUUID } from "crypto";
@@ -21,7 +21,6 @@ export async function POST(req: NextRequest) {
       const p_valor = body.valorFinanciamento || body.valor_solicitado || 0;
 
       if (isVeiculo) {
-        // We import appendPropostaVeiculo from sheets
         const { appendPropostaVeiculo } = await import("@/lib/sheets");
         await appendPropostaVeiculo({
           id_proposta: id,
@@ -87,6 +86,21 @@ export async function POST(req: NextRequest) {
       };
       await appendProposta(resumo);
     } else {
+      const cnpjDigits = (body.emp_cnpj || "").replace(/\D/g, "");
+
+      // If linked or existing company, borrow existing address & bank info if available
+      let existing: Proposta | undefined;
+      if (body.vinculada || body.empresaIdVinculada || cnpjDigits) {
+        try {
+          const propostas = await getPropostas();
+          existing = propostas.find(
+            (p) => p.emp_cnpj && p.emp_cnpj.replace(/\D/g, "") === cnpjDigits
+          );
+        } catch {
+          // ignore lookup error and proceed
+        }
+      }
+
       const pj: Proposta = {
         id_proposta: id,
         timestamp_envio: timestamp,
@@ -94,19 +108,32 @@ export async function POST(req: NextRequest) {
         tipo_pessoa: "PJ",
         coluna_kanban: "novo_negocio",
         status_repasse: "pendente",
-        emp_razao: body.emp_razao || "",
-        emp_cnpj: (body.emp_cnpj || "").replace(/\D/g, ""),
-        emp_repr_nome: body.emp_repr_nome || "",
-        emp_repr_cpf: (body.emp_repr_cpf || "").replace(/\D/g, ""),
-        emp_email: body.emp_email || "",
-        emp_telefone: body.emp_telefone || "",
-        emp_cep: "", emp_logradouro: "", emp_numero: "",
-        emp_bairro: "", emp_cidade: "", emp_uf: "",
-        emp_imovel: "nao", emp_funcionarios: 0,
-        banco_nome: "", banco_numero: "", banco_agencia: "",
-        banco_conta: "", banco_digito: "",
+        emp_razao: body.emp_razao || existing?.emp_razao || "",
+        emp_cnpj: cnpjDigits,
+        emp_fantasia: body.emp_fantasia || existing?.emp_fantasia || "",
+        emp_repr_nome: body.emp_repr_nome || existing?.emp_repr_nome || "",
+        emp_repr_cpf: (body.emp_repr_cpf || existing?.emp_repr_cpf || "").replace(/\D/g, ""),
+        emp_email: body.emp_email || existing?.emp_email || "",
+        emp_telefone: body.emp_telefone || existing?.emp_telefone || "",
+        emp_cep: body.emp_cep || existing?.emp_cep || "",
+        emp_logradouro: body.emp_logradouro || existing?.emp_logradouro || "",
+        emp_numero: body.emp_numero || existing?.emp_numero || "",
+        emp_complemento: body.emp_complemento || existing?.emp_complemento || "",
+        emp_bairro: body.emp_bairro || existing?.emp_bairro || "",
+        emp_cidade: body.emp_cidade || existing?.emp_cidade || "",
+        emp_uf: body.emp_uf || existing?.emp_uf || "",
+        emp_imovel: body.emp_imovel || existing?.emp_imovel || "nao",
+        emp_imovel_tipo: body.emp_imovel_tipo || existing?.emp_imovel_tipo,
+        emp_imovel_valor: body.emp_imovel_valor || existing?.emp_imovel_valor,
+        emp_funcionarios: body.emp_funcionarios || existing?.emp_funcionarios || 0,
+        banco_nome: body.banco_nome || existing?.banco_nome || "",
+        banco_numero: body.banco_numero || existing?.banco_numero || "",
+        banco_agencia: body.banco_agencia || existing?.banco_agencia || "",
+        banco_conta: body.banco_conta || existing?.banco_conta || "",
+        banco_digito: body.banco_digito || existing?.banco_digito || "",
         valor_solicitado: body.valor_solicitado || undefined,
-        socios: [],
+        socios: body.socios && body.socios.length > 0 ? body.socios : (existing?.socios || []),
+        obs_finais: body.obs_finais,
       };
       await appendProposta(pj);
     }

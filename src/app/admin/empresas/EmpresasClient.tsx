@@ -4,8 +4,9 @@ import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Proposta, KANBAN_COLUMNS, type KanbanColumn, COMISSAO_PERCENTUAL } from "@/types";
 import { formatMoney, formatDate, formatCNPJ, addDays } from "@/lib/utils";
+import NovoLeadModal, { InitialLeadData } from "@/components/admin/NovoLeadModal";
 import {
-  Building2, Search, X, Printer, Loader2,
+  Building2, Search, X, Printer, Loader2, Plus,
   CheckCircle2, Clock, ArrowLeftRight, Eye, Pencil, Trash2,
 } from "lucide-react";
 
@@ -338,13 +339,42 @@ const FASE_COLOR: Record<KanbanColumn, string> = {
   leads_perdidos:   "bg-zinc-100 text-zinc-500",
 };
 
-function EmpresaDrawer({ proposta, saving, onClose, onMove, onPrint }: {
+function EmpresaDrawer({
+  proposta,
+  allPropostas,
+  saving,
+  onClose,
+  onMove,
+  onPrint,
+  onNovaProposta,
+}: {
   proposta: Proposta;
+  allPropostas: Proposta[];
   saving: boolean;
   onClose: () => void;
   onMove: (id: string, to: KanbanColumn) => void;
   onPrint: () => void;
+  onNovaProposta: (p: Proposta) => void;
 }) {
+  const historicoPropostas = useMemo(() => {
+    const cnpjClean = proposta.emp_cnpj ? proposta.emp_cnpj.replace(/\D/g, "") : "";
+    return allPropostas
+      .filter((p) => {
+        if (cnpjClean && p.emp_cnpj) {
+          return p.emp_cnpj.replace(/\D/g, "") === cnpjClean;
+        }
+        return (
+          p.emp_razao &&
+          proposta.emp_razao &&
+          p.emp_razao.toLowerCase() === proposta.emp_razao.toLowerCase()
+        );
+      })
+      .sort(
+        (a, b) =>
+          new Date(b.timestamp_envio || 0).getTime() -
+          new Date(a.timestamp_envio || 0).getTime()
+      );
+  }, [proposta, allPropostas]);
   return (
     <div className="fixed inset-0 z-40 flex justify-end print:hidden">
       <div className="absolute inset-0 bg-black/30" onClick={onClose} />
@@ -357,6 +387,13 @@ function EmpresaDrawer({ proposta, saving, onClose, onMove, onPrint }: {
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
             {saving && <Loader2 className="w-4 h-4 animate-spin text-[var(--color-text-muted)]" />}
+            <button
+              onClick={() => onNovaProposta(proposta)}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-semibold hover:bg-emerald-700 transition-colors shadow-sm"
+              title="Criar nova proposta vinculada a esta empresa"
+            >
+              <Plus className="w-3.5 h-3.5" /> + Nova Proposta
+            </button>
             <button
               onClick={onPrint}
               className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--color-brand-primary)] text-white rounded-lg text-xs font-semibold hover:bg-[var(--color-brand-primary-dark)] transition-colors"
@@ -507,6 +544,72 @@ function EmpresaDrawer({ proposta, saving, onClose, onMove, onPrint }: {
               </div>
             )}
           </DrawerSection>
+
+          {/* Histórico de Propostas (Mudança 2 e 3) */}
+          <div className="border border-[var(--color-border)] rounded-xl overflow-hidden bg-[var(--color-surface)] shadow-sm">
+            <div className="bg-[var(--color-surface-subtle)] px-4 py-3 flex items-center justify-between border-b border-[var(--color-border)]">
+              <div>
+                <h3 className="text-xs font-bold text-[var(--color-text)] uppercase tracking-wider flex items-center gap-1.5">
+                  Histórico de Propostas
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 border border-blue-200">
+                    {historicoPropostas.length}
+                  </span>
+                </h3>
+                <p className="text-[11px] text-[var(--color-text-muted)]">
+                  Operações vinculadas a esta empresa
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => onNovaProposta(proposta)}
+                className="flex items-center gap-1 px-2.5 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-semibold hover:bg-emerald-700 transition-colors shadow-sm"
+              >
+                <Plus className="w-3.5 h-3.5" /> + Nova Proposta
+              </button>
+            </div>
+            <div className="divide-y divide-[var(--color-border)]">
+              {historicoPropostas.map((item) => {
+                const corFase = FASE_COLOR[item.coluna_kanban] ?? "bg-slate-100 text-slate-600";
+                const kLabel = KANBAN_LABEL[item.coluna_kanban] || item.coluna_kanban;
+                const isCurrent = item.id_proposta === proposta.id_proposta;
+                return (
+                  <div
+                    key={item.id_proposta}
+                    className={`p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 ${isCurrent ? "bg-blue-50/40" : "hover:bg-[var(--color-surface-subtle)]"} transition-colors`}
+                  >
+                    <div className="min-w-0 space-y-1">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-xs font-semibold text-[var(--color-text)]">
+                          {item.produto || "Capital de Giro BDMG"}
+                        </span>
+                        <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${corFase}`}>
+                          {kLabel}
+                        </span>
+                        {isCurrent && (
+                          <span className="text-[9px] font-medium px-1.5 py-0.2 rounded bg-slate-200 text-slate-700">
+                            Selecionada
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-3 text-xs text-[var(--color-text-muted)]">
+                        <span>Data: <strong>{formatDate(item.timestamp_envio?.split("T")[0] || "")}</strong></span>
+                        <span>•</span>
+                        <span>Valor: <strong className="text-emerald-700">{item.valor_solicitado ? formatMoney(item.valor_solicitado) : "—"}</strong></span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 self-end sm:self-center flex-shrink-0">
+                      <a
+                        href={`/admin/propostas?id=${item.id_proposta}`}
+                        className="text-xs font-semibold text-[var(--color-brand-primary)] hover:underline flex items-center gap-1 px-2.5 py-1 rounded-md hover:bg-blue-50 transition-colors"
+                      >
+                        Ver proposta →
+                      </a>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -564,6 +667,27 @@ export default function EmpresasClient({ initialPropostas }: Props) {
   const [pendingNaoAprovada, setPendingNaoAprovada] = useState<{ id: string } | null>(null);
   const [deleting, setDeleting] = useState<Proposta | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [leadModalData, setLeadModalData] = useState<{
+    open: boolean;
+    initialData?: InitialLeadData;
+  }>({ open: false });
+
+  function handleNovaProposta(p: Proposta) {
+    setSelected(null);
+    setLeadModalData({
+      open: true,
+      initialData: {
+        tipo: "PJ",
+        empRazao: p.emp_razao,
+        empCnpj: p.emp_cnpj,
+        reprNome: p.emp_repr_nome,
+        reprCpf: p.emp_repr_cpf,
+        empEmail: p.emp_email,
+        empTelefone: p.emp_telefone,
+        empresaIdVinculada: p.id_proposta || p.emp_cnpj,
+      },
+    });
+  }
 
   function handlePrint() {
     const fichaEl = document.querySelector(".ficha-cadastro");
@@ -777,10 +901,12 @@ export default function EmpresasClient({ initialPropostas }: Props) {
       {selectedCurrent && (
         <EmpresaDrawer
           proposta={selectedCurrent}
+          allPropostas={propostas}
           saving={saving}
           onClose={() => setSelected(null)}
           onMove={handleMove}
           onPrint={handlePrint}
+          onNovaProposta={handleNovaProposta}
         />
       )}
 
@@ -800,6 +926,26 @@ export default function EmpresasClient({ initialPropostas }: Props) {
           deleting={isDeleting}
           onConfirm={() => handleDelete(deleting.id_proposta)}
           onClose={() => setDeleting(null)}
+        />
+      )}
+
+      {leadModalData.open && (
+        <NovoLeadModal
+          initialData={leadModalData.initialData}
+          onClose={() => setLeadModalData({ open: false })}
+          onSuccess={async () => {
+            setLeadModalData({ open: false });
+            try {
+              const res = await fetch("/api/propostas");
+              const json = await res.json();
+              if (json.success && Array.isArray(json.data)) {
+                setPropostas(json.data);
+              }
+            } catch (err) {
+              console.error(err);
+            }
+            router.refresh();
+          }}
         />
       )}
     </>

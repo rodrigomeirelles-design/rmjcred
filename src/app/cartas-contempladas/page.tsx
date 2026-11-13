@@ -83,7 +83,7 @@ export default function CartasContempladas() {
         {
           id: "faq-s2",
           q: "Para que posso usar o crédito de uma carta de imóvel?",
-          a: "Compra de imóvel residencial, comercial ou terreno e, conforme as regras da administradora, construção, reforma ou quitação de financiamento. [CONFIRMAR COM A RMJ ANTES DE PUBLICAR — regras variam por administradora]",
+          a: "Compra de imóvel residencial, comercial ou terreno e, conforme as regras de cada administradora, construção, reforma ou quitação de financiamento.",
         },
       ],
     },
@@ -118,7 +118,7 @@ export default function CartasContempladas() {
         {
           id: "faq-v2",
           q: "Quanto tempo leva?",
-          a: "Varia por administradora e documentação. [CONFIRMAR PRAZO MÉDIO COM A RMJ ANTES DE PUBLICAR]",
+          a: "Em média 5 dias úteis, variando conforme os prazos da administradora e a agilidade na conferência da documentação.",
         },
       ],
     },

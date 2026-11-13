@@ -102,7 +102,7 @@ export default function NovoLeadModal({ onClose, onSuccess, initialData }: Props
 
     setSearching(true);
     try {
-      const res = await fetch(`/api/empresas?cnpj=${clean}`);
+      const res = await fetch(`/api/propostas?cnpj=${clean}`);
       const json = await res.json();
       if (json.success && json.data) {
         setEmpresaExistente(json.data);
@@ -123,7 +123,7 @@ export default function NovoLeadModal({ onClose, onSuccess, initialData }: Props
 
     setSearching(true);
     try {
-      const res = await fetch(`/api/empresas?cpf=${clean}`);
+      const res = await fetch(`/api/propostas?cpf=${clean}`);
       const json = await res.json();
       if (json.success && json.data) {
         setEmpresaExistente(json.data);

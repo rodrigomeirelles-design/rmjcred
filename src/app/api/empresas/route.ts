@@ -3,12 +3,66 @@ import { cookies } from "next/headers";
 import db from "@/lib/db";
 import { syncGoogleSheetsToCrm } from "@/lib/crmSync";
 
-export async function GET() {
+export async function GET(request: Request) {
   const cookieStore = await cookies();
   if (!cookieStore.get("rmj_admin_session")) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   try {
+    const { searchParams } = new URL(request.url);
+    const cnpjParam = searchParams.get("cnpj");
+    const cpfParam = searchParams.get("cpf");
+
+    // Lookup por CNPJ ou CPF específico
+    if (cnpjParam || cpfParam) {
+      const cleanParam = (cnpjParam || cpfParam)!.replace(/\D/g, "");
+      if (cleanParam.length >= 8) {
+        const empresa = db.prepare(`
+          SELECT e.*,
+            (SELECT o.coluna_kanban FROM oportunidades o WHERE o.empresa_id = e.id ORDER BY o.created_at DESC, o.id DESC LIMIT 1) as ultima_etapa,
+            (SELECT o.canal FROM oportunidades o WHERE o.empresa_id = e.id ORDER BY o.created_at DESC, o.id DESC LIMIT 1) as ultimo_canal
+          FROM empresas e
+          WHERE REPLACE(REPLACE(REPLACE(REPLACE(e.cnpj, '.', ''), '-', ''), '/', ''), ' ', '') = ?
+             OR e.cnpj LIKE ?
+             OR e.proposta_json LIKE ?
+          LIMIT 1
+        `).get(cleanParam, `%${cleanParam}%`, `%${cleanParam}%`) as any;
+
+        if (empresa) {
+          const contatos = db.prepare("SELECT * FROM contatos WHERE empresa_id = ?").all(empresa.id) as any[];
+          let ficha: any = {};
+          try {
+            if (empresa.proposta_json) ficha = JSON.parse(empresa.proposta_json);
+          } catch {}
+
+          const representante = contatos[0]?.nome || ficha.emp_repr_nome || "";
+          const cpfRepresentante = ficha.emp_repr_cpf || "";
+          const telefone = contatos[0]?.whatsapp || ficha.emp_telefone || "";
+          const email = ficha.emp_email || "";
+
+          return NextResponse.json({
+            found: true,
+            empresa: {
+              id: empresa.id,
+              razaoSocial: empresa.razao_social,
+              razao_social: empresa.razao_social,
+              cnpj: empresa.cnpj,
+              faturamento: empresa.faturamento,
+              ultima_etapa: empresa.ultima_etapa || null,
+              ultimo_canal: empresa.ultimo_canal || null,
+              representante,
+              cpfRepresentante,
+              telefone,
+              email,
+              contatos
+            }
+          });
+        }
+
+        return NextResponse.json({ found: false, empresa: null });
+      }
+    }
+
     // Sincroniza dados da planilha do Google em background/realtime
     await syncGoogleSheetsToCrm();
 

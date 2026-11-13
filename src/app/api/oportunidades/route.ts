@@ -21,11 +21,17 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const { empresa_id, valor_solicitado, comissao_esperada } = await request.json();
+    const { empresa_id, valor_solicitado, comissao_esperada, canal } = await request.json();
 
-    if (!empresa_id || valor_solicitado === undefined || comissao_esperada === undefined) {
+    if (!empresa_id || valor_solicitado === undefined) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
+
+    const valSolicitado = parseFloat(valor_solicitado);
+    const comissao = comissao_esperada !== undefined && comissao_esperada !== null && comissao_esperada !== ""
+      ? parseFloat(comissao_esperada)
+      : valSolicitado * 0.04;
+    const canalNome = canal || "Capital de Giro BDMG";
 
     const defaultChecklist = JSON.stringify([
       { item: "Imóvel", validado: false },
@@ -44,11 +50,12 @@ export async function POST(request: Request) {
         status_repasse, 
         coluna_kanban, 
         checklist_garantias,
+        canal,
         created_at,
         updated_at
       )
-      VALUES (?, ?, NULL, ?, 'pendente', 'prospect', ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-    `).run(empresa_id, valor_solicitado, comissao_esperada, defaultChecklist);
+      VALUES (?, ?, NULL, ?, 'pendente', 'prospect', ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+    `).run(empresa_id, valSolicitado, comissao, defaultChecklist, canalNome);
 
     return NextResponse.json({ id: result.lastInsertRowid, message: "Oportunidade criada com sucesso" });
   } catch (error: any) {

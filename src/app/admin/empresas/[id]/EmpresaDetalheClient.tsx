@@ -3,12 +3,31 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Toaster, toast } from "sonner";
-import { ArrowLeft, Building2, UserPlus, PhoneCall, Calendar, ShieldAlert } from "lucide-react";
+import { ArrowLeft, Building2, UserPlus, PhoneCall, Calendar, ShieldAlert, Plus, ExternalLink } from "lucide-react";
+import FormNovaOportunidade from "@/components/crm/FormNovaOportunidade";
 import "../../crm.css";
 
 interface DetailProps {
   id: string;
 }
+
+const PIPELINE_LABELS: Record<string, string> = {
+  prospect: "Prospect",
+  em_preenchimento: "Em Preenchimento",
+  em_analise: "Em Análise",
+  aprovada: "Aprovada",
+  aguardando_documentacao: "Aguardando Documentação",
+  liberado: "Liberado"
+};
+
+const PIPELINE_COLORS: Record<string, string> = {
+  prospect: "#64748b",
+  em_preenchimento: "#3b82f6",
+  em_analise: "#f59e0b",
+  aprovada: "#10b981",
+  aguardando_documentacao: "#8b5cf6",
+  liberado: "#2563eb"
+};
 
 export default function EmpresaDetalheClient({ id }: DetailProps) {
   const [empresa, setEmpresa] = useState<any>(null);
@@ -80,22 +99,19 @@ export default function EmpresaDetalheClient({ id }: DetailProps) {
     return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(val);
   };
 
-  const translateStatus = (col: string) => {
-    const statuses: Record<string, string> = {
-      prospect: "Prospect",
-      em_preenchimento: "Em Preenchimento",
-      em_analise: "Em Análise",
-      aprovada: "Aprovada",
-      aguardando_documentacao: "Aguardando Documentação",
-      liberado: "Liberado"
-    };
-    return statuses[col] || col;
-  };
-
   const formatDate = (isoStr: string) => {
-    if (!isoStr) return "";
-    const [year, month, day] = isoStr.split("-");
-    return `${day}/${month}/${year}`;
+    if (!isoStr) return "—";
+    try {
+      const d = new Date(isoStr);
+      if (!isNaN(d.getTime())) {
+        return d.toLocaleDateString("pt-BR");
+      }
+      const [year, month, day] = isoStr.split("-");
+      if (year && month && day) return `${day.slice(0, 2)}/${month}/${year}`;
+      return isoStr;
+    } catch {
+      return isoStr;
+    }
   };
 
   if (loading) {
@@ -113,6 +129,16 @@ export default function EmpresaDetalheClient({ id }: DetailProps) {
       </div>
     );
   }
+
+  // Dados para o formulário de nova proposta vinculada
+  const initialDataForModal = {
+    id: empresa.id,
+    razao_social: empresa.razao_social,
+    cnpj: empresa.cnpj,
+    representante: empresa.contatos?.[0]?.nome,
+    telefone: empresa.contatos?.[0]?.whatsapp,
+    email: empresa.email || (empresa.proposta_json ? (() => { try { return JSON.parse(empresa.proposta_json).emp_email; } catch { return ""; } })() : "")
+  };
 
   return (
     <div className="crm-theme">
@@ -132,19 +158,32 @@ export default function EmpresaDetalheClient({ id }: DetailProps) {
       </nav>
 
       <div className="crm-container">
-        {/* Header Navigation */}
-        <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "2rem" }}>
-          <Link href="/admin/empresas" className="crm-btn crm-btn-secondary" style={{ padding: "0.5rem" }}>
-            <ArrowLeft size={16} />
-          </Link>
-          <div>
-            <h1 style={{ fontSize: "1.75rem", fontWeight: "800", color: "var(--crm-text)", margin: 0 }}>
-              {empresa.razao_social}
-            </h1>
-            <p style={{ color: "var(--crm-muted)", fontSize: "0.85rem", margin: "0.2rem 0 0 0" }}>
-              Ficha cadastral e oportunidades de crédito BDMG.
-            </p>
+        {/* Header Navigation com Botão + Nova Proposta (Mudança 3) */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "2rem", flexWrap: "wrap", gap: "1rem" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+            <Link href="/admin/empresas" className="crm-btn crm-btn-secondary" style={{ padding: "0.5rem" }}>
+              <ArrowLeft size={16} />
+            </Link>
+            <div>
+              <h1 style={{ fontSize: "1.75rem", fontWeight: "800", color: "var(--crm-text)", margin: 0 }}>
+                {empresa.razao_social}
+              </h1>
+              <p style={{ color: "var(--crm-muted)", fontSize: "0.85rem", margin: "0.2rem 0 0 0" }}>
+                Ficha cadastral e oportunidades de crédito BDMG / RMJ.
+              </p>
+            </div>
           </div>
+
+          {/* Botão "+ Nova Proposta" (Mudança 3) */}
+          <FormNovaOportunidade
+            onSuccess={fetchDetails}
+            initialEmpresa={initialDataForModal}
+            triggerButton={
+              <button className="crm-btn crm-btn-primary" style={{ padding: "0.6rem 1.25rem", fontSize: "0.9rem" }}>
+                <Plus size={16} /> Nova Proposta
+              </button>
+            }
+          />
         </div>
 
         {/* Two Columns Grid */}
@@ -184,7 +223,7 @@ export default function EmpresaDetalheClient({ id }: DetailProps) {
               </h3>
 
               <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", marginBottom: "1.5rem" }}>
-                {empresa.contatos.map((cont: any) => (
+                {empresa.contatos && empresa.contatos.map((cont: any) => (
                   <div key={cont.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0.75rem", backgroundColor: "var(--crm-surface)", borderRadius: "6px" }}>
                     <div>
                       <strong style={{ fontSize: "0.9rem" }}>{cont.nome}</strong>
@@ -203,7 +242,7 @@ export default function EmpresaDetalheClient({ id }: DetailProps) {
                     </a>
                   </div>
                 ))}
-                {empresa.contatos.length === 0 && (
+                {(!empresa.contatos || empresa.contatos.length === 0) && (
                   <div style={{ color: "var(--crm-muted)", fontSize: "0.9rem", textAlign: "center", padding: "1rem" }}>
                     Nenhum contato registrado.
                   </div>
@@ -251,63 +290,92 @@ export default function EmpresaDetalheClient({ id }: DetailProps) {
             
           </div>
 
-          {/* Oportunidades List */}
+          {/* Oportunidades List (Mudança 2: Histórico de Propostas Ordenadas Cronologicamente Decrescente) */}
           <div style={{ backgroundColor: "var(--crm-card)", border: "1px solid var(--crm-border)", borderRadius: "8px", padding: "1.5rem" }}>
-            <h3 style={{ fontSize: "1.1rem", fontWeight: "700", marginBottom: "1.25rem", borderBottom: "1px solid var(--crm-border)", paddingBottom: "0.5rem" }}>
-              Histórico de Oportunidades (Giro BDMG)
-            </h3>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.25rem", borderBottom: "1px solid var(--crm-border)", paddingBottom: "0.5rem", flexWrap: "wrap", gap: "0.5rem" }}>
+              <div>
+                <h3 style={{ fontSize: "1.1rem", fontWeight: "700", margin: 0 }}>
+                  Histórico de Propostas ({empresa.oportunidades ? empresa.oportunidades.length : 0})
+                </h3>
+                <span style={{ fontSize: "0.78rem", color: "var(--crm-muted)" }}>
+                  Exibição cronológica decrescente de todas as solicitações vinculadas a esta empresa.
+                </span>
+              </div>
+
+              {/* Botão secundário na seção do histórico */}
+              <FormNovaOportunidade
+                onSuccess={fetchDetails}
+                initialEmpresa={initialDataForModal}
+                triggerButton={
+                  <button className="crm-btn crm-btn-secondary" style={{ padding: "0.35rem 0.75rem", fontSize: "0.8rem" }}>
+                    <Plus size={14} /> + Nova Proposta
+                  </button>
+                }
+              />
+            </div>
 
             <div style={{ overflowX: "auto" }}>
               <table className="crm-table">
                 <thead>
                   <tr>
-                    <th>Etapa / Coluna</th>
+                    <th>Data de Criação</th>
+                    <th>Tipo de Operação</th>
                     <th>Valor Solicitado</th>
                     <th>Valor Aprovado</th>
-                    <th>Comissão Esperada</th>
-                    <th>Status Repasse</th>
-                    <th>Follow-up</th>
+                    <th>Etapa Atual</th>
+                    <th style={{ textAlign: "right" }}>Ações</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {empresa.oportunidades.map((op: any) => (
+                  {empresa.oportunidades && empresa.oportunidades.map((op: any) => (
                     <tr key={op.id}>
-                      <td>
-                        <span className="crm-badge crm-badge-amber" style={{ textTransform: "capitalize" }}>
-                          {translateStatus(op.coluna_kanban)}
-                        </span>
+                      <td style={{ color: "var(--crm-muted)", fontSize: "0.85rem", whiteSpace: "nowrap" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+                          <Calendar size={13} />
+                          {formatDate(op.created_at)}
+                        </div>
                       </td>
-                      <td style={{ color: "var(--crm-green)", fontFamily: "monospace", fontWeight: "600" }}>
+                      <td>
+                        <strong style={{ fontSize: "0.88rem", color: "var(--crm-text)" }}>
+                          {op.canal || "Capital de Giro BDMG"}
+                        </strong>
+                      </td>
+                      <td style={{ color: "var(--crm-green)", fontFamily: "monospace", fontWeight: "700" }}>
                         {formatBRL(op.valor_solicitado)}
                       </td>
                       <td style={{ color: op.valor_aprovado ? "var(--crm-green)" : "var(--crm-muted)", fontFamily: "monospace" }}>
                         {op.valor_aprovado ? formatBRL(op.valor_aprovado) : "—"}
                       </td>
-                      <td style={{ color: "var(--crm-text)", opacity: 0.9 }}>
-                        {formatBRL(op.comissao_esperada)}
-                      </td>
                       <td>
-                        {op.status_repasse === "recebido" ? (
-                          <span className="crm-badge crm-badge-green">Recebido</span>
-                        ) : (
-                          <span className="crm-badge crm-badge-red">Pendente</span>
-                        )}
+                        <span
+                          className="crm-badge"
+                          style={{
+                            backgroundColor: PIPELINE_COLORS[op.coluna_kanban] || "#64748b",
+                            color: "#ffffff",
+                            fontSize: "0.72rem",
+                            padding: "0.2rem 0.6rem",
+                            borderRadius: "999px",
+                            fontWeight: 600
+                          }}
+                        >
+                          {PIPELINE_LABELS[op.coluna_kanban] || op.coluna_kanban}
+                        </span>
                       </td>
-                      <td>
-                        {op.followup_data ? (
-                          <span className="crm-badge crm-badge-amber" style={{ display: "inline-flex", gap: "0.25rem" }}>
-                            <Calendar size={12} /> {formatDate(op.followup_data)}
-                          </span>
-                        ) : (
-                          <span style={{ color: "var(--crm-muted)" }}>Não agendado</span>
-                        )}
+                      <td style={{ textAlign: "right" }}>
+                        <Link
+                          href={`/admin`}
+                          className="crm-btn crm-btn-secondary"
+                          style={{ padding: "0.3rem 0.65rem", fontSize: "0.75rem", display: "inline-flex", alignItems: "center", gap: "0.3rem" }}
+                        >
+                          Ver no Pipeline <ExternalLink size={12} />
+                        </Link>
                       </td>
                     </tr>
                   ))}
-                  {empresa.oportunidades.length === 0 && (
+                  {(!empresa.oportunidades || empresa.oportunidades.length === 0) && (
                     <tr>
-                      <td colSpan={6} style={{ textAlign: "center", color: "var(--crm-muted)", padding: "2rem" }}>
-                        Nenhuma oportunidade ativa vinculada a esta empresa.
+                      <td colSpan={6} style={{ textAlign: "center", color: "var(--crm-muted)", padding: "2.5rem" }}>
+                        Nenhuma proposta vinculada a esta empresa ainda. Clique em "+ Nova Proposta" para criar a primeira.
                       </td>
                     </tr>
                   )}

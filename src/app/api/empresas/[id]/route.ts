@@ -16,7 +16,7 @@ export async function GET(request: Request, { params }: Props) {
     }
 
     const contatos = db.prepare("SELECT * FROM contatos WHERE empresa_id = ?").all(empresaId);
-    const oportunidades = db.prepare("SELECT * FROM oportunidades WHERE empresa_id = ?").all(empresaId);
+    const oportunidades = db.prepare("SELECT * FROM oportunidades WHERE empresa_id = ? ORDER BY created_at DESC, id DESC").all(empresaId);
 
     return NextResponse.json({
       ...empresa,

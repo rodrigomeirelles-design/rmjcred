@@ -141,7 +141,7 @@ export default function CreditoBdmg() {
             <div className={styles.headerLogoWrapper}>
               <Image src="/assets/selo-parceiro-bdmg-negativo.png" alt="Selo Parceiro BDMG" width={150} height={85} priority style={{ objectFit: "contain", height: "auto" }} />
             </div>
-            <h1 className={styles.heroTitle}>Crédito BDMG para Empresas em Itajubá e Sul de Minas</h1>
+            <h1 className={styles.heroTitle}>Crédito BDMG para Empresas em Minas Gerais</h1>
             <p className={styles.heroSubtitle}>
               Acesse linhas com taxas a partir de 1,2% a.m., carência de até 12 meses e prazo de até 72 meses. Análise gratuita e sem compromisso.
             </p>

@@ -125,7 +125,7 @@ export default function CreditoBdmg() {
             </div>
             <h1 className={styles.heroTitle}>Crédito BDMG para Empresas em Itajubá e Sul de Minas</h1>
             <p className={styles.heroSubtitle}>
-              Acesse linhas com taxas a partir de 1,2% a.m., carência de até 12 meses e prazo de até 60 meses. Análise gratuita e sem compromisso.
+              Acesse linhas com taxas a partir de 1,2% a.m., carência de até 12 meses e prazo de até 72 meses. Análise gratuita e sem compromisso.
             </p>
             <div className={styles.headerButtons}>
               <a href="#simular" className="btn btn-primary">Quero minha análise gratuita</a>
@@ -182,7 +182,7 @@ export default function CreditoBdmg() {
             <div>
               <h2 style={{ fontSize: "2rem", color: "var(--primary-dark)", marginBottom: "1rem" }}>Linhas de Crédito BDMG Disponíveis</h2>
               <ul style={{ color: "var(--neutral-muted)", fontSize: "1.05rem", lineHeight: "1.7", marginLeft: "1.5rem", marginBottom: "1rem" }}>
-                <li><strong>BDMG Capital de Giro</strong> — recursos para manter o fluxo de caixa saudável, com carência de até 6 meses</li>
+                <li><strong>BDMG Capital de Giro</strong> — recursos para manter o fluxo de caixa saudável, com carência de até 12 meses</li>
                 <li><strong>BDMG Investimento Fixo</strong> — financiamento para máquinas, equipamentos e reforma de instalações</li>
                 <li><strong>BDMG Inovação</strong> — linha específica para projetos de inovação e tecnologia</li>
                 <li><strong>BDMG Exportação</strong> — capital de giro para empresas exportadoras mineiras</li>

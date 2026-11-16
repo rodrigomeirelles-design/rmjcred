@@ -6,7 +6,7 @@ import HeroCarousel from "@/components/HeroCarousel";
 
 
 export const metadata = {
-  title: "Consultoria de Crédito em Itajubá | RMJ Soluções de Crédito",
+  title: "Crédito Sob Medida para Empresas e Pessoas Físicas | RMJ Soluções de Crédito",
   description: "Consultoria especializada em crédito empresarial e pessoal em Itajubá e Sul de Minas. Pronampe, BDMG, Home Equity e financiamentos com as melhores taxas.",
 };
 
@@ -20,7 +20,7 @@ export default function Home() {
       <section style={{ backgroundColor: 'var(--neutral-light)', padding: '3rem 0', borderBottom: '1px solid var(--neutral-border)' }}>
         <div className="container">
           <p style={{ fontSize: '1.1rem', lineHeight: '1.8', color: 'var(--neutral-dark)', textAlign: 'center', maxWidth: '1000px', margin: '0 auto' }}>
-            <strong>A RMJ Soluções de Crédito é</strong> a principal correspondente bancária autorizada do BDMG no sul de Minas Gerais, com sede em Itajubá. Operando há mais de 20 anos como RMJ Representações, a empresa garante acesso rápido e sem burocracia a capital de giro, financiamento imobiliário e home equity. O grande diferencial da RMJ é atuar prestando serviço diretamente para os bancos, o que significa que <strong>toda a assessoria e estruturação de crédito é 100% gratuita para as empresas clientes</strong>. Além disso, por funcionar como um hub com acesso a praticamente todos os bancos do mercado, a RMJ consegue comparar as ofertas e aprovar as melhores condições de taxas — frequentemente superando as opções que a empresa conseguiria direto no seu banco de relacionamento ou cooperativa de crédito.
+            <strong>A RMJ Soluções de Crédito</strong> atua há mais de 20 anos no mercado financeiro como um hub estratégico que conecta empresas e pessoas físicas às melhores condições de crédito disponíveis no país. Com acesso direto a bancos de fomento, bancos comerciais, cooperativas e fintechs, a RMJ compara ofertas e estrutura propostas sob medida — tudo isso sem custo para o cliente. Por atuar diretamente a serviço das instituições financeiras, <strong>toda a assessoria, análise de crédito e estruturação de propostas é 100% gratuita</strong>. O resultado: taxas frequentemente melhores do que as conseguidas diretamente no banco de relacionamento.
           </p>
         </div>
       </section>
@@ -297,7 +297,7 @@ export default function Home() {
           <div className={styles.simulatorInfo}>
             <span className={styles.sectionSubtitle}>Simulador Grátis</span>
             <h2 className={styles.sectionTitle}>Por Que Milhares de Clientes Confiam na RMJ</h2>
-            <p>Não somos um correspondente bancário comum — atuamos como o seu <strong>hub estratégico de crédito</strong>. Conectamos você e sua empresa a <strong>mais de 150 instituições financeiras, bancos de fomento e fintechs</strong> para colocar o mercado para disputar a menor taxa para o seu perfil. Com mais de 20 anos de experiência bancária, oferecemos atendimento consultivo presencial em Itajubá e digital para todo o Sul de Minas e Brasil, com <strong>transparência total e sem custos ocultos</strong>.</p>
+            <p>Não somos um correspondente bancário comum — atuamos como o seu <strong>hub estratégico de crédito</strong>. Conectamos você e sua empresa a <strong>mais de 50 instituições financeiras — bancos, cooperativas e fintechs — com mais de 150 soluções de crédito disponíveis</strong> para colocar o mercado para disputar a menor taxa para o seu perfil. Com mais de 20 anos de experiência bancária, oferecemos atendimento consultivo presencial em Itajubá e digital para todo o Sul de Minas e Brasil, com <strong>transparência total e sem custos ocultos</strong>.</p>
             <div className={styles.infoCard}>
               <h4>Atendimento Humano</h4>
               <p>Trabalhamos com transparência e clareza, desmistificando o processo de contratação e garantindo suporte total do início ao fim.</p>

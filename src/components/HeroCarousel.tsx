@@ -8,10 +8,10 @@ import styles from './HeroCarousel.module.css';
 const slides = [
   {
     id: 'bdmg',
-    logo: '/assets/logo-bdmg-parceiro-244x150.png',
-    title: 'Soluções de Crédito Inteligentes para ',
-    highlight: 'Empresas e Pessoas Físicas em Itajubá e Sul de Minas',
-    description: 'Tenha acesso a crédito empresarial descomplicado, com os melhores prazos, taxas competitivas e menos burocracia. Potencialize o crescimento do seu negócio sem precisar adquirir produtos casados.',
+    logo: null,
+    title: 'Crédito Sob Medida com as ',
+    highlight: 'Melhores Taxas do Mercado',
+    description: 'Comparamos ofertas em mais de 50 instituições financeiras para encontrar a menor taxa e o melhor prazo para o seu perfil. Assessoria 100% gratuita.',
     bgImage: '/assets/mg_historic_city.png',
     primaryLink: '/credito-bdmg#simular',
     secondaryLink: '/credito-bdmg#como-funciona',

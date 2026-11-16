@@ -55,7 +55,7 @@ export const blogPosts: BlogPost[] = [
       },
       {
         "question": "É possível simular sem ser cliente do banco?",
-        "answer": "A simulação é feita pelo BDMG Digital e não exige conta no banco, já que o BDMG não trabalha com correntistas. O atendimento também pode ser feito por um correspondente bancário, sem custo adicional."
+        "answer": "Sim. O BDMG não trabalha com correntistas, então não é preciso ter conta no banco. A RMJ, correspondente autorizado BDMG em Itajubá, faz a simulação e conduz todo o processo para a sua empresa, sem custo adicional."
       }
     ],
     "content": [
@@ -110,7 +110,7 @@ export const blogPosts: BlogPost[] = [
       "A decisão fica mais consistente quando o varejista já tem em mãos o valor da necessidade, o mês em que ela ocorre e a projeção de quando o caixa volta a ficar positivo. Sem esses três números, qualquer contratação vira estimativa. Com eles, é possível avaliar valor, prazo e carência de forma objetiva.",
       "### Linhas de crédito do BDMG com finalidade de capital de giro",
       "**Crédito para preparar a operação:** Se a sua projeção financeira indicar necessidade de recursos antes do recebimento das vendas, a empresa pode consultar soluções de capital de giro do BDMG para compra de mercadorias, insumos ou organização do fluxo de caixa. [Faça uma simulação](https://rmjcred.com.br/credito-bdmg#simular) e conheça as condições aplicáveis ao seu CNPJ. Crédito sujeito à análise, disponibilidade da linha, documentação e enquadramento.",
-      "A simulação e a solicitação podem ser iniciadas pelo BDMG Digital nas linhas elegíveis. Também há atendimento por correspondentes bancários, conforme disponibilidade.",
+      "A RMJ, correspondente autorizado BDMG em Itajubá, faz a simulação, reúne as informações da empresa, estrutura a proposta e acompanha todo o processo até a liberação do crédito.",
       "### O que observar antes de consultar uma linha",
       "Antes da simulação, vale reunir as informações que definem o enquadramento: faturamento bruto anual da empresa, tempo de existência do CNPJ, município de operação, CNAE principal e situação cadastral dos sócios. Esses dados determinam quais linhas estão disponíveis para o negócio.",
       "Na comparação entre opções, quatro pontos merecem atenção. A taxa e o Custo Efetivo Total mostram o custo real da operação, incluindo tarifas e encargos. O prazo define o tamanho da parcela. A carência define quando a primeira parcela vence, o que importa em uma operação de Black Friday, já que o recebimento das vendas parceladas ocorre nos meses seguintes. O limite da linha precisa ser confrontado com a necessidade calculada na projeção de caixa.",
@@ -123,7 +123,7 @@ export const blogPosts: BlogPost[] = [
       "**Como calcular a necessidade de capital de giro para a Black Friday?**\\nMonte uma projeção semanal com todas as saídas previstas, incluindo compra de estoque, despesas operacionais extras e mídia, e todas as entradas previstas por meio de pagamento, respeitando o prazo de recebimento de cada modalidade. O maior saldo negativo acumulado indica a necessidade de capital de giro do período.",
       "**Quais empresas podem consultar as linhas de crédito do BDMG?**\\nAs linhas para micro e pequenas empresas são destinadas a negócios localizados em Minas Gerais, com faturamento bruto anual dentro dos limites de cada produto. Os critérios de enquadramento variam por linha e incluem tempo de existência da empresa, setor de atuação e situação cadastral.",
       "**Qual a diferença entre capital de giro e crédito para investimento?**\\nCapital de giro cobre necessidades do ciclo operacional, como compra de estoque, pagamento de fornecedores e despesas correntes. Crédito com finalidade de investimento se destina à aquisição de máquinas, equipamentos, reforma ou ampliação da estrutura, com prazos normalmente mais longos.",
-      "**É possível simular sem ser cliente do banco?**\\nA simulação é feita pelo BDMG Digital e não exige conta no banco, já que o BDMG não trabalha com correntistas. O atendimento também pode ser feito por um correspondente bancário, sem custo adicional.",
+      "**É possível simular sem ser cliente do banco?**\\nSim. O BDMG não trabalha com correntistas, então não é preciso ter conta no banco. A RMJ, correspondente autorizado BDMG em Itajubá, faz a simulação e conduz todo o processo para a sua empresa, sem custo adicional.",
       "## Prepare o caixa junto com a campanha",
       "A Black Friday recompensa quem chega preparado nas duas frentes. A campanha define quanto a empresa pode vender, e o caixa define quanto ela consegue sustentar. Varejistas que fazem projeção financeira com a mesma atenção que dedicam ao mix de ofertas chegam a dezembro com estoque girado e operação em ordem.",
       "Precisa de recursos para preparar sua empresa para a Black Friday? Consulte as condições das linhas de crédito do BDMG e verifique as opções disponíveis para sua empresa. [Faça uma simulação](https://rmjcred.com.br/credito-bdmg#simular).",

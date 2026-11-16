@@ -22,34 +22,52 @@ export const metadata: Metadata = {
 
 const STEPS = [
   {
-    title: "Sua empresa pede",
-    text: "Preencha o formulário ou fale no WhatsApp. Leva menos de 1 minuto.",
+    title: "Você fala com a RMJ",
+    text: "Preencha o formulário ou chame no WhatsApp. Leva menos de 1 minuto e você já fala com quem vai cuidar do seu crédito.",
     icon: (
-      <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <rect x="5" y="3" width="14" height="18" rx="2" />
-        <path d="M9 3.5h6v2.5H9z" />
-        <path d="M8.5 11h7M8.5 14.5h7M8.5 18h4" />
+      <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+        <path d="M8 9h8M8 13h5" />
       </svg>
     ),
   },
   {
-    title: "RMJ orienta",
-    text: "Nossa equipe analisa o perfil da sua empresa e indica a melhor linha BDMG, sem custo.",
+    title: "Diagnóstico da empresa",
+    text: "Levantamos as informações do negócio — faturamento, necessidade e momento da empresa — e identificamos a linha BDMG mais adequada.",
     icon: (
-      <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <path d="m11 17 2 2a1 1 0 1 0 3-3" />
-        <path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4" />
-        <path d="m21 3 1 11h-2" />
-        <path d="M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3" />
-        <path d="M3 4h8" />
+      <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <circle cx="11" cy="11" r="7" />
+        <path d="m21 21-4.3-4.3" />
+        <path d="M8 11h6M11 8v6" />
       </svg>
     ),
   },
   {
-    title: "BDMG aprova",
-    text: "Com a documentação pronta, o crédito é liberado direto na conta da sua empresa.",
+    title: "Estruturação da proposta",
+    text: "Reunimos e conferimos a documentação, montamos a proposta e a encaminhamos ao BDMG. Você não precisa preencher nada no banco.",
     icon: (
-      <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
+        <path d="M14 3v5h5" />
+        <path d="m9 15 2 2 4-4" />
+      </svg>
+    ),
+  },
+  {
+    title: "Acompanhamento da análise",
+    text: "Acompanhamos a análise de crédito, respondemos às exigências do banco e mantemos você informado em cada etapa.",
+    icon: (
+      <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 7v5l3 2" />
+      </svg>
+    ),
+  },
+  {
+    title: "Contratação e liberação",
+    text: "Com a proposta aprovada, conduzimos a assinatura do contrato e o crédito é liberado na conta da sua empresa.",
+    icon: (
+      <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <path d="M11 3v18" />
         <path d="M15 7H9.5a3 3 0 0 0 0 6h3a3 3 0 0 1 2.4 1.2" />
         <path d="M5 17h6" />
@@ -121,7 +139,7 @@ export default function CreditoBdmg() {
         <div className={`${styles.heroGrid} container`}>
           <div className={styles.heroCopy}>
             <div className={styles.headerLogoWrapper}>
-              <Image src="/assets/logo-bdmg-parceiro-244x150.png" alt="Parceiro BDMG" width={140} height={45} style={{ objectFit: "contain", filter: "brightness(0) invert(1)" }} />
+              <Image src="/assets/selo-parceiro-bdmg-negativo.png" alt="Selo Parceiro BDMG" width={150} height={85} priority style={{ objectFit: "contain", height: "auto" }} />
             </div>
             <h1 className={styles.heroTitle}>Crédito BDMG para Empresas em Itajubá e Sul de Minas</h1>
             <p className={styles.heroSubtitle}>
@@ -157,21 +175,31 @@ export default function CreditoBdmg() {
         </div>
       </section>
 
-      {/* 3. Como Funciona */}
+      {/* 3. Como Funciona — fluxo de contratação */}
       <section className={`${styles.stepsSection} section`} id="como-funciona">
         <div className="container">
-          <h2 className={styles.sectionTitle}>Como Funciona</h2>
-          <ol className={styles.stepsGrid}>
+          <h2 className={styles.sectionTitle} style={{ marginBottom: "0.75rem" }}>Como Funciona a Contratação com a RMJ</h2>
+          <p className={styles.sectionSubtitle}>
+            Do primeiro contato à liberação do crédito, a RMJ cuida de todo o processo para a sua empresa.
+          </p>
+          <ol className={styles.flow}>
             {STEPS.map((step, i) => (
-              <li key={step.title} className={styles.stepCard}>
-                <span className={styles.stepNumber} aria-hidden="true">{i + 1}</span>
-                <span className={styles.stepIcon}>{step.icon}</span>
-                <h3>{step.title}</h3>
-                <p>{step.text}</p>
-                {i < STEPS.length - 1 && <span className={styles.stepArrow} aria-hidden="true">→</span>}
+              <li key={step.title} className={styles.flowStep}>
+                <div className={styles.flowMarker}>
+                  <span className={styles.flowIcon}>{step.icon}</span>
+                  <span className={styles.flowNumber} aria-hidden="true">{i + 1}</span>
+                </div>
+                <div className={styles.flowBody}>
+                  <h3>{step.title}</h3>
+                  <p>{step.text}</p>
+                </div>
               </li>
             ))}
           </ol>
+          <div className={styles.flowCta}>
+            <a href="#simular" className="btn btn-primary">Quero minha análise gratuita</a>
+            <WhatsAppCta location="card" />
+          </div>
         </div>
       </section>
 
@@ -218,7 +246,7 @@ export default function CreditoBdmg() {
             </ul>
           </div>
           <div className={styles.badge}>
-            <Image src="/assets/logo-bdmg-parceiro-244x150.png" alt="Logo BDMG" width={160} height={98} style={{ objectFit: "contain" }} />
+            <Image src="/assets/selo-parceiro-bdmg-cor.png" alt="Selo Parceiro BDMG" width={190} height={107} style={{ objectFit: "contain", height: "auto" }} />
             <span className={styles.badgeLabel}>Correspondente Autorizado BDMG</span>
             <span className={styles.badgeSub}>RMJ Soluções de Crédito · Itajubá/MG</span>
           </div>

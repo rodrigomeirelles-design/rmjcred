@@ -86,6 +86,7 @@ export default function NovoLeadModal({ onClose, onSuccess, initialData }: Props
   const [empEmail, setEmpEmail] = useState(initialData?.empEmail || "");
   const [empTelefone, setEmpTelefone] = useState(initialData?.empTelefone || "");
   const [valorPJ, setValorPJ] = useState("");
+  const [comissaoPJ, setComissaoPJ] = useState("");
 
   // PF fields
   const [produtoPF, setProdutoPF] = useState(initialData?.produtoPF || "Financiamento Imobiliário");
@@ -94,6 +95,7 @@ export default function NovoLeadModal({ onClose, onSuccess, initialData }: Props
   const [celular, setCelular] = useState(initialData?.celular || "");
   const [email, setEmail] = useState(initialData?.email || "");
   const [valorPF, setValorPF] = useState("");
+  const [comissaoPF, setComissaoPF] = useState("");
 
   async function handleCNPJBlur() {
     const clean = empCnpj.replace(/\D/g, "");
@@ -168,9 +170,13 @@ export default function NovoLeadModal({ onClose, onSuccess, initialData }: Props
     if (tipo === "PJ") {
       if (!empRazao.trim()) return "Razão Social é obrigatória.";
       if (empCnpj.replace(/\D/g, "").length !== 14) return "CNPJ deve ter 14 dígitos.";
+      const val = parseMoney(valorPJ);
+      if (val && val < 1000) return "O valor solicitado deve ser de no mínimo R$ 1.000,00.";
     } else {
       if (!nome.trim()) return "Nome completo é obrigatório.";
       if (cpf.replace(/\D/g, "").length !== 11) return "CPF deve ter 11 dígitos.";
+      const val = parseMoney(valorPF);
+      if (val && val < 1000) return "O valor solicitado deve ser de no mínimo R$ 1.000,00.";
     }
     return "";
   }
@@ -190,6 +196,7 @@ export default function NovoLeadModal({ onClose, onSuccess, initialData }: Props
             celular,
             email,
             valorFinanciamento: parseMoney(valorPF) || undefined,
+            comissao_percentual: comissaoPF.trim() ? (parseFloat(comissaoPF.replace(/[^0-9,\.]/g, '').replace(',', '.')) || 0) / 100 : undefined,
             empresaIdVinculada: empresaIdVinculada || undefined,
             vinculada: !!empresaIdVinculada,
           }
@@ -202,6 +209,7 @@ export default function NovoLeadModal({ onClose, onSuccess, initialData }: Props
             emp_email: empEmail,
             emp_telefone: empTelefone,
             valor_solicitado: parseMoney(valorPJ) || undefined,
+            comissao_percentual: comissaoPJ.trim() ? (parseFloat(comissaoPJ.replace(/[^0-9,\.]/g, '').replace(',', '.')) || 0) / 100 : undefined,
             empresaIdVinculada: empresaIdVinculada || undefined,
             vinculada: !!empresaIdVinculada,
           };
@@ -290,9 +298,18 @@ export default function NovoLeadModal({ onClose, onSuccess, initialData }: Props
                   <label className="label-base mb-1">Valor Solicitado</label>
                   <input
                     className="input-base w-full font-mono"
-                    placeholder="R$ 0,00"
+                    placeholder="R$ 0,00 (mínimo R$ 1.000)"
                     value={valorPJ}
                     onChange={(e) => setValorPJ(maskMoney(e.target.value))}
+                  />
+                </div>
+                <div>
+                  <label className="label-base mb-1">Alíquota Comissão (%)</label>
+                  <input
+                    className="input-base w-full font-mono"
+                    placeholder="Ex: 1,35% ou padrão"
+                    value={comissaoPJ}
+                    onChange={(e) => setComissaoPJ(e.target.value)}
                   />
                 </div>
 
@@ -433,9 +450,18 @@ export default function NovoLeadModal({ onClose, onSuccess, initialData }: Props
                   <label className="label-base mb-1">Valor do Financiamento</label>
                   <input
                     className="input-base w-full font-mono"
-                    placeholder="R$ 0,00"
+                    placeholder="R$ 0,00 (mínimo R$ 1.000)"
                     value={valorPF}
                     onChange={(e) => setValorPF(maskMoney(e.target.value))}
+                  />
+                </div>
+                <div>
+                  <label className="label-base mb-1">Alíquota Comissão (%)</label>
+                  <input
+                    className="input-base w-full font-mono"
+                    placeholder="Ex: 1,00% ou caso a caso"
+                    value={comissaoPF}
+                    onChange={(e) => setComissaoPF(e.target.value)}
                   />
                 </div>
 

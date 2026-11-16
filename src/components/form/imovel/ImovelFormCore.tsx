@@ -62,6 +62,13 @@ export default function ImovelFormCore({ produto }: ImovelFormCoreProps) {
     const fields = stepFields[currentStep - 1];
     const valid = await form.trigger(fields);
     if (valid) {
+      if (currentStep === 3) {
+        const val = Number(form.getValues("valorFinanciamento"));
+        if (!val || val < 1000) {
+          form.setError("valorFinanciamento", { message: "O valor do financiamento deve ser de no mínimo R$ 1.000,00." });
+          return;
+        }
+      }
       setCurrentStep((s) => s + 1);
       window.scrollTo({ top: 0, behavior: "smooth" });
     }

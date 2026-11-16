@@ -1,5 +1,5 @@
 import { google } from "googleapis";
-import { Proposta, KanbanColumn, StatusRepasse } from "@/types";
+import { Proposta, KanbanColumn, StatusRepasse, resolveTipoPessoa } from "@/types";
 import { PropostaImovel, KanbanColumnImovel } from "@/types/imovel";
 import { PropostaVeiculo } from "@/types/veiculo";
 
@@ -135,7 +135,7 @@ function rowToProposta(headers: string[], row: string[]): Proposta {
     id_proposta: get("id_proposta"),
     timestamp_envio: get("timestamp_envio"),
     produto: get("produto"),
-    tipo_pessoa: (get("produto") === "BDMG Capital de Giro" ? "PJ" : "PF") as import("@/types").TipoPessoa,
+    tipo_pessoa: resolveTipoPessoa(get("emp_cnpj"), get("produto"), get("emp_razao")),
     coluna_kanban: get("coluna_kanban") as KanbanColumn,
     status_repasse: (get("status_repasse") || "pendente") as StatusRepasse,
     motivo_perda: get("motivo_perda") || undefined,
@@ -169,7 +169,7 @@ function rowToProposta(headers: string[], row: string[]): Proposta {
     banco_conta: get("banco_conta"),
     banco_digito: get("banco_digito"),
     obs_finais: get("obs_finais") || undefined,
-    comissao_percentual: parseFloat(get("comissao_percentual")) || undefined,
+    comissao_percentual: get("comissao_percentual") !== "" && !isNaN(parseFloat(get("comissao_percentual"))) ? parseFloat(get("comissao_percentual")) : undefined,
     socios: Array.from({ length: 5 }, (_, i) => {
       const nome = get(`socio${i+1}_nome`);
       if (!nome) return null;

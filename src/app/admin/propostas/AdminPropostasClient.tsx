@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Proposta, KANBAN_COLUMNS, getComissaoRate } from "@/types";
+import { Proposta, KANBAN_COLUMNS, getComissaoRate, resolveTipoPessoa } from "@/types";
 import KanbanBoard from "@/components/admin/KanbanBoard";
 import NovoLeadModal from "@/components/admin/NovoLeadModal";
 import { formatMoney } from "@/lib/utils";
@@ -117,7 +117,8 @@ export default function AdminPropostasClient({ initialPropostas }: Props) {
         if (filtroPeriodo === "mes" && created < startOfMonth) return false;
       }
       if (filtroStatus !== "todos" && p.coluna_kanban !== filtroStatus) return false;
-      if (filtroTipo !== "todos" && (p.tipo_pessoa || "PJ") !== filtroTipo) return false;
+      const pTipo = p.tipo_pessoa || resolveTipoPessoa(p.emp_cnpj, p.produto, p.emp_razao);
+      if (filtroTipo !== "todos" && pTipo !== filtroTipo) return false;
 
       // Nova regra: Ocultar leads "finalizados" há mais de 90 dias do Kanban
       // Conta a partir do dia em que foi movido para Finalizados (data_finalizado)

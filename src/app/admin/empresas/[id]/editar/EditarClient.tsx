@@ -204,6 +204,11 @@ export default function EditarClient({ proposta }: { proposta: Proposta }) {
       }
 
       if (valor !== undefined && !isNaN(valor) && valor > 0) {
+        if (valor < 1000) {
+          setError("O valor solicitado deve ser de no mínimo R$ 1.000,00.");
+          setSaving(false);
+          return;
+        }
         payload.valor_solicitado = valor;
       }
 

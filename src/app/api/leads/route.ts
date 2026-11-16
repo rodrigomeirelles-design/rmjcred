@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { appendProposta, appendPropostaImovel, getPropostas } from "@/lib/sheets";
-import { Proposta } from "@/types";
+import { Proposta, resolveTipoPessoa } from "@/types";
 import { PropostaImovel } from "@/types/imovel";
 import { randomUUID } from "crypto";
 
@@ -9,10 +9,18 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const id = randomUUID();
     const timestamp = new Date().toISOString();
-    const isPF = body.tipo_pessoa === "PF";
+
+    const cnpjDigits = (body.emp_cnpj || "").replace(/\D/g, "");
+    const rawDoc = cnpjDigits || (body.cpf || body.emp_repr_cpf || "").replace(/\D/g, "");
+    const resolvedTipo = body.tipo_pessoa || resolveTipoPessoa(rawDoc, body.produto, body.emp_razao || body.nome);
+    const isPF = resolvedTipo === "PF";
+
+    const comissaoPercentual = body.comissao_percentual !== undefined && body.comissao_percentual !== null && !isNaN(Number(body.comissao_percentual))
+      ? Number(body.comissao_percentual)
+      : undefined;
 
     if (isPF) {
-      const isVeiculo = body.produto?.includes("Veículo");
+      const isVeiculo = body.produto?.includes("Veículo") || body.produto?.includes("Veículos");
       
       const p_nome = body.nome || body.emp_repr_nome || body.emp_razao || "";
       const p_cpf = (body.cpf || body.emp_cnpj || body.emp_repr_cpf || "").replace(/\D/g, "");
@@ -81,13 +89,12 @@ export async function POST(req: NextRequest) {
         banco_nome: "", banco_numero: "", banco_agencia: "",
         banco_conta: "", banco_digito: "",
         valor_solicitado: p_valor || undefined,
+        comissao_percentual: comissaoPercentual,
         socios: [],
         obs_finais: body.obs_finais,
       };
       await appendProposta(resumo);
     } else {
-      const cnpjDigits = (body.emp_cnpj || "").replace(/\D/g, "");
-
       // If linked or existing company, borrow existing address & bank info if available
       let existing: Proposta | undefined;
       if (body.vinculada || body.empresaIdVinculada || cnpjDigits) {
@@ -132,6 +139,7 @@ export async function POST(req: NextRequest) {
         banco_conta: body.banco_conta || existing?.banco_conta || "",
         banco_digito: body.banco_digito || existing?.banco_digito || "",
         valor_solicitado: body.valor_solicitado || undefined,
+        comissao_percentual: comissaoPercentual,
         socios: body.socios && body.socios.length > 0 ? body.socios : (existing?.socios || []),
         obs_finais: body.obs_finais,
       };

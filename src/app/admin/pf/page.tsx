@@ -1,5 +1,5 @@
 import { getPropostasImovel, getPropostasVeiculo, getPropostas } from "@/lib/sheets";
-import { KANBAN_COLUMNS } from "@/types";
+import { KANBAN_COLUMNS, resolveTipoPessoa } from "@/types";
 import { KANBAN_COLUMNS_VEICULO } from "@/types/veiculo";
 import AdminPFClient from "./AdminPFClient";
 
@@ -15,7 +15,7 @@ export default async function PessoaFisicaPage() {
   // Mapa de etapa kanban pelo id da proposta (kanban principal)
   const stageMapPrincipal = new Map(
     todasPropostas
-      .filter((p) => p.tipo_pessoa === "PF")
+      .filter((p) => (p.tipo_pessoa || resolveTipoPessoa(p.emp_cnpj, p.produto, p.emp_razao)) === "PF")
       .map((p) => [p.id_proposta, p.coluna_kanban])
   );
 

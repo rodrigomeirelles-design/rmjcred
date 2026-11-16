@@ -79,6 +79,13 @@ export default function VeiculoFormCore({ produto }: Props) {
 
     const valid = await form.trigger(fields as (keyof PropostaVeiculoFormData)[]);
     if (valid) {
+      if (currentStep === 5) {
+        const val = Number(form.getValues("valor_financiamento"));
+        if (!val || val < 1000) {
+          form.setError("valor_financiamento", { message: "O valor do financiamento deve ser de no mínimo R$ 1.000,00." });
+          return;
+        }
+      }
       setCurrentStep(s => s + 1);
       window.scrollTo({ top: 0, behavior: "smooth" });
     }

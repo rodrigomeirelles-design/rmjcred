@@ -1,5 +1,6 @@
 import { requireAuth } from "@/lib/serverAuth";
 import { getPropostas } from "@/lib/sheets";
+import { resolveTipoPessoa } from "@/types";
 import ContatosClient from "./ContatosClient";
 
 export const dynamic = "force-dynamic";
@@ -28,7 +29,7 @@ export default async function AdminContatosPage() {
         nome: p.emp_razao || "Sem Nome",
         email: p.emp_email || "",
         celular: p.emp_telefone || "",
-        tipo: p.tipo_pessoa || "PJ",
+        tipo: p.tipo_pessoa || resolveTipoPessoa(p.emp_cnpj, p.produto, p.emp_razao),
         produtos: []
       });
     }

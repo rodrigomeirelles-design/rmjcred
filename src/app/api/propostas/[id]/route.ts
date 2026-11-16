@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { updatePropostaField, deletePropostaRow, deletePropostaImovelRow, getPropostaById } from "@/lib/sheets";
 import { createCalendarEvent } from "@/lib/calendar";
+import { isValidDate90d30d } from "@/types";
 
 export async function PATCH(
   req: NextRequest,
@@ -9,6 +10,31 @@ export async function PATCH(
   try {
     const { id } = await params;
     const body = await req.json();
+
+    // Validações de data e valor (Regra 6)
+    if (body.data_recusa && !isValidDate90d30d(body.data_recusa)) {
+      return NextResponse.json(
+        { success: false, error: "Data de recusa inválida. Deve estar entre 90 dias atrás e 30 dias à frente." },
+        { status: 400 }
+      );
+    }
+
+    if (body.data_liberacao && !isValidDate90d30d(body.data_liberacao)) {
+      return NextResponse.json(
+        { success: false, error: "Data de liberação inválida. Deve estar entre 90 dias atrás e 30 dias à frente." },
+        { status: 400 }
+      );
+    }
+
+    if (body.valor_solicitado !== undefined && body.valor_solicitado !== null) {
+      const valNum = Number(body.valor_solicitado);
+      if (!isNaN(valNum) && valNum > 0 && valNum < 1000) {
+        return NextResponse.json(
+          { success: false, error: "Valor solicitado deve ser de no mínimo R$ 1.000,00." },
+          { status: 400 }
+        );
+      }
+    }
     
     const propostaAnterior = await getPropostaById(id);
     

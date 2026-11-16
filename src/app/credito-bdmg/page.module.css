@@ -520,3 +520,430 @@
   font-size: 0.85rem;
   opacity: 0.85;
 }
+
+/* ===== Redesign 2026-11: Hero em duas colunas ===== */
+.heroGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+  align-items: center;
+}
+
+@media (min-width: 992px) {
+  .heroGrid {
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 3.5rem;
+  }
+}
+
+.heroCopy {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.heroTitle {
+  font-size: clamp(2rem, 4.2vw, 3.25rem);
+  line-height: 1.12;
+  font-weight: 800;
+  color: var(--neutral-white);
+  max-width: 640px;
+}
+
+.heroSubtitle {
+  font-size: clamp(1rem, 1.8vw, 1.2rem);
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.92);
+  max-width: 600px;
+}
+
+.btnWhatsapp {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 0.95rem;
+  background-color: #25D366;
+  color: #fff;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.btnWhatsapp:hover {
+  background-color: #1ebe5a;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(37, 211, 102, 0.3);
+}
+
+.btnWhatsappLarge {
+  font-size: 1.15rem;
+  padding: 1.05rem 2.25rem;
+}
+
+/* Formulário compacto do hero */
+.heroFormCard {
+  background: var(--neutral-white);
+  color: var(--neutral-dark);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  scroll-margin-top: 90px;
+}
+
+.heroFormTitle {
+  font-size: 1.3rem;
+  line-height: 1.3;
+  color: var(--primary-dark);
+  margin-bottom: 1.1rem;
+  font-weight: 800;
+}
+
+.heroForm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.heroField {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.heroField label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--primary-dark);
+}
+
+.optional {
+  font-weight: 400;
+  color: var(--neutral-muted);
+}
+
+.heroField input,
+.heroField select {
+  width: 100%;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--neutral-border);
+  border-radius: var(--radius-md);
+  font-size: 0.95rem;
+  font-family: inherit;
+  background: #fff;
+  color: var(--neutral-dark);
+}
+
+.heroField input:focus,
+.heroField select:focus {
+  outline: none;
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 0 3px rgba(238, 102, 28, 0.15);
+}
+
+.heroFormNote {
+  font-size: 0.78rem;
+  color: var(--neutral-muted);
+  text-align: center;
+  margin: 0;
+}
+
+.heroFormError {
+  font-size: 0.85rem;
+  color: #c0392b;
+  margin: 0;
+}
+
+.heroFormSuccess {
+  background: rgba(37, 211, 102, 0.08);
+  border: 1px solid rgba(37, 211, 102, 0.35);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  color: var(--primary-dark);
+}
+
+.heroFormSuccess p {
+  margin: 0.5rem 0 0 0;
+  font-size: 0.95rem;
+}
+
+/* ===== Como Funciona ===== */
+.stepsSection {
+  background-color: var(--neutral-light);
+  border-bottom: 1px solid var(--neutral-border);
+}
+
+.sectionTitle {
+  font-size: clamp(1.7rem, 3.2vw, 2.2rem);
+  color: var(--primary-dark);
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.stepsGrid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+}
+
+@media (min-width: 768px) {
+  .stepsGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3rem;
+  }
+}
+
+.stepCard {
+  position: relative;
+  background: var(--neutral-white);
+  border: 1px solid var(--neutral-border);
+  border-radius: var(--radius-lg);
+  padding: 2.25rem 1.5rem 1.75rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.stepNumber {
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--secondary-color);
+  color: #fff;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+}
+
+.stepIcon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(238, 102, 28, 0.1);
+  color: var(--secondary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stepCard h3 {
+  font-size: 1.2rem;
+  color: var(--primary-dark);
+  font-weight: 700;
+}
+
+.stepCard p {
+  font-size: 0.95rem;
+  color: var(--neutral-muted);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.stepArrow {
+  position: absolute;
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--secondary-color);
+  bottom: -2.35rem;
+  left: 50%;
+  transform: translateX(-50%) rotate(90deg);
+}
+
+@media (min-width: 768px) {
+  .stepArrow {
+    bottom: auto;
+    top: 50%;
+    left: auto;
+    right: -2.25rem;
+    transform: translateY(-50%);
+  }
+}
+
+/* ===== Por que a RMJ ===== */
+.whySection {
+  background-color: var(--neutral-light);
+  border-top: 1px solid var(--neutral-border);
+}
+
+.whyGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+  align-items: center;
+}
+
+@media (min-width: 992px) {
+  .whyGrid {
+    grid-template-columns: 1.4fr 0.6fr;
+  }
+}
+
+.whyList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.whyList li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 1.08rem;
+  color: var(--neutral-dark);
+  line-height: 1.55;
+}
+
+.whyCheck {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--secondary-color);
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+}
+
+.badge {
+  background: var(--neutral-white);
+  border: 2px solid var(--primary-color);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+  max-width: 320px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.badgeLabel {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--primary-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  line-height: 1.3;
+}
+
+.badgeSub {
+  font-size: 0.85rem;
+  color: var(--neutral-muted);
+}
+
+/* ===== CTA final ===== */
+.finalCta {
+  background-color: var(--primary-dark);
+  color: var(--neutral-white);
+}
+
+.finalCtaTitle {
+  font-size: clamp(1.6rem, 3vw, 2.1rem);
+  color: var(--neutral-white);
+  margin-bottom: 1.75rem;
+  font-weight: 800;
+}
+
+.finalCtaBack {
+  margin: 1.25rem 0 0 0;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.98rem;
+}
+
+.finalCtaBack a {
+  color: var(--secondary-color);
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+/* ===== Slide-in de captação ===== */
+.slideIn {
+  position: fixed;
+  right: 30px;
+  bottom: 106px; /* acima do botão flutuante de WhatsApp (30px + 60px + folga) */
+  width: 320px;
+  max-width: calc(100vw - 40px);
+  background: var(--neutral-white);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+  border-top: 4px solid #25D366;
+  padding: 1.35rem 1.25rem 1.25rem;
+  z-index: 998;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  animation: slideInUp 0.4s ease;
+}
+
+@media (max-width: 576px) {
+  .slideIn {
+    right: 20px;
+    left: 20px;
+    width: auto;
+    bottom: 100px;
+  }
+}
+
+.slideInText {
+  margin: 0;
+  padding-right: 1.25rem;
+  font-size: 0.98rem;
+  line-height: 1.5;
+  color: var(--primary-dark);
+}
+
+.slideInClose {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: transparent;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--neutral-muted);
+  cursor: pointer;
+}
+
+.slideInClose:hover {
+  color: var(--primary-dark);
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

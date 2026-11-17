@@ -13,11 +13,9 @@ interface Slide {
   highlight: string;
   description: string;
   bgImage: string;
-  mobileBgImage?: string;
   primaryLink: string;
-  primaryText?: string;
-  secondaryLink: string;
-  secondaryText: string;
+  secondaryLink?: string;
+  secondaryText?: string;
   duration?: number;
 }
 
@@ -26,16 +24,12 @@ const slides: Slide[] = [
     id: 'black-friday-bdmg',
     isCampaignBanner: true,
     logo: null,
-    title: 'Black Friday Crédito BDMG: ',
+    title: 'Black Friday Crédito BDMG',
     highlight: 'Taxas a partir de Selic + 4,0% a.a.',
     description: 'Campanha exclusiva BDMG para impulsionar sua empresa com as menores taxas do mercado e prazos estendidos.',
     bgImage: '/assets/banner-black-friday-hero.jpg',
-    mobileBgImage: '/assets/banner-black-friday-mobile-final.jpg',
-    primaryLink: '/credito-bdmg#simular',
-    primaryText: 'Quero Aproveitar a Black Friday',
-    secondaryLink: 'https://wa.me/5535991084513?text=Ol%C3%A1!%20Gostaria%20de%20aproveitar%20as%20condi%C3%A7%C3%B5es%20exclusivas%20da%20Black%20Friday%20BDMG.',
-    secondaryText: 'Falar no WhatsApp',
-    duration: 11000 // 11 segundos de transição para dar destaque à campanha
+    primaryLink: '/black-friday-bdmg',
+    duration: 11000 // 11 segundos de destaque na tela
   },
   {
     id: 'bdmg',
@@ -106,40 +100,19 @@ export default function HeroCarousel() {
       style={{ backgroundImage: `url(${slide.bgImage})` }}
     >
       <div className={slide.isCampaignBanner ? styles.heroOverlayCampaign : styles.heroOverlay}></div>
-      <div className={`container ${styles.heroContainer}`}>
-        {slide.isCampaignBanner ? (
-          <div className={styles.campaignContainer} key={slide.id}>
-            {/* Título e descrição acessíveis para SEO e leitores de tela */}
-            <h1 className="sr-only">
-              {slide.title}{slide.highlight}
-            </h1>
-            <p className="sr-only">
-              {slide.description}
-            </p>
-
-            <div className={styles.campaignButtons}>
-              <Link href={slide.primaryLink} className={styles.btnBlackFriday}>
-                <span>⚡</span>
-                {slide.primaryText || 'Quero Minha Análise Gratuita'}
-              </Link>
-              <a 
-                href={slide.secondaryLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.btnWhatsappBf}
-              >
-                <Image 
-                  src="/assets/whatsapp-icon.png" 
-                  alt="WhatsApp" 
-                  width={20} 
-                  height={20} 
-                  style={{ objectFit: 'contain' }}
-                />
-                {slide.secondaryText}
-              </a>
-            </div>
-          </div>
-        ) : (
+      
+      {slide.isCampaignBanner ? (
+        <Link 
+          href={slide.primaryLink} 
+          className={styles.campaignLink}
+          aria-label="Acessar página especial da Black Friday Crédito BDMG"
+        >
+          <span className="sr-only">
+            {slide.title} - {slide.highlight} - {slide.description}
+          </span>
+        </Link>
+      ) : (
+        <div className={`container ${styles.heroContainer}`}>
           <div className={styles.heroContent} key={slide.id}>
             <div className={styles.heroPartnerIntegrated}>
               {slide.logo && (
@@ -164,20 +137,25 @@ export default function HeroCarousel() {
               <Link href={slide.primaryLink} className="btn btn-primary">
                 Simular Crédito Agora
               </Link>
-              <Link href={slide.secondaryLink} className="btn btn-outline">
-                {slide.secondaryText}
-              </Link>
+              {slide.secondaryLink && slide.secondaryText && (
+                <Link href={slide.secondaryLink} className="btn btn-outline">
+                  {slide.secondaryText}
+                </Link>
+              )}
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       <div className={styles.carouselIndicators}>
         {slides.map((_, index) => (
           <button 
             key={index} 
             className={`${styles.indicator} ${index === currentSlide ? styles.active : ''}`}
-            onClick={() => setCurrentSlide(index)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setCurrentSlide(index);
+            }}
             aria-label={`Ir para o slide ${index + 1}`}
           />
         ))}

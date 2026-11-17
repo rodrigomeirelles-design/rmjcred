@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { updatePropostaField, deletePropostaRow, deletePropostaImovelRow, getPropostaById } from "@/lib/sheets";
 import { createCalendarEvent } from "@/lib/calendar";
-import { isValidDate90d30d } from "@/types";
+import { validateEventoDate, validateFollowupDate } from "@/types";
 
 export async function PATCH(
   req: NextRequest,
@@ -11,19 +11,30 @@ export async function PATCH(
     const { id } = await params;
     const body = await req.json();
 
-    // Validações de data e valor (Regra 6)
-    if (body.data_recusa && !isValidDate90d30d(body.data_recusa)) {
-      return NextResponse.json(
-        { success: false, error: "Data de recusa inválida. Deve estar entre 90 dias atrás e 30 dias à frente." },
-        { status: 400 }
-      );
+    const propostaAnterior = await getPropostaById(id);
+    const timestampEnvio = propostaAnterior?.timestamp_envio;
+
+    // a) data_liberacao e data_recusa: válidas entre timestamp_envio daquela proposta e hoje + 30 dias
+    if (body.data_recusa) {
+      const check = validateEventoDate(body.data_recusa, timestampEnvio);
+      if (!check.valid) {
+        return NextResponse.json({ success: false, error: check.error }, { status: 400 });
+      }
     }
 
-    if (body.data_liberacao && !isValidDate90d30d(body.data_liberacao)) {
-      return NextResponse.json(
-        { success: false, error: "Data de liberação inválida. Deve estar entre 90 dias atrás e 30 dias à frente." },
-        { status: 400 }
-      );
+    if (body.data_liberacao) {
+      const check = validateEventoDate(body.data_liberacao, timestampEnvio);
+      if (!check.valid) {
+        return NextResponse.json({ success: false, error: check.error }, { status: 400 });
+      }
+    }
+
+    // b) followup_data: de hoje até 24 meses à frente
+    if (body.followup_data) {
+      const check = validateFollowupDate(body.followup_data);
+      if (!check.valid) {
+        return NextResponse.json({ success: false, error: check.error }, { status: 400 });
+      }
     }
 
     if (body.valor_solicitado !== undefined && body.valor_solicitado !== null) {
@@ -35,8 +46,6 @@ export async function PATCH(
         );
       }
     }
-    
-    const propostaAnterior = await getPropostaById(id);
     
     await updatePropostaField(id, body);
     

@@ -346,22 +346,116 @@ export function resolveTipoPessoa(
   return "PF";
 }
 
-export function isValidDate90d30d(dateStr: string): boolean {
-  if (!dateStr) return false;
-  const d = new Date(dateStr.includes("T") ? dateStr : `${dateStr}T12:00:00`);
-  if (isNaN(d.getTime())) return false;
-  const now = new Date();
-  const min = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 90, 0, 0, 0);
-  const max = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 30, 23, 59, 59);
-  return d >= min && d <= max;
+export interface DateValidationResult {
+  valid: boolean;
+  error?: string;
 }
 
-export function getDateRangeLimits() {
+export function parseDateSafe(input?: string | null): Date | null {
+  if (!input) return null;
+  const str = String(input).trim();
+  if (!str) return null;
+
+  const brMatch = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (brMatch) {
+    const d = new Date(parseInt(brMatch[3], 10), parseInt(brMatch[2], 10) - 1, parseInt(brMatch[1], 10), 12, 0, 0);
+    return isNaN(d.getTime()) ? null : d;
+  }
+
+  const isoDateMatch = str.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if (isoDateMatch) {
+    const d = new Date(parseInt(isoDateMatch[1], 10), parseInt(isoDateMatch[2], 10) - 1, parseInt(isoDateMatch[3], 10), 12, 0, 0);
+    return isNaN(d.getTime()) ? null : d;
+  }
+
+  const d = new Date(str);
+  return isNaN(d.getTime()) ? null : d;
+}
+
+export function toDateInputFormat(d: Date): string {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+export function formatDateDisplay(d: Date): string {
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const year = d.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
+/**
+ * Regra A: data_liberacao e data_recusa são válidas entre o timestamp_envio
+ * da proposta e hoje + 30 dias.
+ */
+export function getEventoDateLimits(timestampEnvio?: string | null): { min: string; max: string; minDateDisplay: string } {
   const now = new Date();
-  const min = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 90);
-  const max = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 30);
-  const toISO = (date: Date) => date.toISOString().split("T")[0];
-  return { min: toISO(min), max: toISO(max) };
+  const max = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 30, 12, 0, 0);
+  let minDate = new Date(2024, 0, 1, 12, 0, 0);
+  if (timestampEnvio) {
+    const parsed = parseDateSafe(timestampEnvio);
+    if (parsed) minDate = parsed;
+  }
+  return {
+    min: toDateInputFormat(minDate),
+    max: toDateInputFormat(max),
+    minDateDisplay: formatDateDisplay(minDate),
+  };
+}
+
+export function validateEventoDate(dateStr: string, timestampEnvio?: string | null): DateValidationResult {
+  if (!dateStr) return { valid: false, error: "Data não informada." };
+  const d = parseDateSafe(dateStr);
+  if (!d) return { valid: false, error: "Formato de data inválido." };
+
+  const limits = getEventoDateLimits(timestampEnvio);
+  const minD = parseDateSafe(limits.min);
+  const maxD = parseDateSafe(limits.max);
+  if (!minD || !maxD) return { valid: false, error: "Limites de data inválidos." };
+
+  const check = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 12, 0, 0);
+  if (check < minD || check > maxD) {
+    return {
+      valid: false,
+      error: `Data inválida. Deve estar entre a data de criação da proposta (${limits.minDateDisplay}) e até 30 dias à frente.`,
+    };
+  }
+  return { valid: true };
+}
+
+/**
+ * Regra B: followup_data é válida de hoje até 24 meses à frente.
+ */
+export function getFollowupDateLimits(): { min: string; max: string } {
+  const now = new Date();
+  const min = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 12, 0, 0);
+  const max = new Date(now.getFullYear(), now.getMonth() + 24, now.getDate(), 12, 0, 0);
+  return {
+    min: toDateInputFormat(min),
+    max: toDateInputFormat(max),
+  };
+}
+
+export function validateFollowupDate(dateStr: string): DateValidationResult {
+  if (!dateStr) return { valid: false, error: "Data de follow-up não informada." };
+  const d = parseDateSafe(dateStr);
+  if (!d) return { valid: false, error: "Formato de data de follow-up inválido." };
+
+  const limits = getFollowupDateLimits();
+  const minD = parseDateSafe(limits.min);
+  const maxD = parseDateSafe(limits.max);
+  if (!minD || !maxD) return { valid: false, error: "Limites de follow-up inválidos." };
+
+  const check = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 12, 0, 0);
+  if (check < minD || check > maxD) {
+    return {
+      valid: false,
+      error: "Data de follow-up inválida. Deve estar entre hoje e até 24 meses à frente.",
+    };
+  }
+  return { valid: true };
 }
 
 export const KANBAN_COLUMNS: { id: KanbanColumn; label: string; fase: number }[] = [

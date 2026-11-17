@@ -7,7 +7,7 @@ import {
 } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Proposta, type KanbanColumn, KANBAN_COLUMNS, getComissaoRate, resolveTipoPessoa, isValidDate90d30d, getDateRangeLimits } from "@/types";
+import { Proposta, type KanbanColumn, KANBAN_COLUMNS, getComissaoRate, resolveTipoPessoa, getEventoDateLimits, validateEventoDate } from "@/types";
 import { PropostaImovel } from "@/types/imovel";
 import { formatMoney, formatDate, formatCNPJ, addDays, maskMoney, parseMoney } from "@/lib/utils";
 import { buildPJSections, buildPFSections, buildVeiculoSections } from "@/lib/detailSchemas";
@@ -235,8 +235,8 @@ function NaoAprovadoModal({ proposta, onConfirm, onClose }: {
 }) {
   const [motivo, setMotivo] = useState("");
   const [data, setData] = useState("");
-  const { min: minDate, max: maxDate } = getDateRangeLimits();
-  const dateValid = !data || isValidDate90d30d(data);
+  const limits = getEventoDateLimits(proposta.timestamp_envio);
+  const validation = data ? validateEventoDate(data, proposta.timestamp_envio) : { valid: true };
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
@@ -263,17 +263,17 @@ function NaoAprovadoModal({ proposta, onConfirm, onClose }: {
               type="date"
               className="input-base"
               value={data}
-              min={minDate}
-              max={maxDate}
+              min={limits.min}
+              max={limits.max}
               onChange={(e) => setData(e.target.value)}
             />
-            {data && !dateValid && (
+            {data && !validation.valid && (
               <p className="text-xs text-red-600 mt-1 font-medium">
-                A data deve estar entre 90 dias atrás e 30 dias à frente.
+                {validation.error}
               </p>
             )}
           </div>
-          {data && dateValid && (
+          {data && validation.valid && (
             <p className="text-xs text-amber-700 bg-amber-50 border border-amber-100 rounded-lg px-3 py-2">
               Follow-up automático em: <strong>{formatDate(addDays(data, 30))}</strong> (+30 dias)
             </p>
@@ -284,7 +284,7 @@ function NaoAprovadoModal({ proposta, onConfirm, onClose }: {
           <Button
             variant="danger"
             onClick={() => onConfirm(motivo, data)}
-            disabled={!motivo.trim() || !data || !dateValid}
+            disabled={!motivo.trim() || !data || !validation.valid}
             className="flex-1"
           >
             Confirmar
@@ -303,6 +303,8 @@ function CreditoLiberadoModal({ proposta, onConfirm, onClose }: {
   onClose: () => void;
 }) {
   const [data, setData] = useState(new Date().toISOString().split("T")[0]);
+  const limits = getEventoDateLimits(proposta.timestamp_envio);
+  const validation = data ? validateEventoDate(data, proposta.timestamp_envio) : { valid: true };
   const comissao = calcComissao(proposta);
 
   return (
@@ -317,7 +319,19 @@ function CreditoLiberadoModal({ proposta, onConfirm, onClose }: {
         <div className="p-5 space-y-4">
           <div>
             <label className="label-base mb-1">Data de liberação do crédito <span className="text-red-500">*</span></label>
-            <input type="date" className="input-base" value={data} onChange={(e) => setData(e.target.value)} />
+            <input
+              type="date"
+              className="input-base"
+              value={data}
+              min={limits.min}
+              max={limits.max}
+              onChange={(e) => setData(e.target.value)}
+            />
+            {data && !validation.valid && (
+              <p className="text-xs text-red-600 mt-1 font-medium">
+                {validation.error}
+              </p>
+            )}
           </div>
           {data && (
             <div className="bg-green-50 border border-green-100 rounded-lg p-4 space-y-2">
@@ -339,7 +353,7 @@ function CreditoLiberadoModal({ proposta, onConfirm, onClose }: {
         </div>
         <div className="flex gap-3 p-5 border-t">
           <Button variant="ghost" onClick={onClose} className="flex-1">Cancelar</Button>
-          <Button onClick={() => onConfirm(data)} disabled={!data} className="flex-1">
+          <Button onClick={() => onConfirm(data)} disabled={!data || !validation.valid} className="flex-1">
             Confirmar
           </Button>
         </div>

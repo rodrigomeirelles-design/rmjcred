@@ -6,13 +6,10 @@ import Image from 'next/image';
 import styles from './HeroCarousel.module.css';
 
 export const BF_CAMPAIGN_CONFIG = {
-  rateSpread: "Selic + 4,0%",
-  ratePeriod: "a.a.",
-  rateEffectiveYear: "17,75% a.a.",
-  rateEffectiveMonth: "1,37% a.m.",
-  maxLimit: "500 mil",
-  maxTermMonths: 72,
-  gracePeriod: "12 meses",
+  title: "Vem aí! Black Friday Crédito BDMG",
+  dateBadge: "17/11/26",
+  subtitle: "Oportunidade exclusiva para impulsionar seus negócios.",
+  legalNotice: "Sujeito a análise e aprovação de crédito. CET informado na proposta. Condições do BDMG válidas até 30/11.",
   endDate: "2026-11-30T23:59:59-03:00",
   displayEndDate: "30/11",
 };
@@ -36,13 +33,11 @@ const allSlides: Slide[] = [
     id: 'black-friday-bdmg',
     isCampaignBanner: true,
     logo: null,
-    title: 'Capital de giro com a ',
-    highlight: 'menor taxa do ano',
-    description: '',
-    bgImage: '/assets/bf-bg-desktop.webp',
-    primaryLink: '/black-friday-bdmg#simular',
-    secondaryLink: '/black-friday-bdmg',
-    secondaryText: 'Ver condições',
+    title: 'Black Friday Crédito BDMG',
+    highlight: 'Oportunidade exclusiva para impulsionar seus negócios.',
+    description: 'Campanha oficial BDMG.',
+    bgImage: '/assets/banner-bf-oficial-desktop.webp',
+    primaryLink: '/black-friday-bdmg',
     duration: 11000 // 11 segundos de destaque na tela
   },
   {
@@ -95,35 +90,19 @@ const allSlides: Slide[] = [
   }
 ];
 
-function getRemainingTime(endDateStr: string) {
-  const diff = new Date(endDateStr).getTime() - Date.now();
-  if (diff <= 0) return null;
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  return { days, hours };
-}
-
 export default function HeroCarousel() {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [timeLeft, setTimeLeft] = useState<{ days: number; hours: number } | null>(null);
   const [campaignActive, setCampaignActive] = useState<boolean>(() => {
     return new Date().getTime() < new Date(BF_CAMPAIGN_CONFIG.endDate).getTime();
   });
 
   useEffect(() => {
-    const updateCountdown = () => {
-      const remaining = getRemainingTime(BF_CAMPAIGN_CONFIG.endDate);
-      if (!remaining) {
-        setCampaignActive(false);
-        setTimeLeft(null);
-      } else {
-        setCampaignActive(true);
-        setTimeLeft(remaining);
-      }
+    const checkExpiry = () => {
+      const active = new Date().getTime() < new Date(BF_CAMPAIGN_CONFIG.endDate).getTime();
+      setCampaignActive(active);
     };
-
-    updateCountdown();
-    const interval = setInterval(updateCountdown, 60000);
+    checkExpiry();
+    const interval = setInterval(checkExpiry, 60000);
     return () => clearInterval(interval);
   }, []);
 
@@ -153,136 +132,63 @@ export default function HeroCarousel() {
       className={`${styles.hero} ${slide.isCampaignBanner ? styles.heroCampaign : ''}`}
       style={slide.isCampaignBanner ? undefined : { backgroundImage: `url(${slide.bgImage})` }}
     >
-      <div className={slide.isCampaignBanner ? styles.heroCampaignOverlay : styles.heroOverlay}></div>
-      
       {slide.isCampaignBanner ? (
-        <div className={`container ${styles.heroContainer}`}>
-          <div className={`${styles.heroContent} ${styles.campaignHeroContent}`} key={slide.id}>
-            {/* [1] Eyebrow */}
-            <div className={styles.campaignEyebrow}>
-              <span className={styles.campaignEyebrowDot} />
-              BLACK FRIDAY DO CRÉDITO · RMJ + BDMG
-            </div>
+        <>
+          {/* Link clicável cobrindo todo o banner */}
+          <Link 
+            href={slide.primaryLink} 
+            className={styles.campaignLink}
+            aria-label="Vem aí Black Friday Crédito BDMG - Oportunidade exclusiva para impulsionar seus negócios"
+          >
+            <span className={styles.srOnly}>
+              {BF_CAMPAIGN_CONFIG.title} - {BF_CAMPAIGN_CONFIG.subtitle}
+            </span>
+          </Link>
 
-            {/* [2] Title */}
-            <h1 className={styles.heroTitle}>
-              {slide.title}
-              <span className={styles.heroTitleHighlight}>{slide.highlight}</span>
-            </h1>
-
-            {/* [3] Rate highlight */}
-            <div className={styles.campaignRateBlock}>
-              <div className={styles.campaignRateMain}>
-                <span className={styles.campaignRateNumber}>{BF_CAMPAIGN_CONFIG.rateSpread}</span>
-                <span className={styles.campaignRatePeriod}>{BF_CAMPAIGN_CONFIG.ratePeriod}</span>
-              </div>
-              <p className={styles.campaignRateSub}>
-                hoje ≈ {BF_CAMPAIGN_CONFIG.rateEffectiveYear} · {BF_CAMPAIGN_CONFIG.rateEffectiveMonth}
-              </p>
-            </div>
-
-            {/* [4] Chips */}
-            <div className={styles.campaignChips}>
-              <span className={styles.campaignChip}>até R$ {BF_CAMPAIGN_CONFIG.maxLimit}</span>
-              <span className={styles.campaignChip}>{BF_CAMPAIGN_CONFIG.maxTermMonths} meses</span>
-              <span className={styles.campaignChip}>{BF_CAMPAIGN_CONFIG.gracePeriod} de carência</span>
-            </div>
-
-            {/* [5] Action buttons */}
-            <div className={styles.heroButtons}>
-              <Link href={slide.primaryLink} className="btn btn-primary">
-                Simular minha taxa
-              </Link>
-              {slide.secondaryLink && slide.secondaryText && (
-                <Link href={slide.secondaryLink} className="btn btn-outline">
-                  {slide.secondaryText}
-                </Link>
-              )}
-            </div>
-
-            {/* [6] Deadline & countdown */}
-            <div className={styles.campaignDeadline}>
-              <svg 
-                viewBox="0 0 24 24" 
-                width="16" 
-                height="16" 
-                fill="none" 
-                stroke="currentColor" 
-                strokeWidth="2" 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                aria-hidden="true"
-              >
-                <circle cx="12" cy="12" r="10" />
-                <polyline points="12 6 12 12 16 14" />
-              </svg>
-              <span>
-                Termina em {BF_CAMPAIGN_CONFIG.displayEndDate}
-                {timeLeft && (
-                  <> · restam {timeLeft.days}d {timeLeft.hours}h</>
-                )}
-              </span>
-            </div>
-
-            {/* [7] Legal disclaimer */}
-            <p className={styles.campaignLegal}>
-              Sujeito a análise e aprovação de crédito. CET informado na proposta. Condições do BDMG válidas até {BF_CAMPAIGN_CONFIG.displayEndDate}.
+          {/* Condição legal da campanha oficial */}
+          <div className={styles.campaignLegalBar}>
+            <p className={styles.campaignLegalCondition}>
+              {BF_CAMPAIGN_CONFIG.legalNotice}
             </p>
-
-            {/* [8] Brands */}
-            <div className={styles.campaignBrands}>
-              <Image
-                src="/assets/logo-rmj-horizontal.png"
-                alt="RMJ Soluções de Crédito"
-                width={96}
-                height={32}
-                className={styles.brandRmj}
-              />
-              <span className={styles.brandSeparator}>em parceria com</span>
-              <Image
-                src="/assets/selo-parceiro-bdmg-negativo.png"
-                alt="BDMG"
-                width={90}
-                height={24}
-                className={styles.brandBdmg}
-              />
-            </div>
           </div>
-        </div>
+        </>
       ) : (
-        <div className={`container ${styles.heroContainer}`}>
-          <div className={styles.heroContent} key={slide.id}>
-            <div className={styles.heroPartnerIntegrated}>
-              {slide.logo && (
-                <Image
-                  src={slide.logo}
-                  alt="Logo Parceiro"
-                  width={150}
-                  height={92}
-                  className={styles.heroPartnerLogo}
-                  style={{ objectFit: 'contain' }}
-                  priority
-                />
-              )}
-            </div>
-            <h1 className={styles.heroTitle}>
-              {slide.title}<span className={styles.heroTitleHighlight}>{slide.highlight}</span>
-            </h1>
-            <p className={styles.heroDescription}>
-              {slide.description}
-            </p>
-            <div className={styles.heroButtons}>
-              <Link href={slide.primaryLink} className="btn btn-primary">
-                Simular Crédito Agora
-              </Link>
-              {slide.secondaryLink && slide.secondaryText && (
-                <Link href={slide.secondaryLink} className="btn btn-outline">
-                  {slide.secondaryText}
+        <>
+          <div className={styles.heroOverlay}></div>
+          <div className={`container ${styles.heroContainer}`}>
+            <div className={styles.heroContent} key={slide.id}>
+              <div className={styles.heroPartnerIntegrated}>
+                {slide.logo && (
+                  <Image
+                    src={slide.logo}
+                    alt="Logo Parceiro"
+                    width={150}
+                    height={92}
+                    className={styles.heroPartnerLogo}
+                    style={{ objectFit: 'contain' }}
+                    priority
+                  />
+                )}
+              </div>
+              <h1 className={styles.heroTitle}>
+                {slide.title}<span className={styles.heroTitleHighlight}>{slide.highlight}</span>
+              </h1>
+              <p className={styles.heroDescription}>
+                {slide.description}
+              </p>
+              <div className={styles.heroButtons}>
+                <Link href={slide.primaryLink} className="btn btn-primary">
+                  Simular Crédito Agora
                 </Link>
-              )}
+                {slide.secondaryLink && slide.secondaryText && (
+                  <Link href={slide.secondaryLink} className="btn btn-outline">
+                    {slide.secondaryText}
+                  </Link>
+                )}
+              </div>
             </div>
           </div>
-        </div>
+        </>
       )}
 
       <div className={styles.carouselIndicators}>

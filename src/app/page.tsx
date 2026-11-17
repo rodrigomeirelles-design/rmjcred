@@ -17,14 +17,14 @@ export default function Home() {
       <link
         rel="preload"
         as="image"
-        href="/assets/bf-bg-desktop.webp"
+        href="/assets/banner-bf-oficial-desktop.webp"
         type="image/webp"
         media="(min-width: 992px)"
       />
       <link
         rel="preload"
         as="image"
-        href="/assets/bf-bg-mobile.webp"
+        href="/assets/banner-bf-oficial-mobile.webp"
         type="image/webp"
         media="(max-width: 991px)"
       />

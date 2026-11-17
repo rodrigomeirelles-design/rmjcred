@@ -123,22 +123,28 @@
   border-radius: 12px;
 }
 
-/* Black Friday Campaign Slide (Official BDMG Creative) */
+/* Black Friday Campaign Slide (Material oficial Header v2) */
 .heroCampaign {
   position: relative;
-  background-image: url('/assets/banner-bf-oficial-desktop.jpg');
+  width: 100%;
+  overflow: hidden;
+  container-type: inline-size;
+  background-color: #0b0907;
+  background-image: url('/assets/banner-bf-v2-desktop.jpg');
   background-image: image-set(
-    url('/assets/banner-bf-oficial-desktop.webp') type('image/webp'),
-    url('/assets/banner-bf-oficial-desktop.jpg') type('image/jpeg')
+    url('/assets/banner-bf-v2-desktop.webp') type('image/webp'),
+    url('/assets/banner-bf-v2-desktop.jpg') type('image/jpeg')
   );
-  background-size: cover;
   background-position: center;
+  background-size: cover;
   background-repeat: no-repeat;
-  min-height: 595px;
+  color: #fff;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  padding: 0;
+  min-height: 595px;
 }
 
 @media (min-width: 992px) {
@@ -147,18 +153,77 @@
   }
 }
 
-@media (max-width: 991px) {
-  .heroCampaign {
-    background-image: url('/assets/banner-bf-oficial-mobile.jpg');
-    background-image: image-set(
-      url('/assets/banner-bf-oficial-mobile.webp') type('image/webp'),
-      url('/assets/banner-bf-oficial-mobile.jpg') type('image/jpeg')
-    );
-    background-position: center top;
-    min-height: 560px;
-  }
+.campaignBannerContainer {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 
+/* Sombra radial suave na área do restaurante para destacar a taxa */
+.campaignBannerContainer::before {
+  content: '';
+  position: absolute;
+  left: 44%;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  pointer-events: none;
+  background: radial-gradient(60% 70% at 62% 45%, rgba(8, 6, 4, 0.62) 0%, rgba(8, 6, 4, 0) 100%);
+  z-index: 1;
+}
+
+/* Bloco Selic + 4,0% a.a. exatamente como no Header v2 */
+.campaignSelicBlock {
+  position: absolute;
+  left: 57%;
+  top: 50%;
+  transform: translateY(-60%);
+  width: max-content;
+  white-space: nowrap;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 0.88;
+  text-shadow: 0 0.5cqw 2.4cqw rgba(0, 0, 0, 0.6);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.campaignSelicLabel {
+  font-family: var(--font-poppins, 'Poppins', sans-serif, system-ui);
+  font-weight: 800;
+  font-style: italic;
+  font-size: 5cqw;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+}
+
+.campaignSelicRateRow {
+  display: flex;
+  align-items: baseline;
+  gap: 0.9cqw;
+}
+
+.campaignSelicRate {
+  font-family: var(--font-poppins, 'Poppins', sans-serif, system-ui);
+  font-weight: 900;
+  font-style: italic;
+  font-size: 8cqw;
+  color: #FFD400;
+  letter-spacing: -0.045em;
+}
+
+.campaignSelicPeriod {
+  font-family: var(--font-poppins, 'Poppins', sans-serif, system-ui);
+  font-weight: 800;
+  font-style: italic;
+  font-size: 2.6cqw;
+  color: #ffffff;
+}
+
+/* Link clicavel cobrindo todo o banner */
 .campaignLink {
   position: absolute;
   inset: 0;
@@ -167,6 +232,7 @@
   display: block;
 }
 
+/* Rodapé em branco, pequenininho */
 .campaignLegalBar {
   position: relative;
   z-index: 6;
@@ -178,26 +244,41 @@
 }
 
 .campaignLegalCondition {
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.75);
-  background: rgba(8, 8, 10, 0.72);
-  backdrop-filter: blur(6px);
-  padding: 0.35rem 1.15rem;
-  border-radius: 9999px;
+  font-size: clamp(10px, 0.95cqw, 12px);
+  color: #ffffff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9), 0 2px 6px rgba(0, 0, 0, 0.7);
   margin: 0 1rem;
   text-align: center;
   max-width: 90%;
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  line-height: 1.35;
+  opacity: 0.95;
 }
 
-@media (max-width: 767px) {
-  .campaignLegalCondition {
-    font-size: 0.6875rem;
-    padding: 0.35rem 0.85rem;
-    line-height: 1.35;
+/* Mobile: usa o WhatsApp Image vertical oficial da campanha em alta definicao */
+@media (max-width: 991px) {
+  .heroCampaign {
+    min-height: 560px;
+    background-image: url('/assets/banner-bf-v2-mobile.jpg');
+    background-image: image-set(
+      url('/assets/banner-bf-v2-mobile.webp') type('image/webp'),
+      url('/assets/banner-bf-v2-mobile.jpg') type('image/jpeg')
+    );
+    background-position: center top;
+  }
+  .campaignBannerContainer::before {
+    display: none;
+  }
+  .campaignSelicBlock {
+    display: none; /* A peca mobile oficial em alta definicao ja traz a taxa perfeitamente diagramada */
   }
   .campaignLegalBar {
     padding-bottom: 3.25rem;
+  }
+  .campaignLegalCondition {
+    font-size: 10px;
+    background: rgba(8, 6, 4, 0.75);
+    padding: 3px 12px;
+    border-radius: 999px;
   }
 }
 

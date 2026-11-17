@@ -7,7 +7,8 @@ import styles from './HeroCarousel.module.css';
 
 export const BF_CAMPAIGN_CONFIG = {
   title: "Vem aí! Black Friday Crédito BDMG",
-  dateBadge: "17/11/26",
+  rateSpread: "Selic + 4,0%",
+  ratePeriod: "a.a.",
   subtitle: "Oportunidade exclusiva para impulsionar seus negócios.",
   legalNotice: "Sujeito a análise e aprovação de crédito. CET informado na proposta. Condições do BDMG válidas até 30/11.",
   endDate: "2026-11-30T23:59:59-03:00",
@@ -34,9 +35,9 @@ const allSlides: Slide[] = [
     isCampaignBanner: true,
     logo: null,
     title: 'Black Friday Crédito BDMG',
-    highlight: 'Oportunidade exclusiva para impulsionar seus negócios.',
+    highlight: 'Selic + 4,0% a.a.',
     description: 'Campanha oficial BDMG.',
-    bgImage: '/assets/banner-bf-oficial-desktop.webp',
+    bgImage: '/assets/banner-bf-v2-desktop.webp',
     primaryLink: '/black-friday-bdmg',
     duration: 11000 // 11 segundos de destaque na tela
   },
@@ -133,25 +134,34 @@ export default function HeroCarousel() {
       style={slide.isCampaignBanner ? undefined : { backgroundImage: `url(${slide.bgImage})` }}
     >
       {slide.isCampaignBanner ? (
-        <>
+        <div className={styles.campaignBannerContainer}>
           {/* Link clicável cobrindo todo o banner */}
           <Link 
             href={slide.primaryLink} 
             className={styles.campaignLink}
-            aria-label="Vem aí Black Friday Crédito BDMG - Oportunidade exclusiva para impulsionar seus negócios"
+            aria-label="Vem aí Black Friday Crédito BDMG - Selic + 4,0% a.a."
           >
             <span className={styles.srOnly}>
-              {BF_CAMPAIGN_CONFIG.title} - {BF_CAMPAIGN_CONFIG.subtitle}
+              {BF_CAMPAIGN_CONFIG.title} - {BF_CAMPAIGN_CONFIG.rateSpread} {BF_CAMPAIGN_CONFIG.ratePeriod} - {BF_CAMPAIGN_CONFIG.subtitle}
             </span>
           </Link>
 
-          {/* Condição legal da campanha oficial */}
+          {/* Destaque Selic + 4,0% a.a. conforme Header v2 oficial */}
+          <div className={styles.campaignSelicBlock}>
+            <span className={styles.campaignSelicLabel}>Selic</span>
+            <div className={styles.campaignSelicRateRow}>
+              <span className={styles.campaignSelicRate}>+ 4,0%</span>
+              <span className={styles.campaignSelicPeriod}>a.a.</span>
+            </div>
+          </div>
+
+          {/* Rodapé do banner em branco, pequenininho */}
           <div className={styles.campaignLegalBar}>
             <p className={styles.campaignLegalCondition}>
               {BF_CAMPAIGN_CONFIG.legalNotice}
             </p>
           </div>
-        </>
+        </div>
       ) : (
         <>
           <div className={styles.heroOverlay}></div>

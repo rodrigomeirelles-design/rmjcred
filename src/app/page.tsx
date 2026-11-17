@@ -28,6 +28,20 @@ export default function Home() {
         type="image/webp"
         media="(max-width: 991px)"
       />
+      <link
+        rel="preload"
+        as="image"
+        href="/assets/banner-consorcio-black-desktop.webp"
+        type="image/webp"
+        media="(min-width: 992px)"
+      />
+      <link
+        rel="preload"
+        as="image"
+        href="/assets/banner-consorcio-black-mobile.webp"
+        type="image/webp"
+        media="(max-width: 991px)"
+      />
 
       {/* 1. Hero Section */}
       <HeroCarousel />

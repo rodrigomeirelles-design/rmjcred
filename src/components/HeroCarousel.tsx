@@ -18,6 +18,7 @@ export const BF_CAMPAIGN_CONFIG = {
 interface Slide {
   id: string;
   isCampaignBanner?: boolean;
+  isConsorcioBanner?: boolean;
   logo?: string | null;
   title: string;
   highlight: string;
@@ -39,6 +40,17 @@ const allSlides: Slide[] = [
     description: 'Campanha oficial BDMG.',
     bgImage: '/assets/banner-bf-v2-desktop.webp',
     primaryLink: '/black-friday-bdmg',
+    duration: 11000 // 11 segundos de destaque na tela
+  },
+  {
+    id: 'black-friday-consorcio',
+    isConsorcioBanner: true,
+    logo: null,
+    title: 'A Black do consórcio que mais cresce no Brasil',
+    highlight: '60% de redução até a contemplação',
+    description: 'Cotas limitadas! Garanta já a sua.',
+    bgImage: '/assets/banner-consorcio-black-desktop.webp',
+    primaryLink: '/consorcios#simular',
     duration: 11000 // 11 segundos de destaque na tela
   },
   {
@@ -109,7 +121,7 @@ export default function HeroCarousel() {
 
   const slides = campaignActive
     ? allSlides
-    : allSlides.filter((s) => !s.isCampaignBanner);
+    : allSlides.filter((s) => !s.isCampaignBanner && !s.isConsorcioBanner);
 
   const safeSlideIndex = currentSlide >= slides.length ? 0 : currentSlide;
   const slide = slides[safeSlideIndex];
@@ -130,8 +142,11 @@ export default function HeroCarousel() {
 
   return (
     <section 
-      className={`${styles.hero} ${slide.isCampaignBanner ? styles.heroCampaign : ''}`}
-      style={slide.isCampaignBanner ? undefined : { backgroundImage: `url(${slide.bgImage})` }}
+      className={`${styles.hero} ${
+        slide.isCampaignBanner ? styles.heroCampaign :
+        slide.isConsorcioBanner ? styles.heroConsorcioCampaign : ''
+      }`}
+      style={(slide.isCampaignBanner || slide.isConsorcioBanner) ? undefined : { backgroundImage: `url(${slide.bgImage})` }}
     >
       {slide.isCampaignBanner ? (
         <div className={styles.campaignBannerContainer}>
@@ -160,6 +175,62 @@ export default function HeroCarousel() {
             <p className={styles.campaignLegalCondition}>
               {BF_CAMPAIGN_CONFIG.legalNotice}
             </p>
+          </div>
+        </div>
+      ) : slide.isConsorcioBanner ? (
+        <div className={styles.consorcioBannerInner}>
+          <picture className={styles.consorcioPicture}>
+            <source
+              media="(min-width: 992px)"
+              srcSet="/assets/banner-consorcio-black-desktop.webp"
+              type="image/webp"
+            />
+            <source
+              media="(min-width: 992px)"
+              srcSet="/assets/banner-consorcio-black-desktop.jpg"
+              type="image/jpeg"
+            />
+            <source
+              srcSet="/assets/banner-consorcio-black-mobile.webp"
+              type="image/webp"
+            />
+            <img
+              src="/assets/banner-consorcio-black-mobile.jpg"
+              alt="A Black do consórcio que mais cresce no Brasil - 60% de redução até a contemplação"
+              className={styles.consorcioImg}
+              loading="eager"
+            />
+          </picture>
+
+          {/* Link clicável cobrindo todo o banner */}
+          <Link 
+            href={slide.primaryLink} 
+            className={styles.campaignLink}
+            aria-label="A Black do consórcio que mais cresce no Brasil - 60% de redução até a contemplação - Solicitar Simulação"
+          >
+            <span className={styles.srOnly}>
+              A Black do consórcio que mais cresce no Brasil. 60% de redução até a contemplação. Cotas limitadas! Garanta já a sua. Solicitar simulação.
+            </span>
+          </Link>
+
+          {/* Botão para solicitar simulação posicionado no espaço abaixo da tabela */}
+          <div className={styles.consorcioCtaWrapper}>
+            <Link href={slide.primaryLink} className={styles.btnConsorcioCta}>
+              <span>Solicitar Simulação</span>
+              <svg 
+                viewBox="0 0 24 24" 
+                width="18" 
+                height="18" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2.5" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                aria-hidden="true"
+              >
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </Link>
           </div>
         </div>
       ) : (

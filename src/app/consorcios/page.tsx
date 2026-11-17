@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import styles from "./page.module.css";
-import LeadForm from "@/components/LeadForm";
+import ConsorcioSimulator from "@/components/ConsorcioSimulator";
 import { useState } from "react";
 
 export default function Consorcios() {
@@ -11,10 +11,7 @@ export default function Consorcios() {
   const [openFaq, setOpenFaq] = useState<string | null>(null);
   const toggleFaq = (id: string) => setOpenFaq(openFaq === id ? null : id);
 
-  // --- Simulator State ---
-  const [simStep, setSimStep] = useState<1 | 2>(1);
-  const [simTipo, setSimTipo] = useState("Imóveis");
-  const [simValor, setSimValor] = useState("");
+
 
   const faqGroups = [
     {
@@ -239,76 +236,61 @@ export default function Consorcios() {
         </div>
       </section>
 
-      {/* ── 6. SIMULADOR ─────────────────────────────────────── */}
+      {/* ── 6. SIMULADOR BLACK FRIDAY ───────────────────────── */}
       <section className={`${styles.ctaSection} section`} id="simular">
         <div className={`${styles.ctaContainer} container`}>
-          <div className={styles.titleContainer}>
-            <span className={styles.simBadge}>Simulação Gratuita</span>
-            <h2 className={styles.simHeading}>Simule seu Consórcio</h2>
-            <p className={styles.leadText}>
-              Em dois passos rápidos, nosso time apresentará as melhores opções de grupos, prazos e lances para o seu planejamento.
+          <div className={styles.simInfoCol}>
+            <span className={styles.simBadge}>Campanha Black Friday</span>
+            <h2 className={styles.simHeading}>
+              Simule seu Consórcio com até 60% de Redução
+            </h2>
+            <p className={styles.simLeadText}>
+              Descubra em segundos as condições exclusivas da maior campanha do ano. Sem juros bancários, com parcelas reduzidas até a contemplação e assessoria 100% gratuita.
             </p>
 
-            {simStep === 1 && (
-              <div className={styles.simCard}>
-                <p className={styles.simStepLabel}>Etapa 1 de 2 — O que você deseja adquirir?</p>
-                <div className={styles.simField}>
-                  <label className={styles.simLabel}>Tipo de bem</label>
-                  <select
-                    className={styles.simSelect}
-                    value={simTipo}
-                    onChange={(e) => setSimTipo(e.target.value)}
-                  >
-                    <option>Imóveis</option>
-                    <option>Veículos</option>
-                    <option>Motos</option>
-                    <option>Serviços</option>
-                  </select>
+            <div className={styles.simBenefitsList}>
+              <div className={styles.simBenefitItem}>
+                <span className={styles.simBenefitIcon}>🔥</span>
+                <div>
+                  <strong>Plano 60% Black Friday:</strong> Redução especial no fundo comum até o momento da sua contemplação.
                 </div>
-                <div className={styles.simField}>
-                  <label className={styles.simLabel}>Valor desejado (R$)</label>
-                  <input
-                    type="text"
-                    className={styles.simInput}
-                    placeholder="Ex: R$ 250.000,00"
-                    value={simValor}
-                    onChange={(e) => setSimValor(e.target.value)}
-                  />
-                </div>
-                <button
-                  className={styles.simBtn}
-                  onClick={() => simValor.trim() && setSimStep(2)}
-                >
-                  Simular →
-                </button>
               </div>
-            )}
+              <div className={styles.simBenefitItem}>
+                <span className={styles.simBenefitIcon}>⚡</span>
+                <div>
+                  <strong>Zero Juros:</strong> Economia real de até centenas de milhares de reais frente ao financiamento bancário comum.
+                </div>
+              </div>
+              <div className={styles.simBenefitItem}>
+                <span className={styles.simBenefitIcon}>🏠</span>
+                <div>
+                  <strong>Poder de Compra à Vista:</strong> Compre qualquer imóvel novo, usado, terreno ou veículo com poder de negociação.
+                </div>
+              </div>
+              <div className={styles.simBenefitItem}>
+                <span className={styles.simBenefitIcon}>🤝</span>
+                <div>
+                  <strong>Assessoria Estratégica Gratuita:</strong> Equipe especialista da RMJ orientando o melhor grupo e lances assertivos.
+                </div>
+              </div>
+            </div>
 
-            {simStep === 2 && (
-              <div className={styles.simCard}>
-                <p className={styles.simStepLabel}>Etapa 2 de 2 — Seus dados de contato</p>
-                <button
-                  className={styles.simBackBtn}
-                  onClick={() => setSimStep(1)}
-                >
-                  ← Voltar e alterar
-                </button>
-                <div className={styles.simSummary}>
-                  <span>📋 {simTipo}</span>
-                  <span>💰 {simValor}</span>
-                </div>
-              </div>
-            )}
+            <div className={styles.simTrustBlock}>
+              <p>Prefere tirar dúvidas diretamente com nosso time?</p>
+              <a 
+                href="https://wa.me/5535991084513?text=Ol%C3%A1!%20Gostaria%20de%20informa%C3%A7%C3%B5es%20sobre%20a%20Black%20Friday%20de%20Cons%C3%B3rcio%20da%20RMJ"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.simWhatsappLink}
+              >
+                <span>💬 Falar no WhatsApp com Consultor RMJ &rarr;</span>
+              </a>
+            </div>
           </div>
 
-          {simStep === 2 && (
-            <div>
-              <LeadForm
-                defaultService={`Consórcios — ${simTipo}`}
-                defaultValor={simValor}
-              />
-            </div>
-          )}
+          <div className={styles.simFormCol}>
+            <ConsorcioSimulator />
+          </div>
         </div>
       </section>
     </>

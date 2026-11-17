@@ -9,6 +9,30 @@ interface LeadFormProps {
   defaultValor?: string;
 }
 
+const normalizeService = (svc: string) => {
+  if (!svc) return "BDMG";
+  const s = svc.toLowerCase();
+  if (s.includes("consorcio") || s.includes("consórcio")) return "Consórcios";
+  if (s.includes("imobiliario") || s.includes("imobiliário")) return "Crédito Imobiliário";
+  if (s.includes("home equity")) return "Home Equity";
+  if (s.includes("garantia") && s.includes("veiculo")) return "Garantia de Veículo";
+  if (s.includes("veiculo") || s.includes("veículo")) return "Veículos";
+  if (s.includes("bdmg") || s.includes("giro")) return "BDMG";
+  return svc;
+};
+
+const formatInitialCurrency = (val: string) => {
+  if (!val) return "";
+  if (val.startsWith("R$")) return val;
+  const clean = val.replace(/\D/g, "");
+  if (!clean) return "";
+  const num = parseInt(clean, 10);
+  return new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  }).format(num);
+};
+
 export default function LeadForm({ defaultService = "BDMG", defaultValor = "" }: LeadFormProps) {
   const [formData, setFormData] = useState({
     nome: "",
@@ -16,8 +40,8 @@ export default function LeadForm({ defaultService = "BDMG", defaultValor = "" }:
     telefone: "",
     empresa: "",
     cnpj: "",
-    servico: defaultService,
-    valor: defaultValor,
+    servico: normalizeService(defaultService),
+    valor: formatInitialCurrency(defaultValor),
     marcaModelo: "",
     anoVeiculo: "",
     valorVeiculo: "",

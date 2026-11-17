@@ -13,6 +13,22 @@ export const metadata = {
 export default function Home() {
   return (
     <>
+      {/* Preload hero campaign backgrounds for fast LCP without duplicate downloads */}
+      <link
+        rel="preload"
+        as="image"
+        href="/assets/bf-bg-desktop.webp"
+        type="image/webp"
+        media="(min-width: 992px)"
+      />
+      <link
+        rel="preload"
+        as="image"
+        href="/assets/bf-bg-mobile.webp"
+        type="image/webp"
+        media="(max-width: 991px)"
+      />
+
       {/* 1. Hero Section */}
       <HeroCarousel />
 

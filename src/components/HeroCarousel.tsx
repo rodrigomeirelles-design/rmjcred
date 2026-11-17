@@ -5,6 +5,18 @@ import Link from 'next/link';
 import Image from 'next/image';
 import styles from './HeroCarousel.module.css';
 
+export const BF_CAMPAIGN_CONFIG = {
+  rateSpread: "Selic + 4,0%",
+  ratePeriod: "a.a.",
+  rateEffectiveYear: "17,75% a.a.",
+  rateEffectiveMonth: "1,37% a.m.",
+  maxLimit: "500 mil",
+  maxTermMonths: 72,
+  gracePeriod: "12 meses",
+  endDate: "2026-11-30T23:59:59-03:00",
+  displayEndDate: "30/11",
+};
+
 interface Slide {
   id: string;
   isCampaignBanner?: boolean;
@@ -19,16 +31,18 @@ interface Slide {
   duration?: number;
 }
 
-const slides: Slide[] = [
+const allSlides: Slide[] = [
   {
     id: 'black-friday-bdmg',
     isCampaignBanner: true,
     logo: null,
-    title: 'Black Friday Crédito BDMG',
-    highlight: 'Taxas a partir de Selic + 4,0% a.a.',
-    description: 'Campanha exclusiva BDMG para impulsionar sua empresa com as menores taxas do mercado e prazos estendidos.',
-    bgImage: '/assets/banner-black-friday-hero.jpg',
-    primaryLink: '/black-friday-bdmg',
+    title: 'Capital de giro com a ',
+    highlight: 'menor taxa do ano',
+    description: '',
+    bgImage: '/assets/bf-bg-desktop.webp',
+    primaryLink: '/black-friday-bdmg#simular',
+    secondaryLink: '/black-friday-bdmg',
+    secondaryText: 'Ver condições',
     duration: 11000 // 11 segundos de destaque na tela
   },
   {
@@ -81,36 +95,160 @@ const slides: Slide[] = [
   }
 ];
 
+function getRemainingTime(endDateStr: string) {
+  const diff = new Date(endDateStr).getTime() - Date.now();
+  if (diff <= 0) return null;
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  return { days, hours };
+}
+
 export default function HeroCarousel() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [timeLeft, setTimeLeft] = useState<{ days: number; hours: number } | null>(null);
+  const [campaignActive, setCampaignActive] = useState<boolean>(() => {
+    return new Date().getTime() < new Date(BF_CAMPAIGN_CONFIG.endDate).getTime();
+  });
 
   useEffect(() => {
-    const duration = slides[currentSlide].duration || 6000;
+    const updateCountdown = () => {
+      const remaining = getRemainingTime(BF_CAMPAIGN_CONFIG.endDate);
+      if (!remaining) {
+        setCampaignActive(false);
+        setTimeLeft(null);
+      } else {
+        setCampaignActive(true);
+        setTimeLeft(remaining);
+      }
+    };
+
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const slides = campaignActive
+    ? allSlides
+    : allSlides.filter((s) => !s.isCampaignBanner);
+
+  const safeSlideIndex = currentSlide >= slides.length ? 0 : currentSlide;
+  const slide = slides[safeSlideIndex];
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (mediaQuery.matches) {
+      return; // Sem autoplay se o usuário preferir redução de movimento
+    }
+
+    const duration = slide?.duration || 6000;
     const timer = setTimeout(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, duration);
     return () => clearTimeout(timer);
-  }, [currentSlide]);
-
-  const slide = slides[currentSlide];
+  }, [safeSlideIndex, slides.length, slide?.duration]);
 
   return (
     <section 
       className={`${styles.hero} ${slide.isCampaignBanner ? styles.heroCampaign : ''}`}
-      style={{ backgroundImage: `url(${slide.bgImage})` }}
+      style={slide.isCampaignBanner ? undefined : { backgroundImage: `url(${slide.bgImage})` }}
     >
-      <div className={slide.isCampaignBanner ? styles.heroOverlayCampaign : styles.heroOverlay}></div>
+      <div className={slide.isCampaignBanner ? styles.heroCampaignOverlay : styles.heroOverlay}></div>
       
       {slide.isCampaignBanner ? (
-        <Link 
-          href={slide.primaryLink} 
-          className={styles.campaignLink}
-          aria-label="Acessar página especial da Black Friday Crédito BDMG"
-        >
-          <span className="sr-only">
-            {slide.title} - {slide.highlight} - {slide.description}
-          </span>
-        </Link>
+        <div className={`container ${styles.heroContainer}`}>
+          <div className={`${styles.heroContent} ${styles.campaignHeroContent}`} key={slide.id}>
+            {/* [1] Eyebrow */}
+            <div className={styles.campaignEyebrow}>
+              <span className={styles.campaignEyebrowDot} />
+              BLACK FRIDAY DO CRÉDITO · RMJ + BDMG
+            </div>
+
+            {/* [2] Title */}
+            <h1 className={styles.heroTitle}>
+              {slide.title}
+              <span className={styles.heroTitleHighlight}>{slide.highlight}</span>
+            </h1>
+
+            {/* [3] Rate highlight */}
+            <div className={styles.campaignRateBlock}>
+              <div className={styles.campaignRateMain}>
+                <span className={styles.campaignRateNumber}>{BF_CAMPAIGN_CONFIG.rateSpread}</span>
+                <span className={styles.campaignRatePeriod}>{BF_CAMPAIGN_CONFIG.ratePeriod}</span>
+              </div>
+              <p className={styles.campaignRateSub}>
+                hoje ≈ {BF_CAMPAIGN_CONFIG.rateEffectiveYear} · {BF_CAMPAIGN_CONFIG.rateEffectiveMonth}
+              </p>
+            </div>
+
+            {/* [4] Chips */}
+            <div className={styles.campaignChips}>
+              <span className={styles.campaignChip}>até R$ {BF_CAMPAIGN_CONFIG.maxLimit}</span>
+              <span className={styles.campaignChip}>{BF_CAMPAIGN_CONFIG.maxTermMonths} meses</span>
+              <span className={styles.campaignChip}>{BF_CAMPAIGN_CONFIG.gracePeriod} de carência</span>
+            </div>
+
+            {/* [5] Action buttons */}
+            <div className={styles.heroButtons}>
+              <Link href={slide.primaryLink} className="btn btn-primary">
+                Simular minha taxa
+              </Link>
+              {slide.secondaryLink && slide.secondaryText && (
+                <Link href={slide.secondaryLink} className="btn btn-outline">
+                  {slide.secondaryText}
+                </Link>
+              )}
+            </div>
+
+            {/* [6] Deadline & countdown */}
+            <div className={styles.campaignDeadline}>
+              <svg 
+                viewBox="0 0 24 24" 
+                width="16" 
+                height="16" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>
+              <span>
+                Termina em {BF_CAMPAIGN_CONFIG.displayEndDate}
+                {timeLeft && (
+                  <> · restam {timeLeft.days}d {timeLeft.hours}h</>
+                )}
+              </span>
+            </div>
+
+            {/* [7] Legal disclaimer */}
+            <p className={styles.campaignLegal}>
+              Sujeito a análise e aprovação de crédito. CET informado na proposta. Condições do BDMG válidas até {BF_CAMPAIGN_CONFIG.displayEndDate}.
+            </p>
+
+            {/* [8] Brands */}
+            <div className={styles.campaignBrands}>
+              <Image
+                src="/assets/logo-rmj-horizontal.png"
+                alt="RMJ Soluções de Crédito"
+                width={96}
+                height={32}
+                className={styles.brandRmj}
+              />
+              <span className={styles.brandSeparator}>em parceria com</span>
+              <Image
+                src="/assets/selo-parceiro-bdmg-negativo.png"
+                alt="BDMG"
+                width={90}
+                height={24}
+                className={styles.brandBdmg}
+              />
+            </div>
+          </div>
+        </div>
       ) : (
         <div className={`container ${styles.heroContainer}`}>
           <div className={styles.heroContent} key={slide.id}>
@@ -151,12 +289,12 @@ export default function HeroCarousel() {
         {slides.map((_, index) => (
           <button 
             key={index} 
-            className={`${styles.indicator} ${index === currentSlide ? styles.active : ''}`}
+            className={`${styles.indicator} ${index === safeSlideIndex ? styles.active : ''}`}
             onClick={(e) => {
               e.stopPropagation();
               setCurrentSlide(index);
             }}
-            aria-label={`Ir para o slide ${index + 1}`}
+            aria-label={`Ir para o slide ${index + 1} de ${slides.length}`}
           />
         ))}
       </div>

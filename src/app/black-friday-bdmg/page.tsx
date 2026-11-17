@@ -135,12 +135,6 @@ export default function BlackFridayBdmgPage() {
         }}
       />
 
-      {/* Faixa superior de anúncio */}
-      <div className={styles.announcementBar}>
-        <span className={styles.announcementTag}>Campanha Oficial</span>
-        <span>⚡ Black Friday BDMG 2026: Taxas Especiais a partir de Selic + 4,0% a.a. por tempo limitado!</span>
-      </div>
-
       {/* 1. HERO em duas colunas */}
       <section className={styles.headerSection} id="topo">
         <div className={`${styles.heroGrid} container`}>

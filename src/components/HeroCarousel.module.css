@@ -86,13 +86,14 @@
   flex-wrap: wrap;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 767px) {
   .heroButtons {
     flex-direction: column;
     width: 100%;
   }
   .heroButtons a {
     width: 100%;
+    text-align: center;
   }
 }
 
@@ -122,45 +123,214 @@
   border-radius: 12px;
 }
 
-/* Black Friday Campaign Slide (Full clickable clean banner) */
+/* Black Friday Campaign Slide */
 .heroCampaign {
-  position: relative;
-  background-size: cover;
-  background-position: center;
+  background-image: url('/assets/bf-bg-desktop.jpg');
+  background-image: image-set(
+    url('/assets/bf-bg-desktop.webp') type('image/webp'),
+    url('/assets/bf-bg-desktop.jpg') type('image/jpeg')
+  );
+  background-position: right center;
   background-repeat: no-repeat;
-  padding: 0;
-  overflow: hidden;
-  border-bottom: 1px solid var(--neutral-border);
-  transition: background-image 0.5s ease-in-out;
-  min-height: 480px;
-  cursor: pointer;
+  background-size: cover;
 }
 
-@media (min-width: 992px) {
-  .heroCampaign {
-    aspect-ratio: 1920 / 595;
-    min-height: 440px;
-    max-height: 580px;
-  }
-}
-
-.heroOverlayCampaign {
-  display: none;
-}
-
-.campaignLink {
+.heroCampaignOverlay {
   position: absolute;
   inset: 0;
-  z-index: 2;
-  cursor: pointer;
-  display: block;
+  background: linear-gradient(90deg, rgba(8, 8, 10, 0.92) 0%, rgba(8, 8, 10, 0.78) 45%, rgba(8, 8, 10, 0.25) 75%, rgba(8, 8, 10, 0.10) 100%);
+  z-index: 1;
 }
 
 @media (max-width: 991px) {
   .heroCampaign {
-    padding: 0;
-    min-height: 580px;
+    background-image: url('/assets/bf-bg-mobile.jpg');
+    background-image: image-set(
+      url('/assets/bf-bg-mobile.webp') type('image/webp'),
+      url('/assets/bf-bg-mobile.jpg') type('image/jpeg')
+    );
     background-position: center top;
-    background-image: url('/assets/banner-black-friday-mobile-final.jpg') !important;
   }
+  .heroCampaignOverlay {
+    background: linear-gradient(180deg, rgba(8, 8, 10, 0.55) 0%, rgba(8, 8, 10, 0.88) 55%, rgba(8, 8, 10, 0.95) 100%);
+  }
+}
+
+.campaignHeroContent {
+  max-width: 58%;
+  gap: 1rem;
+}
+
+@media (max-width: 991px) {
+  .campaignHeroContent {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 767px) {
+  .campaignHeroContent {
+    max-width: 100%;
+    gap: 0.85rem;
+  }
+  .campaignHeroContent .heroTitle {
+    font-size: clamp(1.65rem, 5vw, 2rem);
+    line-height: 1.2;
+  }
+}
+
+/* [1] Eyebrow */
+.campaignEyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  background: rgba(255, 159, 28, 0.14);
+  border: 1px solid rgba(255, 159, 28, 0.38);
+  color: #FF9F1C;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  width: fit-content;
+}
+
+.campaignEyebrowDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #FF9F1C;
+  box-shadow: 0 0 8px rgba(255, 159, 28, 0.85);
+  display: inline-block;
+}
+
+/* [3] Rate highlight */
+.campaignRateBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin: 0.25rem 0;
+}
+
+.campaignRateMain {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  line-height: 1;
+}
+
+.campaignRateNumber {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+}
+
+.campaignRatePeriod {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.campaignRateSub {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.75);
+  margin: 0;
+}
+
+@media (max-width: 767px) {
+  .campaignRateNumber {
+    font-size: 2.5rem;
+  }
+  .campaignRatePeriod {
+    font-size: 1.25rem;
+  }
+  .campaignRateSub {
+    font-size: 0.95rem;
+  }
+}
+
+/* [4] Chips */
+.campaignChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.campaignChip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.75rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 6px;
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 500;
+  backdrop-filter: blur(4px);
+}
+
+/* [6] Deadline */
+.campaignDeadline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: #FF9F1C;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+/* [7] Legal disclaimer */
+.campaignLegal {
+  font-size: 0.6875rem;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0;
+  max-width: 580px;
+}
+
+/* [8] Brands lockup */
+.campaignBrands {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-top: 0.25rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  flex-wrap: wrap;
+}
+
+.brandRmj {
+  height: 32px;
+  width: auto;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+.brandSeparator {
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.65);
+  font-weight: 500;
+  text-transform: lowercase;
+}
+
+.brandBdmg {
+  height: 24px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* Screen reader only utility */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }

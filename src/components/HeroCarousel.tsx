@@ -15,6 +15,9 @@ export const BF_CAMPAIGN_CONFIG = {
   displayEndDate: "30/11",
 };
 
+// Tempo de rotação por banner: 4.5 segundos (entre 4s e 5s)
+const SLIDE_DURATION = 4500;
+
 interface Slide {
   id: string;
   isCampaignBanner?: boolean;
@@ -27,7 +30,6 @@ interface Slide {
   primaryLink: string;
   secondaryLink?: string;
   secondaryText?: string;
-  duration?: number;
 }
 
 const allSlides: Slide[] = [
@@ -40,7 +42,6 @@ const allSlides: Slide[] = [
     description: 'Campanha oficial BDMG.',
     bgImage: '/assets/banner-bf-v2-desktop.webp',
     primaryLink: '/black-friday-bdmg',
-    duration: 11000 // 11 segundos de destaque na tela
   },
   {
     id: 'black-friday-consorcio',
@@ -51,7 +52,6 @@ const allSlides: Slide[] = [
     description: 'Cotas limitadas! Garanta já a sua.',
     bgImage: '/assets/banner-consorcio-black-desktop.webp',
     primaryLink: '/consorcios#simular',
-    duration: 11000 // 11 segundos de destaque na tela
   },
   {
     id: 'bdmg',
@@ -63,7 +63,6 @@ const allSlides: Slide[] = [
     primaryLink: '/credito-bdmg#simular',
     secondaryLink: '/credito-bdmg#como-funciona',
     secondaryText: 'Como Funciona?',
-    duration: 6000
   },
   {
     id: 'imobiliario',
@@ -75,7 +74,6 @@ const allSlides: Slide[] = [
     primaryLink: '/financiamento-imobiliario#simular',
     secondaryLink: '/financiamento-imobiliario',
     secondaryText: 'Saiba Mais',
-    duration: 6000
   },
   {
     id: 'home-equity',
@@ -87,7 +85,6 @@ const allSlides: Slide[] = [
     primaryLink: '/home-equity#simular',
     secondaryLink: '/home-equity',
     secondaryText: 'Saiba Mais',
-    duration: 6000
   },
   {
     id: 'consorcio',
@@ -99,12 +96,12 @@ const allSlides: Slide[] = [
     primaryLink: '/consorcios#simular',
     secondaryLink: '/consorcios',
     secondaryText: 'Ver Planos',
-    duration: 6000
   }
 ];
 
 export default function HeroCarousel() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
   const [campaignActive, setCampaignActive] = useState<boolean>(() => {
     return new Date().getTime() < new Date(BF_CAMPAIGN_CONFIG.endDate).getTime();
   });
@@ -124,154 +121,182 @@ export default function HeroCarousel() {
     : allSlides.filter((s) => !s.isCampaignBanner && !s.isConsorcioBanner);
 
   const safeSlideIndex = currentSlide >= slides.length ? 0 : currentSlide;
-  const slide = slides[safeSlideIndex];
 
+  // Autoplay constante a cada 4.5s com pausa suave ao passar o mouse
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    if (mediaQuery.matches) {
-      return; // Sem autoplay se o usuário preferir redução de movimento
-    }
+    if (isPaused) return;
 
-    const duration = slide?.duration || 6000;
-    const timer = setTimeout(() => {
+    const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, duration);
-    return () => clearTimeout(timer);
-  }, [safeSlideIndex, slides.length, slide?.duration]);
+    }, SLIDE_DURATION);
+
+    return () => clearInterval(timer);
+  }, [slides.length, isPaused]);
 
   return (
     <section 
-      className={`${styles.hero} ${
-        slide.isCampaignBanner ? styles.heroCampaign :
-        slide.isConsorcioBanner ? styles.heroConsorcioCampaign : ''
-      }`}
-      style={(slide.isCampaignBanner || slide.isConsorcioBanner) ? undefined : { backgroundImage: `url(${slide.bgImage})` }}
+      className={styles.heroCarouselContainer}
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      aria-roledescription="carousel"
+      aria-label="Destaques e Campanhas RMJ"
     >
-      {slide.isCampaignBanner ? (
-        <div className={styles.campaignBannerContainer}>
-          {/* Link clicável cobrindo todo o banner */}
-          <Link 
-            href={slide.primaryLink} 
-            className={styles.campaignLink}
-            aria-label="Vem aí Black Friday Crédito BDMG - Selic + 4,0% a.a."
+      {slides.map((slide, index) => {
+        const isActive = index === safeSlideIndex;
+        return (
+          <div
+            key={slide.id}
+            className={`${styles.slideLayer} ${isActive ? styles.slideActive : ''}`}
+            aria-hidden={!isActive}
           >
-            <span className={styles.srOnly}>
-              {BF_CAMPAIGN_CONFIG.title} - {BF_CAMPAIGN_CONFIG.rateSpread} {BF_CAMPAIGN_CONFIG.ratePeriod} - {BF_CAMPAIGN_CONFIG.subtitle}
-            </span>
-          </Link>
-
-          {/* Destaque Selic + 4,0% a.a. conforme Header v2 oficial */}
-          <div className={styles.campaignSelicBlock}>
-            <span className={styles.campaignSelicLabel}>Selic</span>
-            <div className={styles.campaignSelicRateRow}>
-              <span className={styles.campaignSelicRate}>+ 4,0%</span>
-              <span className={styles.campaignSelicPeriod}>a.a.</span>
-            </div>
-          </div>
-
-          {/* Rodapé do banner em branco, pequenininho */}
-          <div className={styles.campaignLegalBar}>
-            <p className={styles.campaignLegalCondition}>
-              {BF_CAMPAIGN_CONFIG.legalNotice}
-            </p>
-          </div>
-        </div>
-      ) : slide.isConsorcioBanner ? (
-        <div className={styles.consorcioBannerInner}>
-          <picture className={styles.consorcioPicture}>
-            <source
-              media="(min-width: 992px)"
-              srcSet="/assets/banner-consorcio-black-desktop.webp"
-              type="image/webp"
-            />
-            <source
-              media="(min-width: 992px)"
-              srcSet="/assets/banner-consorcio-black-desktop.jpg"
-              type="image/jpeg"
-            />
-            <source
-              srcSet="/assets/banner-consorcio-black-mobile.webp"
-              type="image/webp"
-            />
-            <img
-              src="/assets/banner-consorcio-black-mobile.jpg"
-              alt="A Black do consórcio que mais cresce no Brasil - 60% de redução até a contemplação"
-              className={styles.consorcioImg}
-              loading="eager"
-            />
-          </picture>
-
-          {/* Link clicável cobrindo todo o banner */}
-          <Link 
-            href={slide.primaryLink} 
-            className={styles.campaignLink}
-            aria-label="A Black do consórcio que mais cresce no Brasil - 60% de redução até a contemplação - Solicitar Simulação"
-          >
-            <span className={styles.srOnly}>
-              A Black do consórcio que mais cresce no Brasil. 60% de redução até a contemplação. Cotas limitadas! Garanta já a sua. Solicitar simulação.
-            </span>
-          </Link>
-
-          {/* Botão para solicitar simulação posicionado no espaço abaixo da tabela */}
-          <div className={styles.consorcioCtaWrapper}>
-            <Link href={slide.primaryLink} className={styles.btnConsorcioCta}>
-              <span>Solicitar Simulação</span>
-              <svg 
-                viewBox="0 0 24 24" 
-                width="18" 
-                height="18" 
-                fill="none" 
-                stroke="currentColor" 
-                strokeWidth="2.5" 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                aria-hidden="true"
-              >
-                <path d="M5 12h14M12 5l7 7-7 7"/>
-              </svg>
-            </Link>
-          </div>
-        </div>
-      ) : (
-        <>
-          <div className={styles.heroOverlay}></div>
-          <div className={`container ${styles.heroContainer}`}>
-            <div className={styles.heroContent} key={slide.id}>
-              <div className={styles.heroPartnerIntegrated}>
-                {slide.logo && (
-                  <Image
-                    src={slide.logo}
-                    alt="Logo Parceiro"
-                    width={150}
-                    height={92}
-                    className={styles.heroPartnerLogo}
-                    style={{ objectFit: 'contain' }}
-                    priority
-                  />
-                )}
-              </div>
-              <h1 className={styles.heroTitle}>
-                {slide.title}<span className={styles.heroTitleHighlight}>{slide.highlight}</span>
-              </h1>
-              <p className={styles.heroDescription}>
-                {slide.description}
-              </p>
-              <div className={styles.heroButtons}>
-                <Link href={slide.primaryLink} className="btn btn-primary">
-                  Simular Crédito Agora
-                </Link>
-                {slide.secondaryLink && slide.secondaryText && (
-                  <Link href={slide.secondaryLink} className="btn btn-outline">
-                    {slide.secondaryText}
+            {slide.isCampaignBanner ? (
+              <div className={styles.heroCampaign}>
+                <div className={styles.campaignBannerContainer}>
+                  {/* Link clicável cobrindo todo o banner */}
+                  <Link 
+                    href={slide.primaryLink} 
+                    className={styles.campaignLink}
+                    aria-label="Vem aí Black Friday Crédito BDMG - Selic + 4,0% a.a."
+                    tabIndex={isActive ? 0 : -1}
+                  >
+                    <span className={styles.srOnly}>
+                      {BF_CAMPAIGN_CONFIG.title} - {BF_CAMPAIGN_CONFIG.rateSpread} {BF_CAMPAIGN_CONFIG.ratePeriod} - {BF_CAMPAIGN_CONFIG.subtitle}
+                    </span>
                   </Link>
-                )}
-              </div>
-            </div>
-          </div>
-        </>
-      )}
 
+                  {/* Destaque Selic + 4,0% a.a. conforme Header v2 oficial */}
+                  <div className={styles.campaignSelicBlock}>
+                    <span className={styles.campaignSelicLabel}>Selic</span>
+                    <div className={styles.campaignSelicRateRow}>
+                      <span className={styles.campaignSelicRate}>+ 4,0%</span>
+                      <span className={styles.campaignSelicPeriod}>a.a.</span>
+                    </div>
+                  </div>
+
+                  {/* Rodapé do banner em branco, pequenininho */}
+                  <div className={styles.campaignLegalBar}>
+                    <p className={styles.campaignLegalCondition}>
+                      {BF_CAMPAIGN_CONFIG.legalNotice}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ) : slide.isConsorcioBanner ? (
+              <div className={styles.heroConsorcioCampaign}>
+                <div className={styles.consorcioBannerInner}>
+                  <picture className={styles.consorcioPicture}>
+                    <source
+                      media="(min-width: 992px)"
+                      srcSet="/assets/banner-consorcio-black-desktop.webp"
+                      type="image/webp"
+                    />
+                    <source
+                      media="(min-width: 992px)"
+                      srcSet="/assets/banner-consorcio-black-desktop.jpg"
+                      type="image/jpeg"
+                    />
+                    <source
+                      srcSet="/assets/banner-consorcio-black-mobile.webp"
+                      type="image/webp"
+                    />
+                    <img
+                      src="/assets/banner-consorcio-black-mobile.jpg"
+                      alt="A Black do consórcio que mais cresce no Brasil - 60% de redução até a contemplação"
+                      className={styles.consorcioImg}
+                      loading={index <= 1 ? "eager" : "lazy"}
+                    />
+                  </picture>
+
+                  {/* Link clicável cobrindo todo o banner */}
+                  <Link 
+                    href={slide.primaryLink} 
+                    className={styles.campaignLink}
+                    aria-label="A Black do consórcio que mais cresce no Brasil - 60% de redução até a contemplação - Solicitar Simulação"
+                    tabIndex={isActive ? 0 : -1}
+                  >
+                    <span className={styles.srOnly}>
+                      A Black do consórcio que mais cresce no Brasil. 60% de redução até a contemplação. Cotas limitadas! Garanta já a sua. Solicitar simulação.
+                    </span>
+                  </Link>
+
+                  {/* Botão para solicitar simulação posicionado no espaço abaixo da tabela */}
+                  <div className={styles.consorcioCtaWrapper}>
+                    <Link 
+                      href={slide.primaryLink} 
+                      className={styles.btnConsorcioCta}
+                      tabIndex={isActive ? 0 : -1}
+                    >
+                      <span>Solicitar Simulação</span>
+                      <svg 
+                        viewBox="0 0 24 24" 
+                        width="18" 
+                        height="18" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        strokeWidth="2.5" 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round" 
+                        aria-hidden="true"
+                      >
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                      </svg>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div 
+                className={styles.heroStandard}
+                style={{ backgroundImage: `url(${slide.bgImage})` }}
+              >
+                <div className={styles.heroOverlay}></div>
+                <div className={`container ${styles.heroContainer}`}>
+                  <div className={styles.heroContent}>
+                    <div className={styles.heroPartnerIntegrated}>
+                      {slide.logo && (
+                        <Image
+                          src={slide.logo}
+                          alt="Logo Parceiro"
+                          width={150}
+                          height={92}
+                          className={styles.heroPartnerLogo}
+                          style={{ objectFit: 'contain' }}
+                        />
+                      )}
+                    </div>
+                    <h1 className={styles.heroTitle}>
+                      {slide.title}<span className={styles.heroTitleHighlight}>{slide.highlight}</span>
+                    </h1>
+                    <p className={styles.heroDescription}>
+                      {slide.description}
+                    </p>
+                    <div className={styles.heroButtons}>
+                      <Link 
+                        href={slide.primaryLink} 
+                        className="btn btn-primary"
+                        tabIndex={isActive ? 0 : -1}
+                      >
+                        Simular Crédito Agora
+                      </Link>
+                      {slide.secondaryLink && slide.secondaryText && (
+                        <Link 
+                          href={slide.secondaryLink} 
+                          className="btn btn-outline"
+                          tabIndex={isActive ? 0 : -1}
+                        >
+                          {slide.secondaryText}
+                        </Link>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      })}
+
+      {/* Indicadores de navegação */}
       <div className={styles.carouselIndicators}>
         {slides.map((_, index) => (
           <button 
